@@ -14,10 +14,10 @@ public class CardDisplay : MonoBehaviour
     public Image[] suitImage;
     public Image faceImage;
     private Color[] cardColors = {
-        new Color(0f, 0f, 0f), //Black Suits
-        new Color(0.67f, 0.19f, 0.19f), //red Suits
-        new Color(0.67f, 0.19f, 0.19f), //red Suits
-        new Color(0f, 0f, 0f), //Black Suits
+        new Color(0f, 0f, 0f), //Spade
+        new Color(0.67f, 0.19f, 0.19f), //Diamond
+        new Color(0.67f, 0.19f, 0.19f), //Heart
+        new Color(0f, 0f, 0f), //Club
     };
 
     void Start()

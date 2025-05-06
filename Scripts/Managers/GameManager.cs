@@ -22,9 +22,10 @@ public class GameManager : MonoBehaviour
     public GridManager gridManager { get; private set; }
     public bool gameOver = false;
     public GameObject gameOverScreen;
+    public bool startDungeonRun = false;
+    public bool startBattle = false;
 
     public bool PlayingCard = false;
-
 
     private void Awake()
     {
@@ -40,7 +41,47 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void InitializeManagers()
+
+
+
+
+
+    void Start()
+    {
+        // Create a temporary reference to the current scene.
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        // Retrieve the name of this scene.
+        string sceneName = currentScene.name;
+
+        // Retrieve the index of the scene in the project's build settings.
+        int buildIndex = currentScene.buildIndex;
+
+        // Check the scene name as a conditional.
+        switch (buildIndex)
+        {
+            case 0:
+                startDungeonRun = true;
+                break;
+            case 1:
+                startBattle = true;
+                break;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+private void InitializeManagers()
     {
         optionsManager = GetComponentInChildren<OptionsManager>();
         audioMan = GetComponentInChildren<AudioMan>();

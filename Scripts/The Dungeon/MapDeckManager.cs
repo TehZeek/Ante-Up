@@ -10,8 +10,8 @@ public class MapDeckManager : MonoBehaviour
     public List<MapCard> allMapCards = new List<MapCard>();
     private MapHandManager mapHandManager;
     private DrawPileManager drawPileManager;
+    private GameManager gameManager;
     private ChipManager chipManager;
-    private bool startDungeonRun = false;
     public int startingHandSize = 5;
     public int maxHandSize = 5;
 
@@ -19,45 +19,29 @@ public class MapDeckManager : MonoBehaviour
     {
         MapCard[] cards = Resources.LoadAll<MapCard>("MapStart");
         allMapCards.AddRange(cards);
-        startDungeonRun = true;
-        Debug.Log("Started DeckManager" + startDungeonRun);
-    }
+        gameManager = FindFirstObjectByType<GameManager>();
 
-    void Awake()
-    {
-        if (drawPileManager == null)
-        {
-            drawPileManager = FindFirstObjectByType<DrawPileManager>();
-        }
-        if (mapHandManager == null)
-        {
-            mapHandManager = FindFirstObjectByType<MapHandManager>();
-        }
-        if (chipManager == null)
-        {
-            chipManager = FindFirstObjectByType<ChipManager>();
-        }
     }
 
     void Update()
     {
-        if (startDungeonRun)
+        if (gameManager.startDungeonRun)
         {
-            Debug.Log("Started Update" + startDungeonRun);
-            startDungeonRun = false;
-            Debug.Log("Starting Dungeon Setup" + startDungeonRun);
+            gameManager.startDungeonRun = false;
             DungeonSetup();
         }
     }
 
     public void DungeonSetup()
     {
+        drawPileManager = FindFirstObjectByType<DrawPileManager>();
+        mapHandManager = FindFirstObjectByType<MapHandManager>();
+        chipManager = FindFirstObjectByType<ChipManager>();
+
         mapHandManager.DungeonSetup(maxHandSize);
         drawPileManager.MakeDrawPile(allMapCards);
         drawPileManager.DungeonSetup(startingHandSize, maxHandSize);
         chipManager.DungeonSetup();
-
-        Debug.Log("Finished MapDeckManager Dungeon setup");
     }
 
 }

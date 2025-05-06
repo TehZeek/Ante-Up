@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ZeekSpace;
-using TMPro;
 
 
 
@@ -25,7 +24,6 @@ public class GridManager : MonoBehaviour
     public GridCell leftCell;
     public GridCell rightCell;
     public int doorCount = 0;
-    public TextMeshProUGUI doorCounter;
 
 
     public void Awake()
@@ -256,8 +254,8 @@ public class GridManager : MonoBehaviour
                     doorCount++;
                     checkGrid.GetComponent<GridCellDisplay>().ShowLegal();
                 }
-                doorCounter.text = doorCount.ToString();
-                
+                DoorManager doorManager = FindFirstObjectByType<DoorManager>();
+                doorManager.UpdateDoorCount(doorCount);
 
             }
         }

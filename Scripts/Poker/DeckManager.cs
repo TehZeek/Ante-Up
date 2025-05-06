@@ -10,6 +10,9 @@ public class DeckManager : MonoBehaviour
 {
     public List<Card> allCards = new List<Card>();
     private int currentIndex = 0;
+    private GameManager gameManager;
+    private ChipManager chipManager;
+    private PokerDrawPile pokerDrawPile;
 
     void Start()
     {
@@ -17,12 +20,27 @@ public class DeckManager : MonoBehaviour
         Card[] Cards = Resources.LoadAll<Card>("CardData");
         //add the loaded cards to the allCards list
         allCards.AddRange(Cards);
+        gameManager = FindFirstObjectByType<GameManager>();
+        pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
+    }
+    void Update()
+    {
+        if (gameManager.startBattle)
+        {
+            gameManager.startBattle = false;
+            BattleSetup();
+        }
     }
 
+    public void BattleSetup()
+    {
+        pokerDrawPile.MakeDrawPile(allCards);
+    }
 
 
     public void DrawCard(MapHandManager mapHandManager)
     {
+        // we're going to move this and it doesn't work anyways
         if (allCards.Count == 0 )
         {
             return;
