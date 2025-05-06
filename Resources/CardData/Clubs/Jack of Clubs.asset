@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2988ed75567128a478ca83e019fd745d, type: 3}
+  m_Name: Jack of Clubs
+  m_EditorClassIdentifier: 
+  cardName: Jack of Clubs
+  cardSuit: 03000000
+  cardRank: 0b000000
+  suitSprite: {fileID: 21300000, guid: 772916bccee95564a9bdc04c2ea5331c, type: 3}
+  rankSprite: {fileID: 0}
+  faceSprite: {fileID: -9157477970747627070, guid: e1bf5d19795940442890a8a80de7a859, type: 3}
+  numberSprite: {fileID: 21300000, guid: 4f146bbad6c7d51488f1e99ff6c497e3, type: 3}
+  newRank: 0
+  newSuit: 0

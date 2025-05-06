@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e2aaea1c423c446a6c3f368949ab76, type: 3}
+  m_Name: 2TreasureDown
+  m_EditorClassIdentifier: 
+  mapCardName: Treasure
+  mapRank: 1
+  mapExit: 01000000
+  mapObject: 3
+  mapTierSprite: {fileID: 21300000, guid: 34abceed95c6cae4ca00bee92f5cc09e, type: 3}
+  mapExitSprite: {fileID: -3634962005241553189, guid: 27caea5f14b80fd4da384673c81625ae, type: 3}
+  mapIconSprite: {fileID: 21300000, guid: 10a44f2b178010b4f8f3bb7b62c56f01, type: 3}
+  tileSprite: {fileID: 21300000, guid: d17aa7c1688610c40b84905456540133, type: 3}
+  tileDoor: {fileID: 21300000, guid: 63c68f2bd7aee94448a8bf0f2bae1b8a, type: 3}
+  tileIcon: {fileID: 21300000, guid: 70de13f21ea8f4344954d94de3b709f0, type: 3}
+  prefab: {fileID: 3856925121984238689, guid: 4d06fb8e4b2b5cf45b6051ef423f344c, type: 3}
+  mapCard: {fileID: 11400000}

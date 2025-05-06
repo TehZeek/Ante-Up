@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e2aaea1c423c446a6c3f368949ab76, type: 3}
+  m_Name: 1EventDown
+  m_EditorClassIdentifier: 
+  mapCardName: Special
+  mapRank: 0
+  mapExit: 01000000
+  mapObject: 6
+  mapTierSprite: {fileID: 21300000, guid: b258945ac79d071428dacda0e7afc149, type: 3}
+  mapExitSprite: {fileID: 7610658436730993517, guid: ec736dc5fb518e2479e845bd6bb9ad0c, type: 3}
+  mapIconSprite: {fileID: 21300000, guid: d814b3e3f3e79304db6a2c5a58690e1f, type: 3}
+  tileSprite: {fileID: 21300000, guid: 3a95a406f6acd224082ece320423e11c, type: 3}
+  tileDoor: {fileID: 21300000, guid: b87274252ffa6d74db552b20fa4e72c2, type: 3}
+  tileIcon: {fileID: 21300000, guid: 4c2e8d5990c896446a041b8b22690484, type: 3}
+  prefab: {fileID: 3856925121984238689, guid: 4d06fb8e4b2b5cf45b6051ef423f344c, type: 3}
+  mapCard: {fileID: 11400000}

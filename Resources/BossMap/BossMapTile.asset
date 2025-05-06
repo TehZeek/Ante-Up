@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e2aaea1c423c446a6c3f368949ab76, type: 3}
+  m_Name: BossMapTile
+  m_EditorClassIdentifier: 
+  mapCardName: Boss
+  mapRank: 4
+  mapExit: 01000000
+  mapObject: 8
+  mapTierSprite: {fileID: 21300000, guid: c92197c90ae1f16408a8952e7b6aaed9, type: 3}
+  mapExitSprite: {fileID: 21300000, guid: b273746a921d1be40923d061481b5d34, type: 3}
+  mapIconSprite: {fileID: 21300000, guid: 776dbbcedc2ad9f4b93ffa7fd9a507a4, type: 3}
+  tileSprite: {fileID: 21300000, guid: c34da9564a8017b4c88a2e1365426ccd, type: 3}
+  tileDoor: {fileID: 21300000, guid: f2db4a518a2c9d8428af9dba8a99a425, type: 3}
+  tileIcon: {fileID: 21300000, guid: 776dbbcedc2ad9f4b93ffa7fd9a507a4, type: 3}
+  prefab: {fileID: 3856925121984238689, guid: 4d06fb8e4b2b5cf45b6051ef423f344c, type: 3}
+  mapCard: {fileID: 11400000}
