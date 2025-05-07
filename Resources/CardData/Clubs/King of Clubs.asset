@@ -17,7 +17,7 @@ MonoBehaviour:
   cardRank: 0d000000
   suitSprite: {fileID: 21300000, guid: 772916bccee95564a9bdc04c2ea5331c, type: 3}
   rankSprite: {fileID: 0}
-  faceSprite: {fileID: -5003848883291286353, guid: b3253de0afd14c94cade0280fff700d4, type: 3}
+  faceSprite: {fileID: 21300000, guid: b3253de0afd14c94cade0280fff700d4, type: 3}
   numberSprite: {fileID: 21300000, guid: 4cca77eab6fc04743a6631029fabb334, type: 3}
   newRank: 0
   newSuit: 0
