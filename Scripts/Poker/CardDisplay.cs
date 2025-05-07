@@ -13,6 +13,7 @@ public class CardDisplay : MonoBehaviour
     public Image[] rankImage;
     public Image[] suitImage;
     public Image faceImage;
+    public Image CardBack;
     private Color[] cardColors = {
         new Color(0f, 0f, 0f), //Spade
         new Color(0.67f, 0.19f, 0.19f), //Diamond

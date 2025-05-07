@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ZeekSpace;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 public class PokerTableCards : MonoBehaviour
@@ -13,15 +14,16 @@ public class PokerTableCards : MonoBehaviour
     public Transform p3Transform;
     public Transform monTransform;
     public Transform tableTransform;
-    public float cardSpacing = 75f;
+    public Transform burnTransform;
+    public float cardSpacing = 150f;
     private PokerDrawPile pokerDrawPile;
     public GameObject newCard;
-    public List<Card> playerOnePocket = new List<Card>();
-    public List<Card> playerTwoPocket = new List<Card>();
-    public List<Card> playerThreePocket = new List<Card>();
-    public List<Card> monsterPocket = new List<Card>();
-    public List<Card> tableHand = new List<Card>();
-    public List<Card> burnDeck = new List<Card>();
+    public List<GameObject> playerOnePocket = new List<GameObject>();
+    public List<GameObject> playerTwoPocket = new List<GameObject>();
+    public List<GameObject> playerThreePocket = new List<GameObject>();
+    public List<GameObject> monsterPocket = new List<GameObject>();
+    public List<GameObject> tableHand = new List<GameObject>();
+    public List<GameObject> burnDeck = new List<GameObject>();
     // import this from PokerDrawPile public List<GameObject> cardsInHand = new List<GameObject>(); // hold the list of card objects in our hand
 
     void Start()
@@ -36,43 +38,53 @@ public class PokerTableCards : MonoBehaviour
         if (whichPlayer == 0)
         {
             GameObject newCard = Instantiate(cardPrefab, monTransform.position, Quaternion.identity, monTransform);
-            monsterPocket.Add(cardData);
             newCard.GetComponent<CardDisplay>().cardData = cardData;
             newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
-
+            newCard.GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
+            monsterPocket.Add(newCard);
         }
         if (whichPlayer == 1)
         {
             GameObject newCard = Instantiate(cardPrefab, p1Transform.position, Quaternion.identity, p1Transform);
-            playerOnePocket.Add(cardData);
             newCard.GetComponent<CardDisplay>().cardData = cardData;
             newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
+            playerOnePocket.Add(newCard);
+
         }
         if (whichPlayer == 2)
         {
             GameObject newCard = Instantiate(cardPrefab, p2Transform.position, Quaternion.identity, p2Transform);
-            playerTwoPocket.Add(cardData);
             newCard.GetComponent<CardDisplay>().cardData = cardData;
             newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
+            playerTwoPocket.Add(newCard);
+
         }
         if (whichPlayer == 3)
         {
             GameObject newCard = Instantiate(cardPrefab, p3Transform.position, Quaternion.identity, p3Transform);
-            playerThreePocket.Add(cardData);
             newCard.GetComponent<CardDisplay>().cardData = cardData;
             newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
+            playerThreePocket.Add(newCard);
+
         }
         if (whichPlayer >3 && whichPlayer < 9)
         {
             GameObject newCard = Instantiate(cardPrefab, tableTransform.position, Quaternion.identity, tableTransform);
-            tableHand.Add(cardData);
             newCard.GetComponent<CardDisplay>().cardData = cardData;
             newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
+            tableHand.Add(newCard);
+
         }
         if (whichPlayer == 9)
         {
-            burnDeck.Add(cardData);
+            GameObject newCard = Instantiate(cardPrefab, burnTransform.position, Quaternion.identity, burnTransform);
+            newCard.GetComponent<CardDisplay>().cardData = cardData;
+            newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
+            newCard.GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
+            burnDeck.Add(newCard);
         }
+        UpdateTableVisuals();
+
 
     }
 
@@ -98,18 +110,57 @@ public class PokerTableCards : MonoBehaviour
         {
             Object.Destroy(tableTransform.transform.GetChild(i).gameObject);
         }
+        for (var i = burnTransform.transform.childCount - 1; i >= 0; i--)
+        {
+            Object.Destroy(burnTransform.transform.GetChild(i).gameObject);
+        }
     }
     
     public void UpdateTableVisuals()
     {
-     //   updatetablevisuals(pokerDrawPile.monsterPocket.Count, pokerDrawPile.monsterPocket);
-     //   updatetablevisuals(pokerDrawPile.playerOnePocket.Count, pokerDrawPile.playerOnePocket);
-     //   updatetablevisuals(pokerDrawPile.playerTwoPocket.Count, pokerDrawPile.playerTwoPocket);
-     //   updatetablevisuals(pokerDrawPile.playerThreePocket.Count, pokerDrawPile.playerThreePocket);
-     //   updatetablevisuals(pokerDrawPile.tableHand.Count, pokerDrawPile.tableHand);
+        UpdateTV(monsterPocket);
+        UpdateTV(playerOnePocket);
+        UpdateTV(playerTwoPocket);
+        UpdateTV(playerThreePocket);
+        UpdateTV(tableHand);
     }
 
+    public void UpdateTV(List<GameObject> Cards)
+    {
+        int cardCount = Cards.Count;
+        if (cardCount == 1)
+        {
+            Cards[0].transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            Cards[0].transform.localPosition = new Vector3(0f, 0f, 0f);
+            return;
+        }
 
+        for (int i = 0; i < cardCount; i++)
+        {
+            float horizontalOffset = (cardSpacing * (i - (cardCount - 1) / 2f));
+            Cards[i].transform.localPosition = new Vector3(horizontalOffset, 0f, 0f);
+
+        }
+
+    }
+
+    public void ShowdownReveal()
+    {
+        int cardCount = monsterPocket.Count;
+            for (int i = 0; i < cardCount; i++)
+        {
+            monsterPocket[i].GetComponent<CardDisplay>().CardBack.gameObject.SetActive(false);
+        }
+    }
+
+    public void CompareHands()
+    {
+        PokerHandCompare pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
+        int guy = 0;
+        int round = 1;
+        pokerHandCompare.UpdateHandType(monsterPocket, tableHand, guy, round);
+
+    }
 
 }
 
