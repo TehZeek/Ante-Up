@@ -29,6 +29,7 @@ namespace ZeekSpace
             FiveOfAKind,
             FlushHouse,
             FlushFives,
+            HatTrick,
             LongBoy,
             PlungerFlush,
             DomesticSixPack,
@@ -40,6 +41,7 @@ namespace ZeekSpace
             FlusherFullerHouse,
             SixyFlush,
             SevenOfAKind
+                
         }
 
 
