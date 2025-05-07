@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SixOfAKind
   m_EditorClassIdentifier: 
   requiresCards: 6
-  handRank: 18
+  handRank: 19
   requiresFlush: 0
   requiresStraight: 0
   requiresPair: 1

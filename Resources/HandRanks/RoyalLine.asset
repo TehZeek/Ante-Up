@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RoyalLine
   m_EditorClassIdentifier: 
   requiresCards: 6
-  handRank: 20
+  handRank: 21
   requiresFlush: 1
   requiresStraight: 1
   requiresPair: 0

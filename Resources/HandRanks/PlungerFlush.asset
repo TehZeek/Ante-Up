@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlungerFlush
   m_EditorClassIdentifier: 
   requiresCards: 6
-  handRank: 15
+  handRank: 16
   requiresFlush: 1
   requiresStraight: 0
   requiresPair: 0

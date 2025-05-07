@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdc45b37c3c05ae45a95cd1255a160e3, type: 3}
   m_Name: HatTrick
   m_EditorClassIdentifier: 
-  requiresCards: 0
-  handRank: 0
+  requiresCards: 6
+  handRank: 14
   requiresFlush: 0
   requiresStraight: 0
-  requiresPair: 0
+  requiresPair: 1

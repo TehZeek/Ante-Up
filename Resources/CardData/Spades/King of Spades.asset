@@ -14,10 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: King of Spades
   cardSuit: 00000000
-  cardRank: 0d000000
+  cardRank: 0c000000
   suitSprite: {fileID: 21300000, guid: 0122b04f3c2e5bf4bbb94aaf10152e03, type: 3}
   rankSprite: {fileID: 0}
   faceSprite: {fileID: 21300000, guid: a86bd697ac9b6514dbcbbc0b80bf5092, type: 3}
   numberSprite: {fileID: 21300000, guid: 4cca77eab6fc04743a6631029fabb334, type: 3}
   newRank: 0
   newSuit: 0
+  isWild: 0
+  isDefect: 0
+  isTrapped: 0
+  isCaptured: 0
+  isDenied: 0
+  isDanger: 0

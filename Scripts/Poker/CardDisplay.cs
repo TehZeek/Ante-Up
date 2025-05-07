@@ -44,7 +44,7 @@ public class CardDisplay : MonoBehaviour
         // set the rankSprite for each pip
 
 
-        if ((int)cardData.cardRank[0] > 1 && (int)cardData.cardRank[0] < 11)
+        if ((int)cardData.cardRank[0] > 1 && (int)cardData.cardRank[0] < 10)
         {
             faceImage.gameObject.SetActive(false);
 

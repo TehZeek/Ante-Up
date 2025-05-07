@@ -14,10 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: King of Clubs
   cardSuit: 03000000
-  cardRank: 0d000000
+  cardRank: 0c000000
   suitSprite: {fileID: 21300000, guid: 772916bccee95564a9bdc04c2ea5331c, type: 3}
   rankSprite: {fileID: 0}
   faceSprite: {fileID: 21300000, guid: b3253de0afd14c94cade0280fff700d4, type: 3}
   numberSprite: {fileID: 21300000, guid: 4cca77eab6fc04743a6631029fabb334, type: 3}
   newRank: 0
   newSuit: 0
+  isWild: 0
+  isDefect: 0
+  isTrapped: 0
+  isCaptured: 0
+  isDenied: 0
+  isDanger: 0

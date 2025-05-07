@@ -14,10 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Eight of Clubs
   cardSuit: 03000000
-  cardRank: 08000000
+  cardRank: 07000000
   suitSprite: {fileID: 21300000, guid: 772916bccee95564a9bdc04c2ea5331c, type: 3}
   rankSprite: {fileID: 1011941871530483303, guid: a5e79f3e6f5437b49a5f1e6313e71007, type: 3}
   faceSprite: {fileID: 0}
   numberSprite: {fileID: 21300000, guid: 87a26df667c61a64fadae8dfbd26a97a, type: 3}
   newRank: 0
   newSuit: 0
+  isWild: 0
+  isDefect: 0
+  isTrapped: 0
+  isCaptured: 0
+  isDenied: 0
+  isDanger: 0

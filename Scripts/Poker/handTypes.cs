@@ -16,7 +16,7 @@ namespace ZeekSpace
         public enum HandRank
         {
             Woe,
-            AceHigh,
+            HighCard,
             Pair,
             TwoPair,
             ThreeOfAKind,

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ImportedSixPack
   m_EditorClassIdentifier: 
   requiresCards: 6
-  handRank: 21
+  handRank: 22
   requiresFlush: 1
   requiresStraight: 0
   requiresPair: 1

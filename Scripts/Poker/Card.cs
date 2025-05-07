@@ -16,6 +16,12 @@ namespace ZeekSpace
         public Sprite numberSprite;
         public NewRank newRank;
         public NewSuit newSuit;
+        public bool isWild;
+        public bool isDefect;
+        public bool isTrapped;
+        public bool isCaptured;
+        public bool isDenied;
+        public bool isDanger;
 
 
         public enum CardSuit
@@ -39,7 +45,6 @@ namespace ZeekSpace
         public enum CardRank
         {
             Woe,
-            Ace,
             Two,
             Three,
             Four,
@@ -51,7 +56,8 @@ namespace ZeekSpace
             Ten,
             Jack,
             Queen,
-            King
+            King,
+            Ace,
         }
 
         public enum NewSuit

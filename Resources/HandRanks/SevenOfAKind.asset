@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SevenOfAKind
   m_EditorClassIdentifier: 
   requiresCards: 7
-  handRank: 24
+  handRank: 25
   requiresFlush: 0
   requiresStraight: 0
   requiresPair: 1

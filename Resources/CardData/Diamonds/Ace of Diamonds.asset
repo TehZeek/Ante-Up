@@ -14,10 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Ace of Diamonds
   cardSuit: 01000000
-  cardRank: 01000000
+  cardRank: 0d000000
   suitSprite: {fileID: 21300000, guid: 5c4bd4dc8a8c6d646a60b371348103ac, type: 3}
   rankSprite: {fileID: 0}
   faceSprite: {fileID: 21300000, guid: 926e75cc26c1daf45909f727b1a78577, type: 3}
   numberSprite: {fileID: 21300000, guid: f88593f834c5e1a419ad94743c4f4945, type: 3}
   newRank: 0
   newSuit: 0
+  isWild: 0
+  isDefect: 0
+  isTrapped: 0
+  isCaptured: 0
+  isDenied: 0
+  isDanger: 0

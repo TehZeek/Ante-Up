@@ -14,10 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: King of Hearts
   cardSuit: 02000000
-  cardRank: 0d000000
+  cardRank: 0c000000
   suitSprite: {fileID: 21300000, guid: 16fb050eae9c2c346b3ef6a1ac722300, type: 3}
   rankSprite: {fileID: 0}
   faceSprite: {fileID: 2621682508800493701, guid: d95942e0dd8ce654a9dcff2dc999da1d, type: 3}
   numberSprite: {fileID: 21300000, guid: 4cca77eab6fc04743a6631029fabb334, type: 3}
   newRank: 0
   newSuit: 0
+  isWild: 0
+  isDefect: 0
+  isTrapped: 0
+  isCaptured: 0
+  isDenied: 0
+  isDanger: 0

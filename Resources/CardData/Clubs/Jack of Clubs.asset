@@ -14,10 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Jack of Clubs
   cardSuit: 03000000
-  cardRank: 0b000000
+  cardRank: 0a000000
   suitSprite: {fileID: 21300000, guid: 772916bccee95564a9bdc04c2ea5331c, type: 3}
   rankSprite: {fileID: 0}
   faceSprite: {fileID: -9157477970747627070, guid: e1bf5d19795940442890a8a80de7a859, type: 3}
   numberSprite: {fileID: 21300000, guid: 4f146bbad6c7d51488f1e99ff6c497e3, type: 3}
   newRank: 0
   newSuit: 0
+  isWild: 0
+  isDefect: 0
+  isTrapped: 0
+  isCaptured: 0
+  isDenied: 0
+  isDanger: 0

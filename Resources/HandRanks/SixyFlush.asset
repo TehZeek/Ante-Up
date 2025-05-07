@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SixyFlush
   m_EditorClassIdentifier: 
   requiresCards: 6
-  handRank: 23
+  handRank: 24
   requiresFlush: 1
   requiresStraight: 0
   requiresPair: 1

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FlushFives
   m_EditorClassIdentifier: 
   requiresCards: 5
-  handRank: 6
+  handRank: 13
   requiresFlush: 1
   requiresStraight: 0
   requiresPair: 1

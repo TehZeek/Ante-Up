@@ -14,10 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Nine of Diamonds
   cardSuit: 01000000
-  cardRank: 09000000
+  cardRank: 08000000
   suitSprite: {fileID: 21300000, guid: 5c4bd4dc8a8c6d646a60b371348103ac, type: 3}
   rankSprite: {fileID: -6615014375285781663, guid: 852cf0544db690c43b37e6d127e3bf57, type: 3}
   faceSprite: {fileID: 0}
   numberSprite: {fileID: 21300000, guid: bfb7bfe26bc7a964883c9da763964bf4, type: 3}
   newRank: 0
   newSuit: 0
+  isWild: 0
+  isDefect: 0
+  isTrapped: 0
+  isCaptured: 0
+  isDenied: 0
+  isDanger: 0

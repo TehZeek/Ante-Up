@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FullerHouse
   m_EditorClassIdentifier: 
   requiresCards: 6
-  handRank: 17
+  handRank: 18
   requiresFlush: 0
   requiresStraight: 0
   requiresPair: 1

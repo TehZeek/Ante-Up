@@ -14,10 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Ten of Hearts
   cardSuit: 02000000
-  cardRank: 0a000000
+  cardRank: 09000000
   suitSprite: {fileID: 21300000, guid: 16fb050eae9c2c346b3ef6a1ac722300, type: 3}
   rankSprite: {fileID: 5067082426688078168, guid: 8ff9db64116ba404b985c47c98d0d702, type: 3}
   faceSprite: {fileID: 0}
   numberSprite: {fileID: 21300000, guid: e43dd4ab1acaaf641855b29123c26b50, type: 3}
   newRank: 0
   newSuit: 0
+  isWild: 0
+  isDefect: 0
+  isTrapped: 0
+  isCaptured: 0
+  isDenied: 0
+  isDanger: 0

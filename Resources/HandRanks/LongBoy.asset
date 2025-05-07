@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LongBoy
   m_EditorClassIdentifier: 
   requiresCards: 6
-  handRank: 14
+  handRank: 15
   requiresFlush: 0
   requiresStraight: 1
   requiresPair: 0
