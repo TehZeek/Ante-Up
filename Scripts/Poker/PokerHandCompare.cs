@@ -119,7 +119,6 @@ public class PokerHandCompare : MonoBehaviour
         {
             // Isolate the flush cards
             int highestStraightFlushRank = 0;
-            int highestFlushRank = 0;
 
             // Extract all flush-suited cards
             var flushCards = currentHand.GroupBy(card => card.cardSuit.First())

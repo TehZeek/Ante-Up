@@ -49,8 +49,8 @@ public class PokerChipManager : MonoBehaviour
         {
             if (monChips > amount)
             {
-                monChips - amount;
-                potChips + amount;
+                monChips -= amount;
+                potChips += amount;
             }
             else { NotEnoughChips(player); }
         }
@@ -58,8 +58,8 @@ public class PokerChipManager : MonoBehaviour
         {
             if (p1Chips>amount)
             {
-                p1Chips - amount;
-                potChips + amount;
+                p1Chips -= amount;
+                potChips += amount;
             }
             else { NotEnoughChips(player); }
         }
@@ -67,8 +67,8 @@ public class PokerChipManager : MonoBehaviour
         {
             if (p2Chips > amount)
             {
-                p2Chips - amount;
-                potChips + amount;
+                p2Chips -= amount;
+                potChips += amount;
             }
             else { NotEnoughChips(player); }
         }
@@ -76,8 +76,8 @@ public class PokerChipManager : MonoBehaviour
         {
             if (p3Chips > amount)
             {
-                p3Chips - amount;
-                potChips + amount;
+                p3Chips -= amount;
+                potChips += amount;
             }
             else { NotEnoughChips(player); }
         }
@@ -128,8 +128,8 @@ public class PokerChipManager : MonoBehaviour
     {
         if (potChips >= amount)
         {
-            monChips + amount;
-            potChips - amount;
+            monChips += amount;
+            potChips -= amount;
         }
         else
         {
@@ -142,8 +142,8 @@ public class PokerChipManager : MonoBehaviour
     {
         if (potChips >= amount)
         {
-            p1Chips + amount;
-            potChips - amount;
+            p1Chips += amount;
+            potChips -= amount;
         }
         else
         {
@@ -156,8 +156,8 @@ public class PokerChipManager : MonoBehaviour
     {
         if (potChips >= amount)
         {
-            p2Chips + amount;
-            potChips - amount;
+            p2Chips += amount;
+            potChips -= amount;
         }
         else
         {
@@ -170,8 +170,8 @@ public class PokerChipManager : MonoBehaviour
     {
         if (potChips >= amount)
         {
-            p3Chips + amount;
-            potChips - amount;
+            p3Chips += amount;
+            potChips -= amount;
         }
         else
         {
@@ -188,7 +188,7 @@ public class PokerChipManager : MonoBehaviour
     {
         if (player == 0)
         {
-            if (stealsFrom = 1)
+            if (stealsFrom == 1)
             {
                 if (p1Chips >= amount)
                 { 
@@ -202,7 +202,7 @@ public class PokerChipManager : MonoBehaviour
                     // battleManager.PlayerDead(1);
                 }
             }
-            if (stealsFrom = 2)
+            if (stealsFrom == 2)
             {
                 if (p2Chips >= amount)
                 {
@@ -216,7 +216,7 @@ public class PokerChipManager : MonoBehaviour
                     // battleManager.PlayerDead(2);
                 }
             }
-            if (stealsFrom = 3)
+            if (stealsFrom == 3)
             {
                 if (p3Chips >= amount)
                 {
@@ -281,7 +281,7 @@ public class PokerChipManager : MonoBehaviour
         {
             if (monChips > amount)
             {
-                monChips - amount;
+                monChips -= amount;
             }
             else {
                 monChips = 0;
@@ -292,7 +292,7 @@ public class PokerChipManager : MonoBehaviour
         {
             if (p1Chips > amount)
             {
-                p1Chips - amount;
+                p1Chips -= amount;
             }
             else {
                 p1Chips = 0;
@@ -303,7 +303,7 @@ public class PokerChipManager : MonoBehaviour
         {
             if (p2Chips > amount)
             {
-                p2Chips - amount;
+                p2Chips -= amount;
             }
             else {
                 p2Chips = 0;
@@ -314,7 +314,7 @@ public class PokerChipManager : MonoBehaviour
         {
             if (p3Chips > amount)
             {
-                p3Chips - amount;
+                p3Chips -= amount;
             }
             else {
                 p3Chips = 0;
