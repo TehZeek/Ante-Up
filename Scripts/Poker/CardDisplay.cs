@@ -44,7 +44,7 @@ public class CardDisplay : MonoBehaviour
         // set the rankSprite for each pip
 
 
-        if ((int)cardData.cardRank[0] > 1 && (int)cardData.cardRank[0] < 10)
+        if ((int)cardData.cardRank[0] > 0 && (int)cardData.cardRank[0] < 10)
         {
             faceImage.gameObject.SetActive(false);
 
@@ -64,25 +64,25 @@ public class CardDisplay : MonoBehaviour
     private void PipDisplay(int theRank)
     {
         Debug.Log(theRank);
-        if (theRank == 2)
+        if (theRank == 1)
         {
             pipImages[0].gameObject.SetActive(true);
             pipImages[2].gameObject.SetActive(true);
         }
-        if (theRank == 3)
+        if (theRank == 2)
         {
             pipImages[0].gameObject.SetActive(true);
             pipImages[1].gameObject.SetActive(true);
             pipImages[2].gameObject.SetActive(true);
         }
-        if (theRank == 4)
+        if (theRank == 3)
         {
             pipImages[3].gameObject.SetActive(true);
             pipImages[7].gameObject.SetActive(true);
             pipImages[6].gameObject.SetActive(true);
             pipImages[10].gameObject.SetActive(true);
         }
-        if (theRank == 5)
+        if (theRank == 4)
         {
             pipImages[3].gameObject.SetActive(true);
             pipImages[7].gameObject.SetActive(true);
@@ -91,7 +91,7 @@ public class CardDisplay : MonoBehaviour
             pipImages[10].gameObject.SetActive(true);
         }
 
-        if (theRank == 6)
+        if (theRank == 5)
         {
             pipImages[3].gameObject.SetActive(true);
             pipImages[11].gameObject.SetActive(true);
@@ -100,6 +100,18 @@ public class CardDisplay : MonoBehaviour
             pipImages[12].gameObject.SetActive(true);
             pipImages[10].gameObject.SetActive(true);
         }
+        if (theRank == 6)
+        {
+            pipImages[3].gameObject.SetActive(true);
+            pipImages[11].gameObject.SetActive(true);
+            pipImages[6].gameObject.SetActive(true);
+            pipImages[7].gameObject.SetActive(true);
+            pipImages[12].gameObject.SetActive(true);
+            pipImages[10].gameObject.SetActive(true);
+            pipImages[0].gameObject.SetActive(true);
+        }
+
+
         if (theRank == 7)
         {
             pipImages[3].gameObject.SetActive(true);
@@ -109,21 +121,9 @@ public class CardDisplay : MonoBehaviour
             pipImages[12].gameObject.SetActive(true);
             pipImages[10].gameObject.SetActive(true);
             pipImages[0].gameObject.SetActive(true);
-        }
-
-
-        if (theRank == 8)
-        {
-            pipImages[3].gameObject.SetActive(true);
-            pipImages[11].gameObject.SetActive(true);
-            pipImages[6].gameObject.SetActive(true);
-            pipImages[7].gameObject.SetActive(true);
-            pipImages[12].gameObject.SetActive(true);
-            pipImages[10].gameObject.SetActive(true);
-            pipImages[0].gameObject.SetActive(true);
             pipImages[2].gameObject.SetActive(true);
         }
-        if (theRank == 9)
+        if (theRank == 8)
         {
             pipImages[3].gameObject.SetActive(true);
             pipImages[4].gameObject.SetActive(true);
@@ -135,7 +135,7 @@ public class CardDisplay : MonoBehaviour
             pipImages[10].gameObject.SetActive(true);
             pipImages[1].gameObject.SetActive(true);
         }
-        if (theRank == 10)
+        if (theRank == 9)
         {
             pipImages[3].gameObject.SetActive(true);
             pipImages[4].gameObject.SetActive(true);

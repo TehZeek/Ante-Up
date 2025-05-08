@@ -8,11 +8,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
-
     private int partyChips = 50;
     private int enemyChips;
-
     private int difficulty = 5;
 
     public OptionsManager optionsManager { get; private set; }

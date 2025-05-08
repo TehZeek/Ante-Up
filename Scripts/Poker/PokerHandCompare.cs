@@ -6,16 +6,20 @@ using UnityEngine.UI;
 using TMPro;
 using System.Linq;
 
+
+//This class determines what hand you actually have, which will eventually be called for enemy logic and determining the winner.
+
 public class PokerHandCompare : MonoBehaviour
 {
+    private PokerTableCards pokerTableCards;
     public List<HandTypes> allHandTypes = new List<HandTypes>();
     public HandTypes P1Hand;
     public HandTypes P2Hand;
     public HandTypes P3Hand;
     public HandTypes MonHand;
     public HandTypes bestHandType;
-    private PokerTableCards pokerTableCards;
-    public List<Card> currentHand = new List<Card>();
+    private List<Card> currentHand = new List<Card>();
+    public List<Card> bestHand;
     public List<Card> p1Hand = new List<Card>();
     public List<Card> p2Hand = new List<Card>();
     public List<Card> p3Hand = new List<Card>();
@@ -25,7 +29,25 @@ public class PokerHandCompare : MonoBehaviour
     public List<int> p3Rank;
     public List<int> monRank;
     public List<int> handRank;
-    public List<Card> bestHand;
+
+    //different bools used to determine hand
+
+    private bool hasPair = false;
+    private bool hasTwoPair = false;
+    // private bool hasHatTrick = false;
+    private bool hasThree = false;
+    private bool hasStraight = false;
+    private bool hasLowStraight = false;
+    private bool hasFlush = false;
+    private bool hasFour = false;
+    //bool private hasTwoThree = false;
+    //bool private hasFive = false;
+    //bool private hasSix = false;
+    private bool hasStraightFlush = false;
+    private bool hasRoyal = false;
+    // bool private hasPlunger = false;
+    // bool private hasLongBoy = false;
+
 
     void Start()
     {
@@ -39,54 +61,10 @@ public class PokerHandCompare : MonoBehaviour
 
     public void UpdateHandType(List<GameObject> pocket, List<GameObject> table, int player)
     {
-        bool hasStraight = false;
-        bool hasPair = false;
-        bool hasFlush = false;
-        bool hasThree = false;
-        bool hasTwoPair = false;
-        bool hasThreePair = false;
-        bool hasTwoThree = false;
-        bool hasFour = false;
-        bool hasFive = false;
-        bool hasSix = false;
-        bool hasRoyal = false;
-        bool hasFuller = false;
-        bool hasFull = false;
-        bool hasPlunger = false;
-        bool hasLongBoy = false;
-        bool hasLowStraight = false;
+        ClearHandData(player);
+        ClearRankBools();
 
-        currentHand.Clear();
-        bestHand.Clear();
-        bestHandType = null;
-        handRank.Clear();
-        handRank.Add(0);
-        handRank.Add(0);
-        handRank.Add(0);
-        handRank.Add(0);
-        handRank.Add(0);
-
-        if (player == 0)
-        {
-            monHand.Clear();
-            monRank.Clear();
-        }
-        if (player == 1)
-        {
-            p1Hand.Clear();
-            p1Rank.Clear();
-        }
-        if (player == 2)
-        {
-            p2Hand.Clear();
-            p1Rank.Clear();
-        }
-        if (player == 3)
-        {
-            p3Hand.Clear();
-            p3Rank.Clear();
-        }
-
+        //get the hand and table and combine them into a currentHand list
         for (int i = 0; i < pocket.Count; i++)
         {
             Card temp = pocket[i].gameObject.GetComponent<CardDisplay>().cardData;
@@ -99,171 +77,14 @@ public class PokerHandCompare : MonoBehaviour
         }
         currentHand = currentHand.OrderBy(card => card.cardRank.First()).ToList();
 
+        PairCheck();
+        FlushCheck();
+        StraightCheck();
 
-        // this checks the card list for pairs
-        var rankedGroups = currentHand.GroupBy(card => card.cardRank.First())
-                                      .Select(group => new { Rank = group.Key, Count = group.Count() })
-                                      .ToList();
+        Debug.Log("Got these bools back: P " + hasPair + " 2P " + hasTwoPair + " 3 " + hasThree + " S " + hasStraight + " F " + hasFlush + " Full " + hasFour);
 
-        // Detect different types of duplicates
-        foreach (var group in rankedGroups)
-        {
-            if (group.Count == 2)
-            {
-                Debug.Log($"Pair found: {group.Rank}");
-                if (hasTwoPair)
-                { hasThreePair = true; }
-                if (hasPair)
-                { hasTwoPair = true; }
-                hasPair = true;
-            }
-            if (group.Count == 3)
-            {
-                if (hasThree)
-                { hasTwoThree = true; }
-                if (hasTwoPair)
-                { hasFull = true; }
-                hasThree = true;
-                Debug.Log($"Three of a Kind found: {group.Rank}");
-            }
-            if (group.Count == 4)
-            {
-                hasFour = true;
-                if (hasTwoPair)
-                { hasFuller = true; }
-                Debug.Log($"Four of a Kind found: {group.Rank}");
-            }
-            if (group.Count == 5)
-            {
-                hasFive = true;
-                Debug.Log($"Five of a Kind found: {group.Rank}");
-            }
-            if (group.Count == 6)
-            {
-                hasSix = true;
-                Debug.Log($"Six of a Kind found: {group.Rank}");
-            }
-        }
-
-        //detect flush
-        var flush = currentHand.GroupBy(card => card.cardSuit.First())
-                        .Where(group => group.Count() > 4)
-                        .Select(group => new { Rank = group.Key, Count = group.Count() })
-                        .ToList();
-        var plungerFlush = currentHand.GroupBy(card => card.cardSuit.First())
-                        .Where(group => group.Count() > 5)
-                        .Select(group => new { Rank = group.Key, Count = group.Count() })
-                        .ToList();
-
-
-        foreach (var group in flush)
-        {
-            Debug.Log($"Found {group.Count} of {group.Rank}");
-            hasFlush = true;
-        }
-        foreach (var group in plungerFlush)
-        {
-            Debug.Log($"Found {group.Count} of {group.Rank}");
-            hasPlunger = true;
-        }
-        //add detection for 6 card flush, wild cards, temporary wild cards, defect cards
-
-
-        //straight
-        List<int> rankValues = currentHand
-                        .Select(card => (int)card.cardRank.First())
-                        .Distinct()  // Ensures only unique ranks are considered
-                        .OrderBy(rank => rank)
-                        .ToList();
-
-        // Special case: Ace-low straight (Ace-2-3-4-5)
-        if (rankValues.Contains((int)Card.CardRank.Ace) &&
-            rankValues.Contains((int)Card.CardRank.Two) &&
-            rankValues.Contains((int)Card.CardRank.Three) &&
-            rankValues.Contains((int)Card.CardRank.Four) &&
-            rankValues.Contains((int)Card.CardRank.Five))
-        {
-            Debug.Log("Ace-low straight found: Ace, 2, 3, 4, 5");
-            hasStraight = true;
-            hasLowStraight = true;
-            handRank[0] = 5;
-        }
-        if (rankValues.Contains((int)Card.CardRank.Ace) &&
-            rankValues.Contains((int)Card.CardRank.King) &&
-            rankValues.Contains((int)Card.CardRank.Queen) &&
-            rankValues.Contains((int)Card.CardRank.Jack) &&
-            rankValues.Contains((int)Card.CardRank.Ten))
-        {
-            Debug.Log("Ace-high straight found: Ace, K, Q, J, 10");
-            hasStraight = true;
-            hasRoyal = true;
-            handRank[0] = 13;
-        }
-
-        for (int i = 0; i <= rankValues.Count - 5; i++)
-        {
-            if (rankValues[i + 1] == rankValues[i] + 1 &&
-                rankValues[i + 2] == rankValues[i] + 2 &&
-                rankValues[i + 3] == rankValues[i] + 3 &&
-                rankValues[i + 4] == rankValues[i] + 4)
-            {
-                Debug.Log($"Straight found: {currentHand[i].cardRank.First()} to {currentHand[i + 4].cardRank}");
-                hasStraight = true;
-                handRank[0] = rankValues[i + 4];
-                handRank[1] = 0;
-            }
-        }
-        //check for a LongBoy
-        if (hasStraight)
-        {
-            if (rankValues.Contains((int)Card.CardRank.Ace) &&
-                 rankValues.Contains((int)Card.CardRank.Two) &&
-                 rankValues.Contains((int)Card.CardRank.Three) &&
-                 rankValues.Contains((int)Card.CardRank.Four) &&
-                 rankValues.Contains((int)Card.CardRank.Five) &&
-                 rankValues.Contains((int)Card.CardRank.Six))
-            {
-                Debug.Log("Ace-low LongBoy found: Ace, 2, 3, 4, 5");
-                hasLongBoy = true;
-                handRank[0] = 5;
-            }
-            else if (rankValues.Contains((int)Card.CardRank.Ace) &&
-                rankValues.Contains((int)Card.CardRank.King) &&
-                rankValues.Contains((int)Card.CardRank.Queen) &&
-                rankValues.Contains((int)Card.CardRank.Jack) &&
-                rankValues.Contains((int)Card.CardRank.Ten) &&
-                rankValues.Contains((int)Card.CardRank.Nine))
-            {
-                Debug.Log("Ace-high LongBoy found: Ace, K, Q, J, 10");
-                hasLongBoy = true;
-                hasRoyal = true;
-                handRank[0] = 13;
-            }
-
-            else
-            {
-                for (int i = 0; i <= rankValues.Count - 5; i++)
-                {
-                    if (rankValues[i + 1] == rankValues[i] + 1 &&
-                        rankValues[i + 2] == rankValues[i] + 2 &&
-                        rankValues[i + 3] == rankValues[i] + 3 &&
-                        rankValues[i + 4] == rankValues[i] + 4 &&
-                        rankValues[i + 5] == rankValues[i] + 5)
-                    {
-                        Debug.Log($"LongBoy found: {currentHand[i].cardRank.First()} to {currentHand[i + 4].cardRank}");
-                        hasStraight = true;
-                        handRank[0] = rankValues[i + 5];
-                        handRank[1] = 0;
-                    }
-                }
-            }
-
-
-            //will need to update for wilds and weirdness and extra cards but hey 
-
-            //detect hand type and populate the five cards being used
-
-            if (hasFour)
+        // with bools turned on, we clean up the hand based on it's rank
+        if (hasFour)
             {
                 // Extract four of a kind plus the highest kicker
                 var fourKindGroup = currentHand.GroupBy(card => card.cardRank.First())
@@ -294,57 +115,73 @@ public class PokerHandCompare : MonoBehaviour
                 return;
             }
 
-            if (hasFlush)
+        if (hasFlush)
+        {
+            // Isolate the flush cards
+            int highestStraightFlushRank = 0;
+            int highestFlushRank = 0;
+
+            // Extract all flush-suited cards
+            var flushCards = currentHand.GroupBy(card => card.cardSuit.First())
+                                        .Where(group => group.Count() >= 5)
+                                        .SelectMany(group => group)
+                                        .OrderByDescending(card => card.cardRank.First())
+                                        .ToList();
+
+            // Convert flush card ranks to a sorted, distinct list
+            List<int> flushRankValues = flushCards.Select(card => (int)card.cardRank.First())
+                                                  .Distinct()
+                                                  .OrderBy(rank => rank)
+                                                  .ToList();
+
+            // Check for standard Straight Flush
+            for (int i = 0; i <= flushRankValues.Count - 5; i++)
             {
-                int highestStraightFlushRank = 0;
-                int highestFlushRank = 0;
-
-                // Extract the five highest suited cards
-                var flushCards = currentHand.GroupBy(card => card.cardSuit.First())
-                                            .Where(group => group.Count() >= 5)
-                                            .SelectMany(group => group)
-                                            .OrderByDescending(card => card.cardRank.First())
-                                            .ToList();
-
-                // Check for a Straight Flush within Flush cards
-                List<int> flushRankValues = flushCards.Select(card => (int)card.cardRank.First()).Distinct().OrderBy(rank => rank).ToList();
-
-                for (int i = 0; i <= flushRankValues.Count - 5; i++)
+                if (flushRankValues[i + 1] == flushRankValues[i] + 1 &&
+                    flushRankValues[i + 2] == flushRankValues[i] + 2 &&
+                    flushRankValues[i + 3] == flushRankValues[i] + 3 &&
+                    flushRankValues[i + 4] == flushRankValues[i] + 4)
                 {
-                    if (flushRankValues[i + 1] == flushRankValues[i] + 1 &&
-                        flushRankValues[i + 2] == flushRankValues[i] + 2 &&
-                        flushRankValues[i + 3] == flushRankValues[i] + 3 &&
-                        flushRankValues[i + 4] == flushRankValues[i] + 4)
-                    {
-                        // Straight Flush found, store the highest card rank
-                        highestStraightFlushRank = flushRankValues[i + 4];
-                        if (highestStraightFlushRank == 13)
-                        {
-                            bestHandType = allHandTypes[10];
-                            handRank[0] = 13;
-                        }
-                        else { bestHandType = allHandTypes[9]; }
-                        handRank[0] = highestStraightFlushRank;
+                    highestStraightFlushRank = flushRankValues[i + 4];
 
-                        Debug.Log($"Straight Flush found! Highest card: {highestStraightFlushRank}");
-                        break;
-                    }
-                }
+                    // Assign hand type based on rank (Royal Flush vs. Straight Flush)
+                    bestHandType = (highestStraightFlushRank == 13) ? allHandTypes[10] : allHandTypes[9];
+                    handRank[0] = highestStraightFlushRank;
 
-                // If no Straight Flush was found, store the highest Flush card rank
-                if (highestStraightFlushRank == 0)
-                {
-                    handRank[0] = (int)flushCards.First().cardRank.First();
-                    bestHandType = allHandTypes[6];
-                    Debug.Log($"Flush found! Highest card: {highestFlushRank}");
+                    Debug.Log($"Straight Flush found! Highest card: {highestStraightFlushRank}");
+                    break;
                 }
-                handRank[1] = 0;
-                UpdateHandToCompare(bestHandType, handRank, bestHand, player);
-                return;
             }
 
+            // Check for Ace-low Straight Flush (Ace-2-3-4-5)
+            if (highestStraightFlushRank == 0 &&
+                flushRankValues.Contains((int)Card.CardRank.Ace) &&
+                flushRankValues.Contains((int)Card.CardRank.Two) &&
+                flushRankValues.Contains((int)Card.CardRank.Three) &&
+                flushRankValues.Contains((int)Card.CardRank.Four) &&
+                flushRankValues.Contains((int)Card.CardRank.Five))
+            {
+                highestStraightFlushRank = 5; // Highest card in an Ace-low straight flush
+                bestHandType = allHandTypes[9]; // Assign as a Straight Flush
+                handRank[0] = highestStraightFlushRank;
 
-            if (hasStraight)
+                Debug.Log("Ace-low Straight Flush found: Ace, 2, 3, 4, 5");
+            }
+
+            // If no Straight Flush was found, store the highest Flush card rank
+            if (highestStraightFlushRank == 0)
+            {
+                handRank[0] = (int)flushCards.First().cardRank.First();
+                bestHandType = allHandTypes[6]; // Regular Flush
+                Debug.Log($"Flush found! Highest card: {handRank[0]}");
+            }
+
+            handRank[1] = 0;
+            UpdateHandToCompare(bestHandType, handRank, bestHand, player);
+            return;
+        }
+
+        if (hasStraight)
             {
                 // Convert ranks to a sorted, distinct list
                 List<int> straightValues = currentHand
@@ -371,6 +208,7 @@ public class PokerHandCompare : MonoBehaviour
                             .ToList();
 
                         Debug.Log($"Straight found: {bestHand.First().cardRank.First()} to {bestHand.Last().cardRank.First()}");
+                        
                         foundStraight = true;
                         break;
                     }
@@ -394,13 +232,16 @@ public class PokerHandCompare : MonoBehaviour
                         .ToList();
 
                     Debug.Log("Ace-low straight found: Ace, 2, 3, 4, 5");
-                }
-                UpdateHandToCompare(bestHandType, handRank, bestHand, player);
+                    
+
+
+            }
+            bestHandType = allHandTypes[5];
+            UpdateHandToCompare(bestHandType, handRank, bestHand, player);
                 return;
             }
 
             if (hasThree && hasTwoPair)  //Full House
-
             {
                 // Extract three of a kind 
                 var threeKindGroup = currentHand.GroupBy(card => card.cardRank.First())
@@ -477,49 +318,45 @@ public class PokerHandCompare : MonoBehaviour
                 return;
             }
 
-            if (hasTwoPair)
+        if (hasTwoPair)
+        {
+            bestHand.Clear(); // Ensure the best hand list is empty
+
+            // Get the two highest pairs
+            var pairGroups = currentHand.GroupBy(card => card.cardRank.First())
+                                        .Where(group => group.Count() == 2)
+                                        .OrderByDescending(group => group.Key)
+                                        .Take(2)
+                                        .ToList();
+
+            if (pairGroups.Count == 2)
             {
-                // Extract pairs plus the highest kicker
-                var firstPair = currentHand.GroupBy(card => card.cardRank.First())
-                                               .Where(group => group.Count() == 2)
-                                               .Skip(1)
-                                               .FirstOrDefault(); // Get the first match
+                handRank[0] = (int)pairGroups[0].Key; // First pair (higher)
+                handRank[1] = (int)pairGroups[1].Key; // Second pair (lower)
 
-                if (firstPair != null)
+                // Add both pairs to bestHand
+                bestHand.AddRange(pairGroups[0]);
+                bestHand.AddRange(pairGroups[1]);
+
+                // Find highest kicker (not part of the pairs)
+                var kickerCard = currentHand.Except(bestHand)
+                                            .OrderByDescending(card => card.cardRank.First())
+                                            .FirstOrDefault();
+
+                if (kickerCard != null)
                 {
-                    // Assign the rank of the three of a Kind
-                    handRank[0] = (int)firstPair.Key;
-
-                    // Extract the three cards
-                    bestHand = firstPair.ToList();
-
-                    var secondpair = currentHand.GroupBy(card => card.cardRank.First())
-                                   .Where(group => group.Count() == 2)
-                                   .FirstOrDefault(); // Get the first match
-                    handRank[1] = (int)secondpair.Key;
-
-                    // Extract the three cards
-                    bestHand = secondpair.ToList();
-
-
-                    // Find the highest kicker not part of the four-of-a-kind
-                    var kickerCard = currentHand.Except(bestHand)
-                                                .OrderByDescending(card => card.cardRank.First())
-                                                .FirstOrDefault();
-
-                    if (kickerCard != null)
-                    {
-                        handRank[2] = (int)kickerCard.cardRank.First();
-                        bestHand.Add(kickerCard); // Add the kicker to the best hand
-                    }
-
+                    handRank[2] = (int)kickerCard.cardRank.First(); // Store kicker rank
+                    bestHand.Add(kickerCard); // Add kicker to best hand
                 }
-                bestHandType = allHandTypes[3];
-                UpdateHandToCompare(bestHandType, handRank, bestHand, player);
-                return;
             }
 
-            if (hasPair)
+            bestHandType = allHandTypes[3]; // Assign Two Pair hand type
+            UpdateHandToCompare(bestHandType, handRank, bestHand, player);
+            return;
+        }
+
+
+        if (hasPair)
             {
                 //strip to the pair plus 3 highest
                 // Extract pairs plus the highest kicker
@@ -569,73 +406,257 @@ public class PokerHandCompare : MonoBehaviour
                 UpdateHandToCompare(bestHandType, handRank, bestHand, player);
                 return;
             }
+        // Extract the five highest-ranked cards for HighCard
+        bestHand = currentHand.OrderByDescending(card => card.cardRank.First())
+                              .Take(5)
+                              .ToList();
 
-            
-            
-                //strip to the pair plus 3 highest
-                // Extract pairs plus the highest kicker
-                var pairGroup = currentHand.GroupBy(card => card.cardRank.First())
-                                               .Where(group => group.Count() == 1)
-                                               .FirstOrDefault(); // Get the first match
-
-                if (pairGroup != null)
-                {
-                    // Assign the rank of the three of a Kind
-                    handRank[0] = (int)pairGroup.Key;
-
-                    // Extract the three cards
-                    bestHand = pairGroup.ToList();
-
-                    // Find the highest kicker not part of the four-of-a-kind
-                    var kickerCard = currentHand.Except(bestHand)
-                                                .OrderByDescending(card => card.cardRank.First())
-                                                .FirstOrDefault();
-
-                    if (kickerCard != null)
-                    {
-                        handRank[1] = (int)kickerCard.cardRank.First();
-                        bestHand.Add(kickerCard); // Add the kicker to the best hand
-                    }
-                    kickerCard = currentHand.Except(bestHand)
-                               .OrderByDescending(card => card.cardRank.First())
-                               .FirstOrDefault();
-
-                    if (kickerCard != null)
-                    {
-                        handRank[2] = (int)kickerCard.cardRank.First();
-                        bestHand.Add(kickerCard); // Add the kicker to the best hand
-                    }
-                    kickerCard = currentHand.Except(bestHand)
-                               .OrderByDescending(card => card.cardRank.First())
-                               .FirstOrDefault();
-
-                    if (kickerCard != null)
-                    {
-                        handRank[3] = (int)kickerCard.cardRank.First();
-                        bestHand.Add(kickerCard); // Add the kicker to the best hand
-                    }
-
-                    kickerCard = currentHand.Except(bestHand)
-                     .OrderByDescending(card => card.cardRank.First())
-                     .FirstOrDefault();
-
-                    if (kickerCard != null)
-                    {
-                        handRank[4] = (int)kickerCard.cardRank.First();
-                        bestHand.Add(kickerCard); // Add the kicker to the best hand
-                    }
-
-                }
-                bestHandType = allHandTypes[1];
-            UpdateHandToCompare(bestHandType, handRank, bestHand, player);
-            return;
+        // Assign ranks to handRank array for comparison
+        for (int i = 0; i < bestHand.Count; i++)
+        {
+            handRank[i] = (int)bestHand[i].cardRank.First();
         }
+
+        // Assign the High Card hand type
+        bestHandType = allHandTypes[1];
+
+        // Update the player's hand comparison
+        UpdateHandToCompare(bestHandType, handRank, bestHand, player);
+        return;
 
     }
 
 
+    private void ClearHandData(int playNum)
+    {
+        currentHand.Clear();
+        bestHand.Clear();
+        bestHandType = allHandTypes[0];
+        handRank.Clear();
+        handRank.Add(0);
+        handRank.Add(0);
+        handRank.Add(0);
+        handRank.Add(0);
+        handRank.Add(0);
+
+        if (playNum == 0)
+        {
+            monHand.Clear();
+            monRank.Clear();
+            MonHand = allHandTypes[0];
+        }
+        if (playNum == 1)
+        {
+            p1Hand.Clear();
+            p1Rank.Clear();
+            P1Hand = allHandTypes[0];
+        }
+        if (playNum == 2)
+        {
+            p2Hand.Clear();
+            p2Rank.Clear();
+            P2Hand = allHandTypes[0];
+        }
+        if (playNum == 3)
+        {
+            p3Hand.Clear();
+            p3Rank.Clear();
+            P3Hand = allHandTypes[0];
+        }
+        Debug.Log("Cleared Player " + playNum + " Hand");
+    }
+
+    private void ClearRankBools()
+    {
+     hasPair = false;
+     hasTwoPair = false;
+    //   hasHatTrick = false;
+      hasThree = false;
+      hasStraight = false;
+      hasLowStraight = false;
+      hasFlush = false;
+      hasFour = false;
+    //  hasTwoThree = false;
+    //  hasFive = false;
+    //  hasSix = false;
+      hasStraightFlush = false;
+      hasRoyal = false;
+        //   hasPlunger = false;
+        //   hasLongBoy = false;
+        Debug.Log("Cleared Bools: " + hasPair + hasTwoPair + hasThree + hasStraight + hasLowStraight + hasFlush + hasFour + hasStraightFlush + hasRoyal);
+    }
+
+    private void PairCheck()
+    {
+        // this checks the card list for pairs
+        var rankedGroups = currentHand.GroupBy(card => card.cardRank.First())
+                                      .Select(group => new { Rank = group.Key, Count = group.Count() })
+                                      .ToList();
+
+        // Detect different types of duplicates
+        foreach (var group in rankedGroups)
+        {
+            if (group.Count == 2)
+            {
+                Debug.Log($"Pair found: {group.Rank}");
+              //  if (hasTwoPair)
+              //  { hasThreePair = true; }
+                if (hasPair)
+                { 
+                    hasTwoPair = true;
+                    Debug.Log("Two Pair found!");
+                }
+                hasPair = true;
+            }
+            if (group.Count == 3)
+            {
+               // if (hasThree)
+              //  { hasTwoThree = true; }
+                hasThree = true;
+                Debug.Log($"Three of a Kind found: {group.Rank}");
+            }
+            if (group.Count == 4)
+            {
+                hasFour = true;
+                Debug.Log($"Four of a Kind found: {group.Rank}");
+            }
+           // if (group.Count == 5)
+           // {
+           //     hasFive = true;
+           //     Debug.Log($"Five of a Kind found: {group.Rank}");
+           // }
+           // if (group.Count == 6)
+           // {
+           //    hasSix = true;
+           //    Debug.Log($"Six of a Kind found: {group.Rank}");
+           // }
+        }
+    }
+
+    private void FlushCheck()
+    {
+        //detect flush
+        var flush = currentHand.GroupBy(card => card.cardSuit.First())
+                        .Where(group => group.Count() > 4)
+                        .Select(group => new { Rank = group.Key, Count = group.Count() })
+                        .ToList();
+        //var plungerFlush = currentHand.GroupBy(card => card.cardSuit.First())
+        //                .Where(group => group.Count() > 5)
+        //                .Select(group => new { Rank = group.Key, Count = group.Count() })
+        //                .ToList();
 
 
+        foreach (var group in flush)
+        {
+            Debug.Log($"Found {group.Count} of {group.Rank}");
+            hasFlush = true;
+        }
+       // foreach (var group in plungerFlush)
+      //  {
+     //       Debug.Log($"Found {group.Count} of {group.Rank}");
+     //       hasPlunger = true;
+     //   }
+        //add detection for 6 card flush, wild cards, temporary wild cards, defect cards
+
+    }
+
+    private void StraightCheck()
+    {
+    //straight
+    List<int> rankValues = currentHand
+                    .Select(card => (int)card.cardRank.First())
+                    .Distinct()  // Ensures only unique ranks are considered
+                    .OrderBy(rank => rank)
+                    .ToList();
+
+    // Special case: Ace-low straight (Ace-2-3-4-5)
+    if (rankValues.Contains((int)Card.CardRank.Ace) &&
+        rankValues.Contains((int)Card.CardRank.Two) &&
+        rankValues.Contains((int)Card.CardRank.Three) &&
+        rankValues.Contains((int)Card.CardRank.Four) &&
+        rankValues.Contains((int)Card.CardRank.Five))
+    {
+        Debug.Log("Ace-low straight found: Ace, 2, 3, 4, 5");
+        hasStraight = true;
+        hasLowStraight = true;
+        handRank[0] = 5;
+    }
+    if (rankValues.Contains((int)Card.CardRank.Ace) &&
+        rankValues.Contains((int)Card.CardRank.King) &&
+        rankValues.Contains((int)Card.CardRank.Queen) &&
+        rankValues.Contains((int)Card.CardRank.Jack) &&
+        rankValues.Contains((int)Card.CardRank.Ten))
+    {
+        Debug.Log("Ace-high straight found: Ace, K, Q, J, 10");
+        hasStraight = true;
+        hasRoyal = true;
+        handRank[0] = 13;
+    }
+
+    for (int i = 0; i <= rankValues.Count - 5; i++)
+    {
+        if (rankValues[i + 1] == rankValues[i] + 1 &&
+            rankValues[i + 2] == rankValues[i] + 2 &&
+            rankValues[i + 3] == rankValues[i] + 3 &&
+            rankValues[i + 4] == rankValues[i] + 4)
+        {
+            Debug.Log($"Straight found: {currentHand[i].cardRank.First()} to {currentHand[i + 4].cardRank}");
+            hasStraight = true;
+            handRank[0] = rankValues[i + 4];
+            handRank[1] = 0;
+        }
+    }
+    //check for a LongBoy
+    // if (hasStraight)
+    // {
+    //   if (rankValues.Contains((int)Card.CardRank.Ace) &&
+    //   rankValues.Contains((int)Card.CardRank.Two) &&
+    //   rankValues.Contains((int)Card.CardRank.Three) &&
+    //   rankValues.Contains((int)Card.CardRank.Four) &&
+    //   rankValues.Contains((int)Card.CardRank.Five) &&
+    //   rankValues.Contains((int)Card.CardRank.Six))
+    //   {
+    //   Debug.Log("Ace-low LongBoy found: Ace, 2, 3, 4, 5");
+    //   hasLongBoy = true;
+    //   handRank[0] = 5;
+    //}
+    //    else if (rankValues.Contains((int)Card.CardRank.Ace) &&
+    //rankValues.Contains((int)Card.CardRank.King) &&
+    //rankValues.Contains((int)Card.CardRank.Queen) &&
+    //rankValues.Contains((int)Card.CardRank.Jack) &&
+    //rankValues.Contains((int)Card.CardRank.Ten) &&
+    //rankValues.Contains((int)Card.CardRank.Nine))
+    //{
+    //Debug.Log("Ace-high LongBoy found: Ace, K, Q, J, 10");
+    //hasLongBoy = true;
+    //hasRoyal = true;
+    //handRank[0] = 13;
+    //}
+
+    //  else
+    //{
+    //for (int i = 0; i <= rankValues.Count - 5; i++)
+    //{
+    //if (rankValues[i + 1] == rankValues[i] + 1 &&
+    //rankValues[i + 2] == rankValues[i] + 2 &&
+    //rankValues[i + 3] == rankValues[i] + 3 &&
+    //rankValues[i + 4] == rankValues[i] + 4 &&
+    //rankValues[i + 5] == rankValues[i] + 5)
+    //{
+    //Debug.Log($"LongBoy found: {currentHand[i].cardRank.First()} to {currentHand[i + 4].cardRank}");
+    //hasStraight = true;
+    //handRank[0] = rankValues[i + 5];
+    //handRank[1] = 0;
+    //}
+    //}
+//}
+
+
+        //will need to update for wilds and weirdness and extra cards but hey 
+
+        //detect hand type and populate the five cards being used
+
+    }
 
     private void UpdateHandToCompare(HandTypes bestHandType, List<int> bestHandRanks, List<Card> bestHandPlayed, int playerNumber)
     {

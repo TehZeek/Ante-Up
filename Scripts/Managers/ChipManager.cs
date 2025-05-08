@@ -10,7 +10,7 @@ public class ChipManager : MonoBehaviour
 {
     private GameManager gameManager;
     public TextMeshProUGUI chipDisplay;
-    private int chips;
+    public int chips;
     public int startingChips = 50;
 
     void Start()
