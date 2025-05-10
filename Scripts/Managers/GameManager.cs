@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public bool startBattle = false;
 
     public bool PlayingCard = false;
+    public int whichTurn = 1;
+
 
     private void Awake()
     {

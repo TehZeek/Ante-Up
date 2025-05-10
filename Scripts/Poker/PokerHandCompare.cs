@@ -240,7 +240,7 @@ public class PokerHandCompare : MonoBehaviour
                 return;
             }
 
-            if (hasThree && hasTwoPair)  //Full House
+            if (hasThree && hasPair)  //Full House
             {
                 // Extract three of a kind 
                 var threeKindGroup = currentHand.GroupBy(card => card.cardRank.First())

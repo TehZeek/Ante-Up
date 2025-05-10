@@ -9,6 +9,9 @@ public class CardDisplay : MonoBehaviour
 {
     public Card cardData;
     public Image cardBG;
+    public Image cardBG2;
+    public Image cardBG3;
+    public Image cardBG4;
     public Image[] pipImages;
     public Image[] rankImage;
     public Image[] suitImage;
@@ -16,8 +19,8 @@ public class CardDisplay : MonoBehaviour
     public Image CardBack;
     private Color[] cardColors = {
         new Color(0f, 0f, 0f), //Spade
-        new Color(0.67f, 0.19f, 0.19f), //Diamond
-        new Color(0.67f, 0.19f, 0.19f), //Heart
+        new Color(0.60f, 0.15f, 0.15f), //Diamond
+        new Color(0.60f, 0.15f, 0.15f), //Heart
         new Color(0f, 0f, 0f), //Club
     };
 
@@ -26,8 +29,38 @@ public class CardDisplay : MonoBehaviour
         UpdateCardDisplay();
     }
 
+    public int GetRandomNumber()
+    {
+        return Random.Range(0, 4); // Upper bound is exclusive, so this returns 0, 1, 2, or 3.
+    }
+
+
     public void UpdateCardDisplay()
     {
+        cardBG.gameObject.SetActive(false);
+        cardBG2.gameObject.SetActive(false);
+        cardBG3.gameObject.SetActive(false);
+        cardBG4.gameObject.SetActive(false);
+
+
+
+        int whichBG = GetRandomNumber();
+        if (whichBG == 0)
+        {
+            cardBG.gameObject.SetActive(true);
+        }
+        else if (whichBG == 1)
+        {
+            cardBG2.gameObject.SetActive(true);
+        }
+        else if (whichBG == 2)
+        {
+            cardBG3.gameObject.SetActive(true);
+        }
+        else if (whichBG == 3)
+        {
+            cardBG4.gameObject.SetActive(true);
+        }
         // pull the face image, pips, rank image, and suit images
         rankImage[0].color = cardColors[(int)cardData.cardSuit[0]];
         rankImage[1].color = cardColors[(int)cardData.cardSuit[0]];

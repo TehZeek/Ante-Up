@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 92f8cb04ed1be244e9429a39283900a9
+guid: 75540c0cd2993004abef61b5abc94bf2
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -33,7 +33,7 @@ ScriptedImporter:
     sRGBTexture: 1
     spriteMode: 2
     spriteExtrude: 1
-    spriteMeshType: 0
+    spriteMeshType: 1
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
     spritePixelsToUnits: 75
@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638817780415109544
+  platformSettingsDirtyTick: 638824202515182370
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -123,7 +123,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: SpadeDisplay
+  - name: Kobold
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -133,9 +133,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 15
-      height: 15
-    spriteID: a68a7cb5c8cae1a4c8f5a7c1c85e8f6d
+      width: 75
+      height: 75
+    spriteID: 6fe231080b351964681c6d8000bac5be
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -148,25 +148,25 @@ ScriptedImporter:
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 3550417737
+      value0: 359664229
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: SpadeDisplay
+    name: Kobold
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: SpadeDisplay
+    - name: Kobold
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
         x: 0
         y: 0
-        width: 15
-        height: 15
-      spriteId: a68a7cb5c8cae1a4c8f5a7c1c85e8f6d
+        width: 75
+        height: 75
+      spriteId: 6fe231080b351964681c6d8000bac5be
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -185,7 +185,7 @@ ScriptedImporter:
   - name: DefaultTexturePlatform
     overridden: 0
     ignorePlatformSupport: 0
-    maxTextureSize: 16384
+    maxTextureSize: 256
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -209,5 +209,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 15, y: 15}
-  previousTextureSize: {x: 32, y: 32}
+  canvasSize: {x: 75, y: 75}
+  previousTextureSize: {x: 128, y: 128}

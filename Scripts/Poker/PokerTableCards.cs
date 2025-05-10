@@ -16,6 +16,8 @@ public class PokerTableCards : MonoBehaviour
     public Transform tableTransform;
     public Transform burnTransform;
     public float cardSpacing = 150f;
+    public float verticalSpacing = 25f;
+    public float fanSpread = -5f;
     private PokerDrawPile pokerDrawPile;
     public GameObject newCard;
     public List<GameObject> playerOnePocket = new List<GameObject>();
@@ -137,8 +139,17 @@ public class PokerTableCards : MonoBehaviour
 
         for (int i = 0; i < cardCount; i++)
         {
+            float rotationAngle = (fanSpread * (i - (cardCount - 1) / 2f));
+            Cards[i].transform.localRotation = Quaternion.Euler(0f, 0f, rotationAngle);
+
             float horizontalOffset = (cardSpacing * (i - (cardCount - 1) / 2f));
-            Cards[i].transform.localPosition = new Vector3(horizontalOffset, 0f, 0f);
+
+            float normalizedPosition = (2f * i / (cardCount - 1) - 1f);
+
+            float verticalOffset = verticalSpacing * (1 - normalizedPosition * normalizedPosition);
+
+
+            Cards[i].transform.localPosition = new Vector3(horizontalOffset, verticalOffset, 0f);
 
         }
 

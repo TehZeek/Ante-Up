@@ -20,6 +20,7 @@ public class PokerChipManager : MonoBehaviour
     public TextMeshProUGUI p3ChipDisplay;
     public TextMeshProUGUI monChipDisplay;
     public TextMeshProUGUI potChipDisplay;
+    public int anteAmount = 2;
 
 
     void Start()
@@ -41,6 +42,8 @@ public class PokerChipManager : MonoBehaviour
         p2ChipDisplay.text = p2Chips.ToString();
         p3ChipDisplay.text = p3Chips.ToString();
         monChipDisplay.text = monChips.ToString();
+        potChipDisplay.text = potChips.ToString();
+        //throw in those visual sprite chips here
     }
 
     public void BetToThePot(int player, int amount)
