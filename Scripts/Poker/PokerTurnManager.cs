@@ -5,20 +5,14 @@ using System.Collections.Generic;
 
 public class PokerTurnManager : MonoBehaviour
 {
-    private int[] turnOrder = new int[]{1, 0, 1};
+    public int[] turnOrder = new int[]{1, 0, 1};
     private GameManager gameManager;
     private PokerChipManager pokerChipManager;
     private PokerDrawPile pokerDrawPile;
     private PokerTableCards pokerTableCards;
     private int turnTicker = 0;
-    public bool p1IsOut = false;
-    public bool p2IsOut = false;
-    public bool p3IsOut = false;
-    public bool monIsOut = false;
-    public bool monHasChecked = false;
-    public bool p1HasChecked = false;
-    public bool p2HasChecked = false;
-    public bool p3HasChecked = false;
+    public bool[] IsOut = new bool[] { false, false, false, false };
+    public bool[] HasChecked = new bool[] { false, false, false, false };
 
     public bool HasARiver = true;
     public bool HasABonusRound = false;
@@ -73,15 +67,15 @@ public class PokerTurnManager : MonoBehaviour
         turnOrder[2]++;
         if (turnOrder[2] == 1)
         {
-            if (p1IsOut) { turnOrder[2]++; }
+            if (IsOut[1]) { turnOrder[2]++; }
         }
         if (turnOrder[2] == 2)
         {
-            if (p2IsOut) { turnOrder[2]++; }
+            if (IsOut[2]) { turnOrder[2]++; }
         }
         if (turnOrder[2] == 3)
         {
-            if (p3IsOut) { turnOrder[2]++; }
+            if (IsOut[3]) { turnOrder[2]++; }
         }
 
         if (turnOrder[2] == 4)
@@ -89,14 +83,14 @@ public class PokerTurnManager : MonoBehaviour
             turnOrder[2] = 0;
         }
 
-        if ((monHasChecked || monIsOut) && (p1HasChecked || p1IsOut) && (p2HasChecked || p2IsOut) && (p3HasChecked || p3IsOut))
+        if ((HasChecked[0] || IsOut[0]) && (HasChecked[1] || IsOut[1]) && (HasChecked[2] || IsOut[2]) && (HasChecked[3] || IsOut[3]))
         {
             
             turnOrder[1]++;
-                monHasChecked = false;
-            p1HasChecked = false;
-            p2HasChecked = false;
-            p3HasChecked = false;
+            for (int i = 0; i < 4; i++)
+            {
+                HasChecked[i] = false;
+            }
             turnOrder[2] = turnOrder[0];
 
             if (turnOrder[1] == 4 && !HasARiver)
@@ -123,10 +117,10 @@ public class PokerTurnManager : MonoBehaviour
         Debug.Log("It is player " + bigBlind + "'s turn, and player " + smallBlind + "with the small ante");
         pokerChipManager.BetToThePot(bigBlind, pokerChipManager.anteAmount);
         pokerChipManager.BetToThePot(smallBlind, 1);
-        monHasChecked = true;
-        p1HasChecked = true;
-        p2HasChecked = true;
-        p3HasChecked = true;
+        for (int i = 0; i < 4; i++)
+        {
+            HasChecked[i] = true;
+        }
         TickTurn();
     }
 
