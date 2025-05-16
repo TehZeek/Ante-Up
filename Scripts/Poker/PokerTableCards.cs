@@ -33,6 +33,62 @@ public class PokerTableCards : MonoBehaviour
         PokerDrawPile pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
     }
 
+    public void Fold(int player)
+    {
+        if (player == 0)
+        {
+            for (int i = 0; i < monsterPocket.Count; i++)
+            {
+                burnDeck.Add(monsterPocket[i]);
+            }
+            monsterPocket.Clear();
+            for (var i = monTransform.transform.childCount - 1; i >= 0; i--)
+            {
+                Object.Destroy(monTransform.transform.GetChild(i).gameObject);
+            }
+            //go to player[0] is out / end round
+        }
+        if (player == 1)
+        {
+            for (int i = 0; i < playerOnePocket.Count; i++)
+            {
+                burnDeck.Add(playerOnePocket[i]);
+            }
+            playerOnePocket.Clear();
+            for (var i = p1Transform.transform.childCount - 1; i >= 0; i--)
+            {
+                Object.Destroy(p1Transform.transform.GetChild(i).gameObject);
+            }
+            //go to player[1] is out
+        }
+        if (player == 2)
+        {
+            for (int i = 0; i < playerTwoPocket.Count; i++)
+            {
+                burnDeck.Add(playerTwoPocket[i]);
+            }
+            playerTwoPocket.Clear();
+            for (var i = p2Transform.transform.childCount - 1; i >= 0; i--)
+            {
+                Object.Destroy(p2Transform.transform.GetChild(i).gameObject);
+            }
+            //go to player[2] is out
+        }
+        if (player == 3)
+        {
+            for (int i = 0; i < playerThreePocket.Count; i++)
+            {
+                burnDeck.Add(playerThreePocket[i]);
+            }
+            playerThreePocket.Clear();
+            for (var i = p3Transform.transform.childCount - 1; i >= 0; i--)
+            {
+                Object.Destroy(p3Transform.transform.GetChild(i).gameObject);
+            }
+            //go to player[3] is out
+        }
+        UpdateTableVisuals();
+    }
 
     public void AddCardToPosition(Card cardData, int whichPlayer)
     {

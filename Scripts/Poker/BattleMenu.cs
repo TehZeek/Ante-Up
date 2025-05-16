@@ -13,6 +13,7 @@ public class BattleMenu : MonoBehaviour
     public bool AllInTrigger = false;
     private PokerTurnManager pokerTurnManager;
     private PokerChipManager pokerChipManager;
+    private PokerTableCards pokerTableCards;
 
     //state images
     public Image BetNone;
@@ -32,6 +33,8 @@ public class BattleMenu : MonoBehaviour
     {
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
+        pokerTableCards = FindFirstObjectByType<PokerTableCards>();
+
         UpdateButtonDisplay(0);
     }
 
@@ -143,11 +146,13 @@ public class BattleMenu : MonoBehaviour
     private void FoldChosen()
     {
         Debug.Log("Fold");
-        //fold set p1IsOut bool to true
-        //add cards in hand to burn pile
+        int player = pokerTurnManager.turnOrder[2];
+        pokerTurnManager.IsOut[player] = true;
+        pokerTableCards.Fold(player);
         //fold powers
-        //tickturn
+        NextPlayer();
     }
+
     private void AllInChosen()
     { 
         Debug.Log("All In");
