@@ -28,6 +28,7 @@ public class BattleMenu : MonoBehaviour
     public GameObject AllInOver;
     public GameObject BetInAni;
     public List<GameObject> buttons;
+    public bool isAnimating = false;
 
     void Start()
     {
@@ -108,7 +109,7 @@ public class BattleMenu : MonoBehaviour
             pokerChipManager.BetToThePot(player, amountOwed);
             pokerChipManager.playerChips[player] = 0;
             isAllIn[player] = true;
-            Debug.Log("ALL IN");
+            AllInChosen();
         }
         Debug.Log("Call");
         NextPlayer();
@@ -118,21 +119,50 @@ public class BattleMenu : MonoBehaviour
     private void BetChosen()
     {
         Debug.Log("Bet");
-        //bet default until someone makes a bet
-        //check if any player's chips can meet the bet? if not ALL IN
-        //default BET to 1 chip.
+        if (!BetIsSet)
+        {
+            //BetPower();
+        }
+        if (pokerChipManager.playerChips[pokerTurnManager.turnOrder[2]]>1)
+        {
+            betSize++;
+            BetIsSet = true;
+            for (int i = 0; i < 4; i++)
+            {
+                pokerTurnManager.HasChecked[i] = false;
+            }
+            pokerTurnManager.HasChecked[pokerTurnManager.turnOrder[2]] = true;
+            pokerChipManager.BetToThePot(pokerTurnManager.turnOrder[2], 1);
+            NextPlayer();
+        }
+        else if (pokerChipManager.playerChips[pokerTurnManager.turnOrder[2]] == 1)
+        {
+            betSize++;
+            BetIsSet = true;
+            isAllIn[pokerTurnManager.turnOrder[2]] = true;
+            for (int i = 0; i < 4; i++)
+            {
+                pokerTurnManager.HasChecked[i] = false;
+            }
+            pokerTurnManager.HasChecked[pokerTurnManager.turnOrder[2]] = true;
+            pokerChipManager.BetToThePot(pokerTurnManager.turnOrder[2], 1);
+            AllInChosen();
+            NextPlayer();
+        }
+        else
+        {
+            Debug.Log("No money tho");
+            //set a disabled button variation? Or fix via All In logic?
+        }
+
         //set a max bet to monster's chips?
-        //put to bet to the pot
         //space for player power
-        //set has checked
-        //turn off all other haschecked (make this a function that checks if a player is out)
-        //TickTurn
     }
 
     private void RaiseChosen()
     {
         Debug.Log("Raise");
-        //raise, same as bet minus calling power
+        BetChosen();
     }
 
 
@@ -168,7 +198,7 @@ public class BattleMenu : MonoBehaviour
     private IEnumerator DelayButtonDisplay()
     {
         yield return new WaitForSeconds(0.5f); // 30 frames at 60 FPS
-
+        isAnimating = false;
         if (AllInTrigger) { UpdateButtonDisplay(3); }
         else if (!BetIsSet) { UpdateButtonDisplay(1); }
         else { UpdateButtonDisplay(2); }
@@ -180,6 +210,7 @@ public class BattleMenu : MonoBehaviour
         allButtonOff();
         if (displaySwitch == 0)
         {
+            isAnimating = true;
             BetInAni.gameObject.SetActive(true);
             StartCoroutine(DelayButtonDisplay());
         }
@@ -237,17 +268,6 @@ public class BattleMenu : MonoBehaviour
             AllInOver.gameObject.SetActive(true);
         }
     }
-    //set the states for the button menu -
-    //where it's at for the turn
-    //what options are availible
-
-
-
-
-
-
-
-
 
     //side bets? hit sidebet amount?
     // up to 2 needed

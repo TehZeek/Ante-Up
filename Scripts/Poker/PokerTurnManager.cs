@@ -10,6 +10,7 @@ public class PokerTurnManager : MonoBehaviour
     private PokerChipManager pokerChipManager;
     private PokerDrawPile pokerDrawPile;
     private PokerTableCards pokerTableCards;
+    private BattleMenu battleMenu;
     private int turnTicker = 0;
     public bool[] IsOut = new bool[] { false, false, false, false };
     public bool[] HasChecked = new bool[] { false, false, false, false };
@@ -27,9 +28,11 @@ public class PokerTurnManager : MonoBehaviour
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
         pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
-    }
+        battleMenu = FindFirstObjectByType<BattleMenu>();
 
-    void Update()
+}
+
+void Update()
     {
 
         while (stillThisTurn)
@@ -65,28 +68,15 @@ public class PokerTurnManager : MonoBehaviour
     {
         // call after each Poker action, ticks through who's turn it is, then the round, then resets to another person in the hot seat.
         turnOrder[2]++;
-        if (turnOrder[2] == 1)
-        {
-            if (IsOut[1]) { turnOrder[2]++; }
-        }
-        if (turnOrder[2] == 2)
-        {
-            if (IsOut[2]) { turnOrder[2]++; }
-        }
-        if (turnOrder[2] == 3)
-        {
-            if (IsOut[3]) { turnOrder[2]++; }
-        }
-
-        if (turnOrder[2] == 4)
-        {
-            turnOrder[2] = 0;
-        }
+        if (turnOrder[2] == 1 && IsOut[1])  { turnOrder[2]++;}
+        if (turnOrder[2] == 2 && IsOut[2]) { turnOrder[2]++; }
+        if (turnOrder[2] == 2 && IsOut[3]) { turnOrder[3]++; }
+        if (turnOrder[2] == 4) { turnOrder[2] = 0; }
 
         if ((HasChecked[0] || IsOut[0]) && (HasChecked[1] || IsOut[1]) && (HasChecked[2] || IsOut[2]) && (HasChecked[3] || IsOut[3]))
         {
-            
             turnOrder[1]++;
+            battleMenu.BetIsSet = false;
             for (int i = 0; i < 4; i++)
             {
                 HasChecked[i] = false;
@@ -104,8 +94,17 @@ public class PokerTurnManager : MonoBehaviour
             if (turnOrder[1] == 7)
                 turnOrder[0]++;
             turnOrder[2] = turnOrder[0];
+            if (turnOrder[2] == 1 && IsOut[1]) { turnOrder[2]++; }
+            if (turnOrder[2] == 2 && IsOut[2]) { turnOrder[2]++; }
+            if (turnOrder[2] == 3 && IsOut[3]) 
+            {
+                turnOrder[3]++;
+                Debug.Log("HAND OVER");
+                //monster victory            
+            }
             stillThisTurn = true;
         }
+        PlayerOptions();
     }
 
     private void TurnAssign()
@@ -135,8 +134,7 @@ public class PokerTurnManager : MonoBehaviour
 
     private void PlayerOptions()
     {
-        // raise, check/call, fold, ALL IN options
-        // TickTurn();
+        battleMenu.UpdateButtonDisplay(0);
     }
 
     private void TheFlop()

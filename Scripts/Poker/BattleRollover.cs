@@ -14,35 +14,41 @@ public class BattleRollover : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (battleMenu.AllInTrigger)
+        if (!battleMenu.isAnimating)
         {
-            battleMenu.UpdateButtonDisplay(ButtonNum);
+            if (battleMenu.AllInTrigger)
+            {
+                battleMenu.UpdateButtonDisplay(ButtonNum);
                 return;
-        }
-        if (!battleMenu.BetIsSet)
-        {
-            battleMenu.UpdateButtonDisplay(ButtonNum);
-        }
-        else
-        {
-            battleMenu.UpdateButtonDisplay(ButtonNum+10);
+            }
+            if (!battleMenu.BetIsSet)
+            {
+                battleMenu.UpdateButtonDisplay(ButtonNum);
+            }
+            else
+            {
+                battleMenu.UpdateButtonDisplay(ButtonNum + 10);
+            }
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (battleMenu.AllInTrigger)
+        if (!battleMenu.isAnimating)
         {
-            battleMenu.UpdateButtonDisplay(3);
-            return;
-        }
-        if (!battleMenu.BetIsSet)
-        {
-            battleMenu.UpdateButtonDisplay(1);
-        }
-        else
-        {
-            battleMenu.UpdateButtonDisplay(2);
+            if (battleMenu.AllInTrigger)
+            {
+                battleMenu.UpdateButtonDisplay(3);
+                return;
+            }
+            if (!battleMenu.BetIsSet)
+            {
+                battleMenu.UpdateButtonDisplay(1);
+            }
+            else
+            {
+                battleMenu.UpdateButtonDisplay(2);
+            }
         }
     }
 }
