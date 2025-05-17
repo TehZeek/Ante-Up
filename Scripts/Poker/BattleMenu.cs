@@ -23,7 +23,12 @@ public class BattleMenu : MonoBehaviour
     public Image CallRaise;
     public Image CallFold;
     public Image AllIn;
+    public Image AllInCheck;
+    public Image AllInFold;
+    public Image FoldAllIn;
+    public Image FoldAllInFold;
     public GameObject AllInOver;
+    public GameObject FoldAllInOver;
     public GameObject BetInAni;
     public List<GameObject> buttons;
     public bool isAnimating = false;
@@ -66,11 +71,18 @@ public class BattleMenu : MonoBehaviour
         AllIn.gameObject.SetActive(false);
         AllInOver.gameObject.SetActive(false);
         BetInAni.gameObject.SetActive(false);
+        AllInCheck.gameObject.SetActive(false); 
+        AllInFold.gameObject.SetActive(false);
+        FoldAllIn.gameObject.SetActive(false);
+        FoldAllInFold.gameObject.SetActive(false);
+        FoldAllInOver.gameObject.SetActive(false);
     }
 
     public void OptionOne()
     {
-        if (BetIsSet) { CallChosen(); }
+        if (AllInTrigger && !BetIsSet) { AllInChosen(); }
+        else if (AllInTrigger && BetIsSet) { return; }
+        else if (BetIsSet) { CallChosen(); }
         else { BetChosen(); }
     }
 
@@ -83,11 +95,6 @@ public class BattleMenu : MonoBehaviour
     public void OptionThree()
     {
         FoldChosen();
-    }
-
-    public void OptionFour()
-    {
-        AllInChosen();
     }
 
 
@@ -145,7 +152,8 @@ public class BattleMenu : MonoBehaviour
 
     private void AllInChosen()
     { 
-        Debug.Log("All In");
+        Debug.Log("All In special stuff to go here");
+        BetChosen();
         //ALL IN set isALLIN bool to true
         //As bet, but amount = current chips
         //must have less chips then the enemy
@@ -160,7 +168,8 @@ public class BattleMenu : MonoBehaviour
         yield return new WaitForSeconds(0.5f); // 30 frames at 60 FPS
         isAnimating = false;
         Debug.Log("Finished button animation");
-        if (AllInTrigger) { UpdateButtonDisplay(3); }
+        if (AllInTrigger && !BetIsSet) { UpdateButtonDisplay(3); }
+        else if (AllInTrigger && BetIsSet) { UpdateButtonDisplay(5); }
         else if (!BetIsSet) { UpdateButtonDisplay(1); }
         else { UpdateButtonDisplay(2); }
     }
@@ -182,7 +191,6 @@ public class BattleMenu : MonoBehaviour
             buttons[0].gameObject.SetActive(true);
             buttons[1].gameObject.SetActive(true);
             buttons[2].gameObject.SetActive(true);
-            buttons[3].gameObject.SetActive(false);
         }
         if (displaySwitch == 11)
         {
@@ -202,7 +210,6 @@ public class BattleMenu : MonoBehaviour
             buttons[0].gameObject.SetActive(true);
             buttons[1].gameObject.SetActive(true);
             buttons[2].gameObject.SetActive(true);
-            buttons[3].gameObject.SetActive(false);
         }
         if (displaySwitch == 21)
         {
@@ -222,18 +229,34 @@ public class BattleMenu : MonoBehaviour
         if (displaySwitch == 3)
         {
             AllIn.gameObject.SetActive(true);
-            buttons[0].gameObject.SetActive(false);
-            buttons[1].gameObject.SetActive(false);
-            buttons[2].gameObject.SetActive(false);
-            buttons[3].gameObject.SetActive(true);
         }
         if (displaySwitch == 31)
         {
             AllInOver.gameObject.SetActive(true);
         }
+        if (displaySwitch == 32)
+        {
+            AllInCheck.gameObject.SetActive(true);
+        }
+        if (displaySwitch == 32)
+        {
+            AllInFold.gameObject.SetActive(true);
+        }
         if (displaySwitch == 4)
         {
             allButtonOff();
+        }
+        if (displaySwitch == 5)
+        {
+            FoldAllIn.gameObject.SetActive(true);
+        }
+        if (displaySwitch == 52)
+        {
+            FoldAllInOver.gameObject.SetActive(true);
+        }
+        if (displaySwitch == 53)
+        {
+            FoldAllInFold.gameObject.SetActive(true);
         }
     }
 

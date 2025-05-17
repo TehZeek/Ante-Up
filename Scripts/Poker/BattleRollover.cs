@@ -16,19 +16,22 @@ public class BattleRollover : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (!battleMenu.isAnimating)
         {
-            if (battleMenu.AllInTrigger)
+            if (battleMenu.AllInTrigger && !battleMenu.BetIsSet)
             {
-                battleMenu.UpdateButtonDisplay(ButtonNum);
+                battleMenu.UpdateButtonDisplay(ButtonNum+20);
+                return;
+            }
+            if (battleMenu.AllInTrigger && battleMenu.BetIsSet)
+            {
+                battleMenu.UpdateButtonDisplay(ButtonNum + 40);
                 return;
             }
             if (!battleMenu.BetIsSet)
             {
-                Debug.Log("bet not set, rollover "+ButtonNum);
                 battleMenu.UpdateButtonDisplay(ButtonNum);
             }
             else
             {
-                Debug.Log("bet is set, rollover "+(ButtonNum+10));
                 battleMenu.UpdateButtonDisplay(ButtonNum + 10);
             }
         }
@@ -38,19 +41,22 @@ public class BattleRollover : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (!battleMenu.isAnimating)
         {
-            if (battleMenu.AllInTrigger)
+            if (battleMenu.AllInTrigger && !battleMenu.BetIsSet)
             {
                 battleMenu.UpdateButtonDisplay(3);
                 return;
             }
+            if (battleMenu.AllInTrigger && battleMenu.BetIsSet)
+            {
+                battleMenu.UpdateButtonDisplay(5);
+                return;
+            }
             if (!battleMenu.BetIsSet)
             {
-                Debug.Log("rolling out");
                 battleMenu.UpdateButtonDisplay(1);
             }
             else
             {
-                Debug.Log("rolling out");
                 battleMenu.UpdateButtonDisplay(2);
             }
         }

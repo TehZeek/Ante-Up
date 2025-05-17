@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6833785c3b05bd241ba535707deccac4
+guid: 67af2032ae114b94c98b76c083f95c6c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6369671015985337226
-    second: FleeOn_0
+      213: -7550340500347258716
+    second: BMAllInCheck_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FleeOn_0
+      name: BMAllInCheck_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 200
-        height: 59
+        width: 150
+        height: 109
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 67ca71c75f16a97a0800000000000000
-      internalID: -6369671015985337226
+      spriteID: 4a87e8f715dc73790800000000000000
+      internalID: -7550340500347258716
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      FleeOn_0: -6369671015985337226
+      BMAllInCheck_0: -7550340500347258716
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

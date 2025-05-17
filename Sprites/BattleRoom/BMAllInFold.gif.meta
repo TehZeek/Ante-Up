@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8f5892f7047135144b7c675080b0a8d6
+guid: c12657794f7d5be45806cacf27980492
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8035699128277231840
-    second: AllInOn_0
+      213: 799835385631703548
+    second: BMAllInFold_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: AllInOn_0
+      name: BMAllInFold_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 200
-        height: 59
+        width: 150
+        height: 109
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0279e11c7367b7090800000000000000
-      internalID: -8035699128277231840
+      spriteID: cf18d57ab06991b00800000000000000
+      internalID: 799835385631703548
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      AllInOn_0: -8035699128277231840
+      BMAllInFold_0: 799835385631703548
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d655acf10e67cc44089430b36dcc5c5d
+guid: 62941b1853ccf5e429d45b4c74b33544
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4255280881756162444
-    second: BattleBGTable_0
+      213: -6176183403784972473
+    second: AIFoldFold_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 0
   alignment: 0
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BattleBGTable_0
+      name: AIFoldFold_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 640
-        height: 360
+        width: 150
+        height: 76
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c894690aa6bcd0b30800000000000000
-      internalID: 4255280881756162444
+      spriteID: 747dbb5cae9c94aa0800000000000000
+      internalID: -6176183403784972473
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: fa9b9edc2f5448e40835df24ef988c0b
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BattleBGTable_0: 4255280881756162444
+      AIFoldFold_0: -6176183403784972473
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

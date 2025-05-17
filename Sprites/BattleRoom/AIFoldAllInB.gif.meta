@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6794550f939cbbb4193205e3820cd49b
+guid: 632670ad5ecb0214c9a95c0184b36f79
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6140018317064832594
-    second: FightOff_0
+      213: 6591054265503233434
+    second: AIFoldAllInB_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,7 +48,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 75
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FightOff_0
+      name: AIFoldAllInB_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 200
-        height: 59
+        width: 150
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ea975f03fd54acaa0800000000000000
-      internalID: -6140018317064832594
+      spriteID: a95b4aefee0287b50800000000000000
+      internalID: 6591054265503233434
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      FightOff_0: -6140018317064832594
+      AIFoldAllInB_0: 6591054265503233434
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

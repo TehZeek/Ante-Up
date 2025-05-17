@@ -21,13 +21,8 @@ public class PokerTurnManager : MonoBehaviour
     public bool HasARiver = true;
     public bool HasABonusRound = false;
     private bool stillThisTurn = true;
-    public bool[] WhoWon = new bool[] { false, false, false, false };
     private List<int> playersStillIn = new List<int>();
-    private List<int> minimumRank = new List<int>();
-    private List<int> p1handRanking = new List<int>();
-    private List<int> p2handRanking = new List<int>();
-    private List<int> p3handRanking = new List<int>();
-    private List<int> monhandRanking = new List<int>();
+
 
     void Start()
     {
@@ -73,6 +68,7 @@ public class PokerTurnManager : MonoBehaviour
 
     public void TickTurn()
     {
+        battleMenu.AllInTrigger = false;
         Debug.Log("[TickTurn] Called. Current Player Turn Index: " + turnOrder[2]);
         turnOrder[2]++;
         for (int i = 0; i < 4; i++)
@@ -85,18 +81,29 @@ public class PokerTurnManager : MonoBehaviour
         if (IsOut[0] && !isAllIn[0])
         {
             FindWhoWon();
+            return;
         }
         if (IsOut[1] && !isAllIn[1] && IsOut[2] && !isAllIn[2] && IsOut[3] && !isAllIn[3])
         {
             FindWhoWon();
+            return;
         }
 
         if ((HasChecked[0] || IsOut[0]) && (HasChecked[1] || IsOut[1]) && (HasChecked[2] || IsOut[2]) && (HasChecked[3] || IsOut[3]))
         {
             Debug.Log("[TickTurn] All players checked or are out. Advancing round.");
 
-            if (turnOrder[1] < 6) { turnOrder[1]++;}
+            if (turnOrder[1] < 6) { turnOrder[1]++; } else { FindWhoWon();}
             battleMenu.BetIsSet = false;
+
+
+            if (isAllIn[0] || ((isAllIn[1] || IsOut[1]) && (isAllIn[2] || IsOut[2]) && (isAllIn[3] || IsOut[3]))) 
+                {
+                Debug.Log("ALL IN LOOP");
+                AllInLoop();
+                }
+
+
             if (turnOrder[1] == 1) { battleMenu.BetIsSet = true; }
             for (int i = 0; i < 4; i++)
             {
@@ -112,23 +119,14 @@ public class PokerTurnManager : MonoBehaviour
             {
                 turnOrder[1]++;
             }
-            if (turnOrder[1] == 7)
-            {
-                Debug.Log("[TickTurn] Starting new hand.");
-                turnOrder[0]++;
-                if (turnOrder[0] > 3) 
-                {
-                    turnOrder[0] -= 4;
-                }
-                turnOrder[1] = 0;
-                turnOrder[2] = turnOrder[0];
-            }
+
             if (turnOrder[2] == 1 && IsOut[1]) { turnOrder[2]++; }
             if (turnOrder[2] == 2 && IsOut[2]) { turnOrder[2]++; }
             if (turnOrder[2] == 3 && IsOut[3]) 
             {
                 Debug.Log("[TickTurn] All players out. HAND OVER.");
-                FindWhoWon();         
+                FindWhoWon();
+                return;
             }
             stillThisTurn = true;
         }
@@ -169,6 +167,13 @@ public class PokerTurnManager : MonoBehaviour
 
     private void PlayerOptions()
     {
+        int chips = pokerChipManager.playerChips[turnOrder[2]];
+        int chipsNeeded = pokerChipManager.BetSize + 1 - pokerChipManager.InThePot[turnOrder[2]];
+        if (chips <= chipsNeeded) 
+        {
+            battleMenu.AllInTrigger = true;
+        }
+
         Debug.Log("[PlayerOptions] Displaying player options.");
         battleMenu.UpdateButtonDisplay(0);
     }
@@ -214,15 +219,94 @@ public class PokerTurnManager : MonoBehaviour
         FindWhoWon();
     }
 
+    private void AllInLoop()
+    {
+        int cardsLeftToDeal = 5;
+        Debug.Log("Cards left to deal:" + cardsLeftToDeal);
+        if (HasABonusRound) { cardsLeftToDeal++; }
+        Debug.Log("After Bonus Check:" + cardsLeftToDeal);
+        if (!HasARiver){ cardsLeftToDeal--; }
+        Debug.Log("After River Check:" + cardsLeftToDeal);
+        if (turnOrder[1] == 2 && cardsLeftToDeal >= 3) { cardsLeftToDeal -= 3; }
+        Debug.Log("After Flop Check:" + cardsLeftToDeal);
+        if (turnOrder[1] == 3 && cardsLeftToDeal >= 1) { cardsLeftToDeal--; }
+        Debug.Log("After Turn Check:" + cardsLeftToDeal);
+        if (turnOrder[1] == 4 && cardsLeftToDeal >= 1) { cardsLeftToDeal--; }
+        Debug.Log("After River2 Check:" + cardsLeftToDeal);
+        if (turnOrder[1] == 5 && cardsLeftToDeal >= 1) { cardsLeftToDeal--; }
+        Debug.Log("After Bonus2 Check:" + cardsLeftToDeal);
+        Debug.Log("Cards left to deal:" + cardsLeftToDeal);
+        if (cardsLeftToDeal > 0)
+        {
+            for (int i = 0; i < cardsLeftToDeal; i++)
+            {
+                pokerDrawPile.DealRiverCards();
+            }
+        }
+        Debug.Log("ComparedHands");
+        FindWhoWon();
+    }
+
     private void FindWhoWon()
     {
         Debug.Log("[FindWhoWon] Determining the winner.");
+        playersStillIn.Clear();
 
-        for (int i = 0; i < 4; i++)
+        if(RoundOverEarly())
         {
-            WhoWon[i] = false;
+            return;
         }
-        
+        playersStillIn.Clear();
+
+        int minimumHandRank = GetMonsterHand();
+        int playerWinners = 0;
+        for (int i = 1; i < 4; i++)
+        {
+            if (!IsOut[i] || isAllIn[i])
+            {
+                int p = GetPlayerHand(i);
+                if (p > minimumHandRank)
+                {
+                    playerWinners++;
+                    playersStillIn.Add(i);
+                }
+                else if (p == minimumHandRank)
+                {
+                    int won = 0;
+                    while (won == 0)
+                    {
+                        for (int j = 0; j < 5; j++)
+                        {
+                            int tiebreakerBeat = GetMonsterRank(j);
+                            int tiebreakerHave = GetPlayerRank(i,j);
+                            if (tiebreakerHave > tiebreakerBeat)
+                            {
+                                playerWinners++;
+                                playersStillIn.Add(i);
+                                won = 1;
+                            } 
+                            else if (tiebreakerHave < tiebreakerBeat)
+                            {
+                                won = 2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //check monster win
+        if (playerWinners == 0)
+        {
+            playersStillIn.Add(0);
+        }
+        Debug.Log("[FindWhoWon] Players who won: " + string.Join(",", playersStillIn));
+        pokerChipManager.SplitThePot(playersStillIn);
+        ClearTurnVariables();
+    }
+
+    private bool RoundOverEarly()
+    {
+        //If the Monster Folded players still in split the pot
         if (IsOut[0] && !isAllIn[0])
         {
             for (int i = 1; i < 4; i++)
@@ -234,170 +318,98 @@ public class PokerTurnManager : MonoBehaviour
                     ClearTurnVariables();
                 }
             }
-            return;
+            return true;
         }
 
-        if ((IsOut[1] && !isAllIn[1])&& (IsOut[2] && !isAllIn[2])&& (IsOut[3] && !isAllIn[3]))
+        //If the players all folded
+        if ((IsOut[1] && !isAllIn[1]) && (IsOut[2] && !isAllIn[2]) && (IsOut[3] && !isAllIn[3]))
         {
-            WhoWon[0] = true;
-            playersStillIn.Clear();
             playersStillIn.Add(0);
             Debug.Log("Monsters get the pot");
             pokerChipManager.SplitThePot(playersStillIn);
             ClearTurnVariables();
-            return;
+            return true;
         }
+        return false;
+    }
 
-        for (int i = 1; i < 4; i++)
-        {
-            if (!IsOut[i] || isAllIn[i])
-            {playersStillIn.Add(i); }
-        }
+    private int GetMonsterHand()
+    {
         BattleManager battleManager = FindFirstObjectByType<BattleManager>();
         HandTypes minimumHand = battleManager.monster.minimumHand;
-        minimumRank.Add(battleManager.monster.minimumRank);
-
         int minimumHandRank = pokerHandCompare.allHandTypes.IndexOf(minimumHand);
-        int p1handType = pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.P1Hand);
-        int p2handType = pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.P2Hand);
-        int p3handType = pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.P3Hand);
         int monhandType = pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.MonHand);
-        p1handRanking.AddRange(pokerHandCompare.p1Rank);
-        p2handRanking.AddRange(pokerHandCompare.p2Rank);
-        p3handRanking.AddRange(pokerHandCompare.p3Rank);
-        monhandRanking.AddRange(pokerHandCompare.monRank);
-
-
         if (monhandType > minimumHandRank)
         {
             minimumHandRank = monhandType;
-            minimumRank.Clear();
-            minimumRank.AddRange(monhandRanking);
+
         }
-        if (monhandType == minimumHandRank)
+        return minimumHandRank;
+    }
+
+    private int GetPlayerHand(int player)
+    {
+        if (player == 1)
         {
-            if (monhandRanking[0] >= minimumRank[0])
-            {
-                minimumRank.Clear();
-                minimumRank.AddRange(monhandRanking);
-            }
+            return pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.P1Hand);
         }
-        Debug.Log("[FindWhoWon] Minimum hand rank: " + minimumHandRank + " of " + minimumRank[0]);
-
-        List<int> toRemove = new List<int>();
-
-        for (int i = 0; i < playersStillIn.Count; i++)
+        else if (player == 2)
         {
-
-            if (i == 1)
-            {
-                if (DidPlayerWin(p1handType, p1handRanking, minimumHandRank, minimumRank)) { WhoWon[1] = true; }
-                else 
-                { 
-                    WhoWon[1] = false;
-                    toRemove.Add(1);
-
-                }
-            }
-            if (i == 2)
-            {
-                if (DidPlayerWin(p2handType, p2handRanking, minimumHandRank, minimumRank)) { WhoWon[2] = true; }
-                else 
-                {
-                    WhoWon[2] = false;
-                    toRemove.Add(2);
-                }
-            }
-            if (i == 3)
-            {
-                if (DidPlayerWin(p3handType, p3handRanking, minimumHandRank, minimumRank)) { WhoWon[3] = true; }
-                else
-                {
-                    WhoWon[3] = false;
-                    toRemove.Add(3);
-                }
-            }
+            return pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.P2Hand);
         }
-        playersStillIn = playersStillIn.Except(toRemove).ToList();
-        Debug.Log("[FindWhoWon] Players still in: " + string.Join(",", playersStillIn));
-
-
-        int HowManyWon = playersStillIn.Count;
-        if (HowManyWon == 0)
-        {
-            WhoWon[0] = true;
-            playersStillIn.Clear();
-            playersStillIn.Add(0);
-            Debug.Log("Monsters get the pot");
-
-            pokerChipManager.SplitThePot(playersStillIn);
-        } 
         else
         {
-            Debug.Log("Players get the pot");
-            pokerChipManager.SplitThePot(playersStillIn);
+            return pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.P3Hand);
         }
-
-        ClearTurnVariables();
     }
-
-    private bool DidPlayerWin(int p1handType, List<int> p1handRanking, int minimumHandRank, List<int> minimumRank)
+    private int GetPlayerRank(int player, int rank)
     {
-        if (p1handType > minimumHandRank)
+        if (player == 1)
         {
-            return true;
+            return pokerHandCompare.p1Rank[rank];
         }
-        else if (p1handType == minimumHandRank)
+        else if (player == 2)
         {
-            if (p1handRanking[0] > minimumRank[0])
-            {
-                return true;
-            }
-            else if (p1handRanking[0] == minimumRank[0])
-            {
-                if (p1handRanking[1] > minimumRank[1])
-                {
-                    return true;
-                }
-                else if (p1handRanking[1] == minimumRank[1])
-                {
-                    if (p1handRanking[2] > minimumRank[2])
-                    {
-                        return true;
-                    }
-                    else if (p1handRanking[2] == minimumRank[2])
-                    {
-                        if (p1handRanking[3] > minimumRank[3])
-                        {
-                            return true;
-                        }
-                        else if (p1handRanking[3] == minimumRank[3])
-                        {
-                            if (p1handRanking[4] >= minimumRank[4])
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
+            return pokerHandCompare.p2Rank[rank];
         }
-
-    return false;
+        else
+        {
+            return pokerHandCompare.p3Rank[rank];
+        }
     }
 
+      private int GetMonsterRank(int rank)
+      {
+        if (rank == 0)
+        {
+            BattleManager battleManager = FindFirstObjectByType<BattleManager>();
+            int minRank = battleManager.monster.minimumRank;
+            int monRank = pokerHandCompare.monRank[rank];
+            HandTypes minimumHand = battleManager.monster.minimumHand;
+            int minimumHandRank = pokerHandCompare.allHandTypes.IndexOf(minimumHand);
+            int minType = pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.MonHand);
+            if( minType > minimumHandRank)
+            {
+                return pokerHandCompare.monRank[rank];
+            }
+            else
+            {
+                return minRank;
+            }
+        }
+        else 
+        {
+            return pokerHandCompare.monRank[rank];
+        }
+
+    }
 
     private void ClearTurnVariables()
     {
         Debug.Log("[ClearTurnVariables] Resetting for next hand.");
 
         stillThisTurn = false;
-        minimumRank.Clear();
         playersStillIn.Clear();
-        p1handRanking.Clear();
-        p2handRanking.Clear();
-        p3handRanking.Clear();
-        monhandRanking.Clear();
         turnOrder[0]++;
         if (turnOrder[0] > 3) { turnOrder[0] -= 4; }
         turnOrder[1] = 0;
@@ -406,7 +418,6 @@ public class PokerTurnManager : MonoBehaviour
         pokerChipManager.BetSize = 2;
         for (int i = 0; i < 4; i++)
         {
-            WhoWon[i] = false;
             IsOut[i] = false;
             if (pokerChipManager.playerChips[i] == 0) { IsOut[i] = true; }
             isAllIn[i] = false;
@@ -417,6 +428,5 @@ public class PokerTurnManager : MonoBehaviour
         pokerDrawPile.Reshuffle();
         stillThisTurn = true;
         Debug.Log("[ClearTurnVariables] Variables reset complete.");
-
     }
 }
