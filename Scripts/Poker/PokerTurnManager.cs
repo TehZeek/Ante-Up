@@ -86,6 +86,10 @@ public class PokerTurnManager : MonoBehaviour
         {
             FindWhoWon();
         }
+        if (IsOut[1] && !isAllIn[1] && IsOut[2] && !isAllIn[2] && IsOut[3] && !isAllIn[3])
+        {
+            FindWhoWon();
+        }
 
         if ((HasChecked[0] || IsOut[0]) && (HasChecked[1] || IsOut[1]) && (HasChecked[2] || IsOut[2]) && (HasChecked[3] || IsOut[3]))
         {
@@ -112,6 +116,10 @@ public class PokerTurnManager : MonoBehaviour
             {
                 Debug.Log("[TickTurn] Starting new hand.");
                 turnOrder[0]++;
+                if (turnOrder[0] > 3) 
+                {
+                    turnOrder[0] -= 4;
+                }
                 turnOrder[1] = 0;
                 turnOrder[2] = turnOrder[0];
             }
@@ -119,7 +127,6 @@ public class PokerTurnManager : MonoBehaviour
             if (turnOrder[2] == 2 && IsOut[2]) { turnOrder[2]++; }
             if (turnOrder[2] == 3 && IsOut[3]) 
             {
-                turnOrder[3]++;
                 Debug.Log("[TickTurn] All players out. HAND OVER.");
                 FindWhoWon();         
             }
@@ -392,6 +399,7 @@ public class PokerTurnManager : MonoBehaviour
         p3handRanking.Clear();
         monhandRanking.Clear();
         turnOrder[0]++;
+        if (turnOrder[0] > 3) { turnOrder[0] -= 4; }
         turnOrder[1] = 0;
         turnOrder[2] = 0;
         pokerChipManager.potChips = 0;

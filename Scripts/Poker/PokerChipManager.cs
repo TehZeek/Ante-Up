@@ -76,32 +76,39 @@ public class PokerChipManager : MonoBehaviour
 
     public void SplitThePot (List<int> players)
 {
+    Debug.Log($"Splitting pot of {potChips} between {players.Count} players.");
     int splitAmount = (int)Mathf.Floor(potChips / players.Count);
-    int extraAmount = potChips - splitAmount;
+    int extraAmount = potChips - (splitAmount*players.Count);
     for (int i = 0; i < players.Count; i++)
         {
-            playerChips[i] += splitAmount; 
+            playerChips[players[i]] += splitAmount;
+
         }
-    if (extraAmount > 0 && players[0] != 0)
+        if (extraAmount > 0 && players[0] != 0)
     {
         if (playerChips[1] < playerChips[2])
         { 
             if (playerChips[1] < playerChips[3])
             {
                     playerChips[1] += extraAmount;
-            }
-            else if (playerChips[3] < playerChips[2])
+
+                }
+                else if (playerChips[3] < playerChips[2])
             {
                     playerChips[3] += extraAmount;
+
+                }
             }
-        }
         else if (playerChips[2] < playerChips[3])
         {
                 playerChips[2] += extraAmount;
+
+
+            }
+            else { playerChips[3] += extraAmount; }
+
         }
-        else { playerChips[3] += extraAmount; }
-    }
-    UpdateChipDisplay();
+        UpdateChipDisplay();
 }
     public void StealFromPot (int player, int amount)
 {
