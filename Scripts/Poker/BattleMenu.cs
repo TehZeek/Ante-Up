@@ -5,6 +5,7 @@ using ZeekSpace;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+
 public class BattleMenu : MonoBehaviour
 {
     public bool BetIsSet = true;
@@ -32,14 +33,31 @@ public class BattleMenu : MonoBehaviour
     public GameObject BetInAni;
     public List<GameObject> buttons;
     public bool isAnimating = false;
+    public bool PlayerHasConfirmed = false;
+    public Button confirmButton;
 
     void Start()
     {
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
+        confirmButton.gameObject.SetActive(false); // Hide button initially
+        confirmButton.onClick.AddListener(PlayerConfirmed);
         Debug.Log("Finished Battle Menu start");
         UpdateButtonDisplay(0);
+    }
+
+    public void ShowConfirmButton(bool show)
+    {
+        confirmButton.gameObject.SetActive(show);
+        PlayerHasConfirmed = false; // Reset confirmation flag
+    }
+
+    public void PlayerConfirmed()
+    {
+        PlayerHasConfirmed = true;
+        ShowConfirmButton(false); // Hide the button after confirmation
+        Debug.Log("Player confirmed. Proceeding.");
     }
 
     public void NextPlayer()

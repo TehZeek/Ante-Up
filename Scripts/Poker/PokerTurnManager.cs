@@ -5,6 +5,8 @@ using ZeekSpace;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using System;
+
 
 public class PokerTurnManager : MonoBehaviour
 {
@@ -22,6 +24,7 @@ public class PokerTurnManager : MonoBehaviour
     public bool HasABonusRound = false;
     private bool stillThisTurn = true;
     private List<int> playersStillIn = new List<int>();
+    private const int PlayerCount = 4;
 
 
     void Start()
@@ -41,8 +44,15 @@ public class PokerTurnManager : MonoBehaviour
     void Update()
     {
 
-        while (stillThisTurn)
+        if (stillThisTurn)
         {
+            stillThisTurn = false; // Prevent reentry
+            StartCoroutine(ProcessTurn());
+        }
+    }
+
+    private IEnumerator ProcessTurn()
+    {
             Debug.Log("[Update] stillThisTurn is true. Current phase: " + turnOrder[1]);
 
             switch (turnOrder[1])
@@ -60,13 +70,19 @@ public class PokerTurnManager : MonoBehaviour
 
                 case 6: Debug.Log("[Update] Entering Showdown()"); Showdown(); break;
                 default: Debug.LogWarning("[Update] Invalid turnOrder[1] value: " + turnOrder[1]); break;
-
-
             }
-        }
+        yield return null;
     }
 
     public void TickTurn()
+    {
+        if (CheckForEndOfRound()){ return; }
+        AdvanceTurnIndex();
+        Debug.Log("[TickTurn] Ending. turnOrder: [" + turnOrder[0] + ", " + turnOrder[1] + ", " + turnOrder[2] + "]");
+        PlayerOptions();
+    }
+
+    private void AdvanceTurnIndex()
     {
         battleMenu.AllInTrigger = false;
         Debug.Log("[TickTurn] Called. Current Player Turn Index: " + turnOrder[2]);
@@ -78,60 +94,64 @@ public class PokerTurnManager : MonoBehaviour
         if (turnOrder[2] > 3) { turnOrder[2] = 0; }
         Debug.Log("[TickTurn] After incrementing, turnOrder[2]: " + turnOrder[2]);
 
+        if ((HasChecked[0] || IsOut[0]) && (HasChecked[1] || IsOut[1]) && (HasChecked[2] || IsOut[2]) && (HasChecked[3] || IsOut[3])) 
+        { 
+            AdvanceRound();
+        }
+    }
+    private void AdvanceRound()
+    {
+        Debug.Log("[TickTurn] All players checked or are out. Advancing round.");
+        battleMenu.BetIsSet = false;
+
+        if (turnOrder[1] < 6) { turnOrder[1]++; } else { FindWhoWon(); }
+       
+        if (turnOrder[1] == 1) { battleMenu.BetIsSet = true; }
+
+        if (turnOrder[1] == 4 && !HasARiver)
+        {
+            turnOrder[1]++;
+        }
+        if (turnOrder[1] == 5 && !HasABonusRound)
+        {
+            turnOrder[1]++;
+        }
+
+        for (int i = 0; i < PlayerCount; i++)
+        {
+            HasChecked[i] = false;
+        }
+
+        turnOrder[2] = turnOrder[0];
+
+
+        if (turnOrder[2] == 1 && IsOut[1]) { turnOrder[2]++; }
+        if (turnOrder[2] == 2 && IsOut[2]) { turnOrder[2]++; }
+        if (turnOrder[2] == 3 && IsOut[3]) { turnOrder[2] = 0; }
+
+        stillThisTurn = true;
+    }
+
+    private bool CheckForEndOfRound()
+    {
         if (IsOut[0] && !isAllIn[0])
         {
             FindWhoWon();
-            return;
+            return true;
         }
         if (IsOut[1] && !isAllIn[1] && IsOut[2] && !isAllIn[2] && IsOut[3] && !isAllIn[3])
         {
             FindWhoWon();
-            return;
+            return true;
         }
-
-        if ((HasChecked[0] || IsOut[0]) && (HasChecked[1] || IsOut[1]) && (HasChecked[2] || IsOut[2]) && (HasChecked[3] || IsOut[3]))
+        if (isAllIn[0] || ((isAllIn[1] || IsOut[1]) && (isAllIn[2] || IsOut[2]) && (isAllIn[3] || IsOut[3])))
         {
-            Debug.Log("[TickTurn] All players checked or are out. Advancing round.");
-
-            if (turnOrder[1] < 6) { turnOrder[1]++; } else { FindWhoWon();}
-            battleMenu.BetIsSet = false;
-
-
-            if (isAllIn[0] || ((isAllIn[1] || IsOut[1]) && (isAllIn[2] || IsOut[2]) && (isAllIn[3] || IsOut[3]))) 
-                {
-                Debug.Log("ALL IN LOOP");
-                AllInLoop();
-                }
-
-
-            if (turnOrder[1] == 1) { battleMenu.BetIsSet = true; }
-            for (int i = 0; i < 4; i++)
-            {
-                HasChecked[i] = false;
-            }
-            turnOrder[2] = turnOrder[0];
-
-            if (turnOrder[1] == 4 && !HasARiver)
-            {
-                turnOrder[1]++;
-             }
-            if (turnOrder[1] == 5 && !HasABonusRound)
-            {
-                turnOrder[1]++;
-            }
-
-            if (turnOrder[2] == 1 && IsOut[1]) { turnOrder[2]++; }
-            if (turnOrder[2] == 2 && IsOut[2]) { turnOrder[2]++; }
-            if (turnOrder[2] == 3 && IsOut[3]) 
-            {
-                Debug.Log("[TickTurn] All players out. HAND OVER.");
-                FindWhoWon();
-                return;
-            }
-            stillThisTurn = true;
+            Debug.Log("ALL IN LOOP");
+            stillThisTurn = false;
+            AllInLoop();
+            return true;
         }
-        Debug.Log("[TickTurn] Ending. turnOrder: [" + turnOrder[0] + ", " + turnOrder[1] + ", " + turnOrder[2] + "]");
-        PlayerOptions();
+        else return false;
     }
 
     private void TurnAssign()
@@ -147,7 +167,7 @@ public class PokerTurnManager : MonoBehaviour
 
         pokerChipManager.BetToThePot(bigBlind, pokerChipManager.anteAmount);
         pokerChipManager.BetToThePot(smallBlind, 1);
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < PlayerCount; i++)
         {
             HasChecked[i] = true;
         }
@@ -218,24 +238,20 @@ public class PokerTurnManager : MonoBehaviour
         battleMenu.UpdateButtonDisplay(4);
         FindWhoWon();
     }
+    private void  AllInLoop()
 
-    private void AllInLoop()
     {
+
+        // Call ShowdownReveal and wait 1 second
+        pokerTableCards.ShowdownReveal();
         int cardsLeftToDeal = 5;
-        Debug.Log("Cards left to deal:" + cardsLeftToDeal);
         if (HasABonusRound) { cardsLeftToDeal++; }
-        Debug.Log("After Bonus Check:" + cardsLeftToDeal);
-        if (!HasARiver){ cardsLeftToDeal--; }
-        Debug.Log("After River Check:" + cardsLeftToDeal);
+        if (!HasARiver) { cardsLeftToDeal--; }
         if (turnOrder[1] == 2 && cardsLeftToDeal >= 3) { cardsLeftToDeal -= 3; }
-        Debug.Log("After Flop Check:" + cardsLeftToDeal);
         if (turnOrder[1] == 3 && cardsLeftToDeal >= 1) { cardsLeftToDeal--; }
-        Debug.Log("After Turn Check:" + cardsLeftToDeal);
         if (turnOrder[1] == 4 && cardsLeftToDeal >= 1) { cardsLeftToDeal--; }
-        Debug.Log("After River2 Check:" + cardsLeftToDeal);
         if (turnOrder[1] == 5 && cardsLeftToDeal >= 1) { cardsLeftToDeal--; }
-        Debug.Log("After Bonus2 Check:" + cardsLeftToDeal);
-        Debug.Log("Cards left to deal:" + cardsLeftToDeal);
+
         if (cardsLeftToDeal > 0)
         {
             for (int i = 0; i < cardsLeftToDeal; i++)
@@ -243,7 +259,7 @@ public class PokerTurnManager : MonoBehaviour
                 pokerDrawPile.DealRiverCards();
             }
         }
-        Debug.Log("ComparedHands");
+        Debug.Log("Compared Hands");
         FindWhoWon();
     }
 
@@ -256,41 +272,61 @@ public class PokerTurnManager : MonoBehaviour
         {
             return;
         }
-        playersStillIn.Clear();
-
+        Debug.Log("We have a showdown!");
         int minimumHandRank = GetMonsterHand();
         int playerWinners = 0;
-        for (int i = 1; i < 4; i++)
+        Debug.Log("Monster Hand: " + minimumHandRank);
+        for (int i = 1; i < PlayerCount; i++)
         {
             if (!IsOut[i] || isAllIn[i])
             {
                 int p = GetPlayerHand(i);
+                Debug.Log("Player "+i+" Hand: " + p);
                 if (p > minimumHandRank)
                 {
                     playerWinners++;
+                    Debug.Log("Found player " + i + " Whos hand is a better rank");
                     playersStillIn.Add(i);
                 }
+
                 else if (p == minimumHandRank)
                 {
-                    int won = 0;
-                    while (won == 0)
+                    Debug.Log("Player " + i + " hand rank tie!");
+
+                    bool resolved = false;
+
+                    for (int j = 0; j < 5; j++) // Compare up to 5 kicker cards
                     {
-                        for (int j = 0; j < 5; j++)
+                        int tiebreakerBeat = GetMonsterRank(j);
+                        int tiebreakerHave = GetPlayerRank(i, j);
+
+                        if (tiebreakerHave > tiebreakerBeat)
                         {
-                            int tiebreakerBeat = GetMonsterRank(j);
-                            int tiebreakerHave = GetPlayerRank(i,j);
-                            if (tiebreakerHave > tiebreakerBeat)
-                            {
-                                playerWinners++;
-                                playersStillIn.Add(i);
-                                won = 1;
-                            } 
-                            else if (tiebreakerHave < tiebreakerBeat)
-                            {
-                                won = 2;
-                            }
+                            playerWinners++;
+                            playersStillIn.Add(i);
+                            Debug.Log("Player " + i + " wins tie with higher kicker.");
+                            resolved = true;
+                            break; // Stop comparing
+                        }
+                        else if (tiebreakerHave < tiebreakerBeat)
+                        {
+                            Debug.Log("Player " + i + " loses tie with lower kicker.");
+                            resolved = true;
+                            break; // Stop comparing
                         }
                     }
+
+                    if (!resolved)
+                    {
+                        // Complete tie after all 5 kickers
+                        Debug.Log("Player " + i + " ties exactly with monster hand. Pot is split.");
+                        playersStillIn.Add(i);
+                        playersStillIn.Add(0);
+                    }
+                }
+                else if (p < minimumHandRank)
+                {
+                    Debug.Log("Player " + i + " Does not win");
                 }
             }
         }
@@ -300,7 +336,9 @@ public class PokerTurnManager : MonoBehaviour
             playersStillIn.Add(0);
         }
         Debug.Log("[FindWhoWon] Players who won: " + string.Join(",", playersStillIn));
+       
         pokerChipManager.SplitThePot(playersStillIn);
+      
         ClearTurnVariables();
     }
 
@@ -309,15 +347,17 @@ public class PokerTurnManager : MonoBehaviour
         //If the Monster Folded players still in split the pot
         if (IsOut[0] && !isAllIn[0])
         {
-            for (int i = 1; i < 4; i++)
+            for (int i = 1; i < PlayerCount; i++)
             {
                 if (!IsOut[i] || isAllIn[i])
                 {
                     playersStillIn.Add(i);
-                    pokerChipManager.SplitThePot(playersStillIn);
-                    ClearTurnVariables();
+                    Debug.Log("[FindWhoWon] Monsters Folded, Players who won: " + string.Join(",", playersStillIn));
+                    
                 }
             }
+            pokerChipManager.SplitThePot(playersStillIn);
+            ClearTurnVariables();
             return true;
         }
 
@@ -325,7 +365,7 @@ public class PokerTurnManager : MonoBehaviour
         if ((IsOut[1] && !isAllIn[1]) && (IsOut[2] && !isAllIn[2]) && (IsOut[3] && !isAllIn[3]))
         {
             playersStillIn.Add(0);
-            Debug.Log("Monsters get the pot");
+            Debug.Log("Players folded, Monsters get the pot");
             pokerChipManager.SplitThePot(playersStillIn);
             ClearTurnVariables();
             return true;
@@ -411,12 +451,12 @@ public class PokerTurnManager : MonoBehaviour
         stillThisTurn = false;
         playersStillIn.Clear();
         turnOrder[0]++;
-        if (turnOrder[0] > 3) { turnOrder[0] -= 4; }
+        if (turnOrder[0] > 3) { turnOrder[0] -= PlayerCount; }
         turnOrder[1] = 0;
         turnOrder[2] = 0;
         pokerChipManager.potChips = 0;
         pokerChipManager.BetSize = 2;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < PlayerCount; i++)
         {
             IsOut[i] = false;
             if (pokerChipManager.playerChips[i] == 0) { IsOut[i] = true; }

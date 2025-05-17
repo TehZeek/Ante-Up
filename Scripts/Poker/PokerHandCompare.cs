@@ -634,6 +634,10 @@ public class PokerHandCompare : MonoBehaviour
 
     private void UpdateHandToCompare(HandTypes bestHandType, List<int> bestHandRanks, List<Card> bestHandPlayed, int playerNumber)
     {
+        bestHandRanks.Add(0);
+        bestHandRanks.Add(0);
+        bestHandRanks.Add(0);
+        bestHandRanks.Add(0);
         if (playerNumber == 0)
         {
             monHand = bestHandPlayed.ToList();
