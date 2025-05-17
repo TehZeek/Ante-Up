@@ -7,9 +7,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 public class BattleMenu : MonoBehaviour
 {
-    public int betSize = 2;
-    public bool BetIsSet = false;
-    public bool[] isAllIn = new bool[] { false, false, false, false };
+    public bool BetIsSet = true;
     public bool AllInTrigger = false;
     private PokerTurnManager pokerTurnManager;
     private PokerChipManager pokerChipManager;
@@ -35,7 +33,7 @@ public class BattleMenu : MonoBehaviour
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
-
+        Debug.Log("Finished Battle Menu start");
         UpdateButtonDisplay(0);
     }
 
@@ -47,11 +45,11 @@ public class BattleMenu : MonoBehaviour
 
     public void NextTurn()
     {
-        betSize = 0;
-        BetIsSet = false;
+        pokerChipManager.BetSize = 0;
+        BetIsSet = true;
         for (int i = 0; i < 4; i++)
         {
-            pokerChipManager.MeetTheBet[i] = 0;
+            pokerChipManager.InThePot[i] = 0;
         }
     }
 
@@ -97,71 +95,35 @@ public class BattleMenu : MonoBehaviour
     private void CallChosen()
     {
         int player = pokerTurnManager.turnOrder[2];
-        int amountOwed = betSize - pokerChipManager.MeetTheBet[player];
-        if (pokerChipManager.playerChips[player] > amountOwed)
-        {
-            pokerChipManager.BetToThePot(player, amountOwed);
-            pokerTurnManager.HasChecked[player] = true;
-        }
-        else
-        {
-            amountOwed = pokerChipManager.playerChips[player];
-            pokerChipManager.BetToThePot(player, amountOwed);
-            pokerChipManager.playerChips[player] = 0;
-            isAllIn[player] = true;
-            AllInChosen();
-        }
-        Debug.Log("Call");
+        int amountOwed = pokerChipManager.BetSize - pokerChipManager.InThePot[player];
+        pokerChipManager.BetToThePot(player, amountOwed);
+        pokerTurnManager.HasChecked[player] = true;
         NextPlayer();
         //make adjustments for an all in and fold button
     }
 
     private void BetChosen()
     {
-        Debug.Log("Bet");
         if (!BetIsSet)
         {
             //BetPower();
         }
-        if (pokerChipManager.playerChips[pokerTurnManager.turnOrder[2]]>1)
-        {
-            betSize++;
-            BetIsSet = true;
+        BetIsSet = true;
             for (int i = 0; i < 4; i++)
             {
                 pokerTurnManager.HasChecked[i] = false;
             }
-            pokerTurnManager.HasChecked[pokerTurnManager.turnOrder[2]] = true;
-            pokerChipManager.BetToThePot(pokerTurnManager.turnOrder[2], 1);
-            NextPlayer();
-        }
-        else if (pokerChipManager.playerChips[pokerTurnManager.turnOrder[2]] == 1)
-        {
-            betSize++;
-            BetIsSet = true;
-            isAllIn[pokerTurnManager.turnOrder[2]] = true;
-            for (int i = 0; i < 4; i++)
-            {
-                pokerTurnManager.HasChecked[i] = false;
-            }
-            pokerTurnManager.HasChecked[pokerTurnManager.turnOrder[2]] = true;
-            pokerChipManager.BetToThePot(pokerTurnManager.turnOrder[2], 1);
-            AllInChosen();
-            NextPlayer();
-        }
-        else
-        {
-            Debug.Log("No money tho");
-            //set a disabled button variation? Or fix via All In logic?
-        }
-
+        pokerTurnManager.HasChecked[pokerTurnManager.turnOrder[2]] = true;
+        pokerChipManager.BetToThePot(pokerTurnManager.turnOrder[2], (1 + pokerChipManager.BetSize - pokerChipManager.InThePot[pokerTurnManager.turnOrder[2]]));
+        pokerChipManager.BetSize += 1;
+        NextPlayer();
+        
         //set a max bet to monster's chips?
         //space for player power
     }
 
     private void RaiseChosen()
     {
-        Debug.Log("Raise");
         BetChosen();
     }
 
@@ -170,12 +132,10 @@ public class BattleMenu : MonoBehaviour
     {
         int player = pokerTurnManager.turnOrder[2];
         pokerTurnManager.HasChecked[player] = true;
-        Debug.Log("Check");
         NextPlayer();
     }
     private void FoldChosen()
     {
-        Debug.Log("Fold");
         int player = pokerTurnManager.turnOrder[2];
         pokerTurnManager.IsOut[player] = true;
         pokerTableCards.Fold(player);
@@ -199,6 +159,7 @@ public class BattleMenu : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f); // 30 frames at 60 FPS
         isAnimating = false;
+        Debug.Log("Finished button animation");
         if (AllInTrigger) { UpdateButtonDisplay(3); }
         else if (!BetIsSet) { UpdateButtonDisplay(1); }
         else { UpdateButtonDisplay(2); }
@@ -245,14 +206,17 @@ public class BattleMenu : MonoBehaviour
         }
         if (displaySwitch == 21)
         {
+            Debug.Log("turned on call rollover");
             CallCall.gameObject.SetActive(true);
         }
         if (displaySwitch == 22)
         {
+            Debug.Log("turned on raise rollover");
             CallRaise.gameObject.SetActive(true);
         }
         if (displaySwitch == 23)
         {
+            Debug.Log("turned on Fold rollover");
             CallFold.gameObject.SetActive(true);
         }
         if (displaySwitch == 3)
@@ -266,6 +230,10 @@ public class BattleMenu : MonoBehaviour
         if (displaySwitch == 31)
         {
             AllInOver.gameObject.SetActive(true);
+        }
+        if (displaySwitch == 4)
+        {
+            allButtonOff();
         }
     }
 

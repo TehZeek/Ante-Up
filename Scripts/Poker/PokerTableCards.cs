@@ -228,13 +228,9 @@ public class PokerTableCards : MonoBehaviour
         int guy3 = 2;
         int guy4 = 3;
 
-        Debug.Log("Sending Monster to Compare");
         pokerHandCompare.UpdateHandType(monsterPocket, tableHand, guy);
-        Debug.Log("Sending p1 to Compare");
         pokerHandCompare.UpdateHandType(playerOnePocket, tableHand, guy2);
-        Debug.Log("Sending p2 to Compare");
         pokerHandCompare.UpdateHandType(playerTwoPocket, tableHand, guy3);
-        Debug.Log("Sending p3 to Compare");
         pokerHandCompare.UpdateHandType(playerThreePocket, tableHand, guy4);
 
     }

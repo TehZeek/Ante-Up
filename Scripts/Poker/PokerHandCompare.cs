@@ -37,14 +37,11 @@ public class PokerHandCompare : MonoBehaviour
     // private bool hasHatTrick = false;
     private bool hasThree = false;
     private bool hasStraight = false;
-    private bool hasLowStraight = false;
     private bool hasFlush = false;
     private bool hasFour = false;
     //bool private hasTwoThree = false;
     //bool private hasFive = false;
     //bool private hasSix = false;
-    private bool hasStraightFlush = false;
-    private bool hasRoyal = false;
     // bool private hasPlunger = false;
     // bool private hasLongBoy = false;
 
@@ -80,8 +77,6 @@ public class PokerHandCompare : MonoBehaviour
         PairCheck();
         FlushCheck();
         StraightCheck();
-
-        Debug.Log("Got these bools back: P " + hasPair + " 2P " + hasTwoPair + " 3 " + hasThree + " S " + hasStraight + " F " + hasFlush + " Full " + hasFour);
 
         // with bools turned on, we clean up the hand based on it's rank
         if (hasFour)
@@ -147,7 +142,6 @@ public class PokerHandCompare : MonoBehaviour
                     bestHandType = (highestStraightFlushRank == 13) ? allHandTypes[10] : allHandTypes[9];
                     handRank[0] = highestStraightFlushRank;
 
-                    Debug.Log($"Straight Flush found! Highest card: {highestStraightFlushRank}");
                     break;
                 }
             }
@@ -164,7 +158,6 @@ public class PokerHandCompare : MonoBehaviour
                 bestHandType = allHandTypes[9]; // Assign as a Straight Flush
                 handRank[0] = highestStraightFlushRank;
 
-                Debug.Log("Ace-low Straight Flush found: Ace, 2, 3, 4, 5");
             }
 
             // If no Straight Flush was found, store the highest Flush card rank
@@ -172,7 +165,6 @@ public class PokerHandCompare : MonoBehaviour
             {
                 handRank[0] = (int)flushCards.First().cardRank.First();
                 bestHandType = allHandTypes[6]; // Regular Flush
-                Debug.Log($"Flush found! Highest card: {handRank[0]}");
             }
 
             handRank[1] = 0;
@@ -206,7 +198,6 @@ public class PokerHandCompare : MonoBehaviour
                             .Take(5)
                             .ToList();
 
-                        Debug.Log($"Straight found: {bestHand.First().cardRank.First()} to {bestHand.Last().cardRank.First()}");
                         
                         foundStraight = true;
                         break;
@@ -230,7 +221,6 @@ public class PokerHandCompare : MonoBehaviour
                         .Take(5)
                         .ToList();
 
-                    Debug.Log("Ace-low straight found: Ace, 2, 3, 4, 5");
                     
 
 
@@ -462,7 +452,6 @@ public class PokerHandCompare : MonoBehaviour
             p3Rank.Clear();
             P3Hand = allHandTypes[0];
         }
-        Debug.Log("Cleared Player " + playNum + " Hand");
     }
 
     private void ClearRankBools()
@@ -472,17 +461,13 @@ public class PokerHandCompare : MonoBehaviour
     //   hasHatTrick = false;
       hasThree = false;
       hasStraight = false;
-      hasLowStraight = false;
       hasFlush = false;
       hasFour = false;
     //  hasTwoThree = false;
     //  hasFive = false;
     //  hasSix = false;
-      hasStraightFlush = false;
-      hasRoyal = false;
         //   hasPlunger = false;
         //   hasLongBoy = false;
-        Debug.Log("Cleared Bools: " + hasPair + hasTwoPair + hasThree + hasStraight + hasLowStraight + hasFlush + hasFour + hasStraightFlush + hasRoyal);
     }
 
     private void PairCheck()
@@ -497,13 +482,11 @@ public class PokerHandCompare : MonoBehaviour
         {
             if (group.Count == 2)
             {
-                Debug.Log($"Pair found: {group.Rank}");
               //  if (hasTwoPair)
               //  { hasThreePair = true; }
                 if (hasPair)
                 { 
                     hasTwoPair = true;
-                    Debug.Log("Two Pair found!");
                 }
                 hasPair = true;
             }
@@ -512,12 +495,10 @@ public class PokerHandCompare : MonoBehaviour
                // if (hasThree)
               //  { hasTwoThree = true; }
                 hasThree = true;
-                Debug.Log($"Three of a Kind found: {group.Rank}");
             }
             if (group.Count == 4)
             {
                 hasFour = true;
-                Debug.Log($"Four of a Kind found: {group.Rank}");
             }
            // if (group.Count == 5)
            // {
@@ -547,7 +528,6 @@ public class PokerHandCompare : MonoBehaviour
 
         foreach (var group in flush)
         {
-            Debug.Log($"Found {group.Count} of {group.Rank}");
             hasFlush = true;
         }
        // foreach (var group in plungerFlush)
@@ -575,9 +555,7 @@ public class PokerHandCompare : MonoBehaviour
         rankValues.Contains((int)Card.CardRank.Four) &&
         rankValues.Contains((int)Card.CardRank.Five))
     {
-        Debug.Log("Ace-low straight found: Ace, 2, 3, 4, 5");
         hasStraight = true;
-        hasLowStraight = true;
         handRank[0] = 5;
     }
     if (rankValues.Contains((int)Card.CardRank.Ace) &&
@@ -586,9 +564,7 @@ public class PokerHandCompare : MonoBehaviour
         rankValues.Contains((int)Card.CardRank.Jack) &&
         rankValues.Contains((int)Card.CardRank.Ten))
     {
-        Debug.Log("Ace-high straight found: Ace, K, Q, J, 10");
         hasStraight = true;
-        hasRoyal = true;
         handRank[0] = 13;
     }
 
@@ -599,7 +575,6 @@ public class PokerHandCompare : MonoBehaviour
             rankValues[i + 3] == rankValues[i] + 3 &&
             rankValues[i + 4] == rankValues[i] + 4)
         {
-            Debug.Log($"Straight found: {currentHand[i].cardRank.First()} to {currentHand[i + 4].cardRank}");
             hasStraight = true;
             handRank[0] = rankValues[i + 4];
             handRank[1] = 0;

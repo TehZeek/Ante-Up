@@ -9,22 +9,27 @@ public class PokerChipManager : MonoBehaviour
 {
     // to add, a script for not having enough money to bet
     private GameManager gameManager;
+    private BattleMenu battleMenu;
+    private PokerTurnManager pokerTurnManager;
+
     public int[] playerChips = new int[] { 0, 0, 0, 0 };
     private int partyChips;
-    private int potChips;
+    public int potChips;
     public int[] InThePot = new int[] { 0, 0, 0, 0 };
-    public int[] MeetTheBet = new int[] { 0, 0, 0, 0 };
     public TextMeshProUGUI p1ChipDisplay;
     public TextMeshProUGUI p2ChipDisplay;
     public TextMeshProUGUI p3ChipDisplay;
     public TextMeshProUGUI monChipDisplay;
     public TextMeshProUGUI potChipDisplay;
     public int anteAmount = 2;
+    public int BetSize = 2;
 
 
     void Start()
     {
         gameManager = FindFirstObjectByType<GameManager>();
+        battleMenu = FindFirstObjectByType<BattleMenu>();
+        pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         BattleManager battleManager = FindFirstObjectByType<BattleManager>();
         partyChips = gameManager.PartyChips;
         playerChips[0] = battleManager.monster.monsterChips;
@@ -50,18 +55,23 @@ public class PokerChipManager : MonoBehaviour
             {
                 playerChips[player] -= amount;
                 potChips += amount;
+                InThePot[player] += amount;
             }
-            else { NotEnoughChips(player); }
+        else 
+            {
+            potChips += playerChips[player];
+            InThePot[player] += playerChips[player];
+            playerChips[player] = 0;
+            NotEnoughChips(player);
+            }
 
-        InThePot[player] += amount;
-        MeetTheBet[player] += amount;
-        UpdateChipDisplay();
+            UpdateChipDisplay();
     }
 
     private void NotEnoughChips(int player)
     {
-    //let's add some all in logic here, or game over, or just a denial of chips
-    Debug.Log("Not enough Chips for Player " + player);
+        pokerTurnManager.isAllIn[player] = true;
+        pokerTurnManager.IsOut[player] = true;
     }
 
     public void SplitThePot (List<int> players)

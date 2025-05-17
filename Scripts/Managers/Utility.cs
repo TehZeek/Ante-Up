@@ -12,7 +12,6 @@ namespace ZeekSpace
 
             if (n == 0)
             {
-                Debug.LogError("Cannot shuffle an empty list!");
                 return;
             }
 
@@ -21,7 +20,7 @@ namespace ZeekSpace
                 int j = random.Next(0, i + 1);
                 (list[j], list[i]) = (list[i], list[j]);
             }
-            Debug.Log("Finished Shuffling!");
+
         }
     }
 }

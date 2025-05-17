@@ -96,7 +96,6 @@ public class CardDisplay : MonoBehaviour
 
     private void PipDisplay(int theRank)
     {
-        Debug.Log(theRank);
         if (theRank == 1)
         {
             pipImages[0].gameObject.SetActive(true);
@@ -184,11 +183,3 @@ public class CardDisplay : MonoBehaviour
     }
 
 }
-
-// 3   7
-//   0
-// 4   8
-// 11 1 12
-// 5   9
-//   2
-// 6   10
