@@ -76,8 +76,8 @@ public class PokerTurnManager : MonoBehaviour
 
     public void TickTurn()
     {
-        if (CheckForEndOfRound()){ return; }
         AdvanceTurnIndex();
+        if (CheckForEndOfRound()) { return; }
         Debug.Log("[TickTurn] Ending. turnOrder: [" + turnOrder[0] + ", " + turnOrder[1] + ", " + turnOrder[2] + "]");
         PlayerOptions();
     }
@@ -86,12 +86,16 @@ public class PokerTurnManager : MonoBehaviour
     {
         battleMenu.AllInTrigger = false;
         Debug.Log("[TickTurn] Called. Current Player Turn Index: " + turnOrder[2]);
-        turnOrder[2]++;
-        for (int i = 0; i < 4; i++)
+
+        do
         {
-            if (turnOrder[2] == i && IsOut[i]) { turnOrder[2]++; }
-        }
-        if (turnOrder[2] > 3) { turnOrder[2] = 0; }
+            turnOrder[2]++;
+            if (turnOrder[2] >= PlayerCount)
+            {
+                turnOrder[2] = 0;
+            }
+        } while (IsOut[turnOrder[2]]);
+
         Debug.Log("[TickTurn] After incrementing, turnOrder[2]: " + turnOrder[2]);
 
         if ((HasChecked[0] || IsOut[0]) && (HasChecked[1] || IsOut[1]) && (HasChecked[2] || IsOut[2]) && (HasChecked[3] || IsOut[3])) 
@@ -101,6 +105,8 @@ public class PokerTurnManager : MonoBehaviour
     }
     private void AdvanceRound()
     {
+        if (CheckAllIn()) { return; }
+
         Debug.Log("[TickTurn] All players checked or are out. Advancing round.");
         battleMenu.BetIsSet = false;
 
@@ -131,6 +137,17 @@ public class PokerTurnManager : MonoBehaviour
 
         stillThisTurn = true;
     }
+    private bool CheckAllIn()
+    {
+        if (isAllIn[0] || ((isAllIn[1] || IsOut[1]) && (isAllIn[2] || IsOut[2]) && (isAllIn[3] || IsOut[3])))
+        {
+            Debug.Log("ALL IN LOOP");
+            stillThisTurn = false;
+            AllInLoop();
+            return true;
+        }
+        return false;
+    }
 
     private bool CheckForEndOfRound()
     {
@@ -139,19 +156,17 @@ public class PokerTurnManager : MonoBehaviour
             FindWhoWon();
             return true;
         }
-        if (IsOut[1] && !isAllIn[1] && IsOut[2] && !isAllIn[2] && IsOut[3] && !isAllIn[3])
+        else if (IsOut[1] && !isAllIn[1] && IsOut[2] && !isAllIn[2] && IsOut[3] && !isAllIn[3])
         {
             FindWhoWon();
             return true;
         }
-        if (isAllIn[0] || ((isAllIn[1] || IsOut[1]) && (isAllIn[2] || IsOut[2]) && (isAllIn[3] || IsOut[3])))
+
+        else
         {
-            Debug.Log("ALL IN LOOP");
-            stillThisTurn = false;
-            AllInLoop();
-            return true;
+            Debug.Log("Not ending the round early");
+            return false; 
         }
-        else return false;
     }
 
     private void TurnAssign()

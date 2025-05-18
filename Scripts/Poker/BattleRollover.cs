@@ -14,7 +14,12 @@ public class BattleRollover : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!battleMenu.isAnimating)
+
+        if (ButtonNum == 11 && (battleMenu.pokerTurnManager.isAllIn[0] || battleMenu.AllInTrigger))
+        {
+            return;
+        }
+        else if (!battleMenu.isAnimating)
         {
             if (battleMenu.AllInTrigger && !battleMenu.BetIsSet)
             {
@@ -24,6 +29,11 @@ public class BattleRollover : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             if (battleMenu.AllInTrigger && battleMenu.BetIsSet)
             {
                 battleMenu.UpdateButtonDisplay(ButtonNum + 40);
+                return;
+            }
+            if (battleMenu.pokerTurnManager.isAllIn[0])
+            {
+                battleMenu.UpdateButtonDisplay(ButtonNum + 50);
                 return;
             }
             if (!battleMenu.BetIsSet)
@@ -49,6 +59,11 @@ public class BattleRollover : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             if (battleMenu.AllInTrigger && battleMenu.BetIsSet)
             {
                 battleMenu.UpdateButtonDisplay(5);
+                return;
+            }
+            if (battleMenu.pokerTurnManager.isAllIn[0])
+            {
+                battleMenu.UpdateButtonDisplay(6);
                 return;
             }
             if (!battleMenu.BetIsSet)

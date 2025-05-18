@@ -30,6 +30,7 @@ public class PokerDrawPile : MonoBehaviour
     void Start()
     {
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
+        battleManager = FindFirstObjectByType<BattleManager>();
         monsterPocketSize = battleManager.monster.pocketSize;
     }
 

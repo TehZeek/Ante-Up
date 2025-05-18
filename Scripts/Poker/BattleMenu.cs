@@ -10,7 +10,7 @@ public class BattleMenu : MonoBehaviour
 {
     public bool BetIsSet = true;
     public bool AllInTrigger = false;
-    private PokerTurnManager pokerTurnManager;
+    public PokerTurnManager pokerTurnManager;
     private PokerChipManager pokerChipManager;
     private PokerTableCards pokerTableCards;
 
@@ -28,36 +28,22 @@ public class BattleMenu : MonoBehaviour
     public Image AllInFold;
     public Image FoldAllIn;
     public Image FoldAllInFold;
+    public Image CallFoldNone;
+    public Image CallFoldCall;
+    public Image CallFoldFold;
     public GameObject AllInOver;
     public GameObject FoldAllInOver;
     public GameObject BetInAni;
     public List<GameObject> buttons;
     public bool isAnimating = false;
-    public bool PlayerHasConfirmed = false;
-    public Button confirmButton;
 
     void Start()
     {
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
-        confirmButton.gameObject.SetActive(false); // Hide button initially
-        confirmButton.onClick.AddListener(PlayerConfirmed);
         Debug.Log("Finished Battle Menu start");
         UpdateButtonDisplay(0);
-    }
-
-    public void ShowConfirmButton(bool show)
-    {
-        confirmButton.gameObject.SetActive(show);
-        PlayerHasConfirmed = false; // Reset confirmation flag
-    }
-
-    public void PlayerConfirmed()
-    {
-        PlayerHasConfirmed = true;
-        ShowConfirmButton(false); // Hide the button after confirmation
-        Debug.Log("Player confirmed. Proceeding.");
     }
 
     public void NextPlayer()
@@ -94,7 +80,10 @@ public class BattleMenu : MonoBehaviour
         FoldAllIn.gameObject.SetActive(false);
         FoldAllInFold.gameObject.SetActive(false);
         FoldAllInOver.gameObject.SetActive(false);
-    }
+        CallFoldNone.gameObject.SetActive(false);
+        CallFoldCall.gameObject.SetActive(false);
+        CallFoldFold.gameObject.SetActive(false);
+}
 
     public void OptionOne()
     {
@@ -106,7 +95,8 @@ public class BattleMenu : MonoBehaviour
 
     public void OptionTwo()
     {
-        if (BetIsSet) { RaiseChosen(); }
+        if (pokerTurnManager.isAllIn[0]) { CallChosen(); }
+        else if (BetIsSet) { RaiseChosen(); }
         else { CheckChosen(); }
     }
 
@@ -188,6 +178,7 @@ public class BattleMenu : MonoBehaviour
         Debug.Log("Finished button animation");
         if (AllInTrigger && !BetIsSet) { UpdateButtonDisplay(3); }
         else if (AllInTrigger && BetIsSet) { UpdateButtonDisplay(5); }
+        else if (pokerTurnManager.isAllIn[0]) { UpdateButtonDisplay(6); }
         else if (!BetIsSet) { UpdateButtonDisplay(1); }
         else { UpdateButtonDisplay(2); }
     }
@@ -275,6 +266,18 @@ public class BattleMenu : MonoBehaviour
         if (displaySwitch == 53)
         {
             FoldAllInFold.gameObject.SetActive(true);
+        }
+        if (displaySwitch == 6)
+        {
+            CallFoldNone.gameObject.SetActive(true);
+        }
+        if (displaySwitch == 62)
+        {
+            CallFoldCall.gameObject.SetActive(true);
+        }
+        if (displaySwitch == 63)
+        {
+            CallFoldFold.gameObject.SetActive(true);
         }
     }
 
