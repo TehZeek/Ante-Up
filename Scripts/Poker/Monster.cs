@@ -9,7 +9,17 @@ namespace ZeekSpace
     {
         public string monsterName;
         public int monsterChips;
-        public Sprite monsterSprite;
+        public Sprite HUDSprite;
+        public GameObject battleSpritePrefab;
+        public Sprite Silloette;
+        public Sprite HandBottom;
+        public Sprite HandTop;
+        public bool isOut;
+        public bool isFolding;
+        public bool isAllIn;
+        public bool isBetting;
+        public bool wonHand;
+        public bool lostShowdown;
         public HandTypes minimumHand;
         public int minimumRank;
         public int pocketSize;

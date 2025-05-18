@@ -2,7 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
-
+using TMPro;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using ZeekSpace;
 
 
 public class GameManager : MonoBehaviour
@@ -24,6 +27,7 @@ public class GameManager : MonoBehaviour
 
     public bool PlayingCard = false;
     public int whichTurn = 1;
+    public List<Character> characters = new List<Character>();
 
 
     private void Awake()

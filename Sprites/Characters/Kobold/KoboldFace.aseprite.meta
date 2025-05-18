@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 341fd7e559b410041b86fb2950e077bc
+guid: c10b4c785477222479629654734dd960
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -33,10 +33,10 @@ ScriptedImporter:
     sRGBTexture: 1
     spriteMode: 2
     spriteExtrude: 1
-    spriteMeshType: 1
+    spriteMeshType: 0
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 100
+    spritePixelsToUnits: 75
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 0
+  platformSettingsDirtyTick: 638831712683818645
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -123,9 +123,9 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: duckface
+  - name: KoboldFace
     originalName: 
-    pivot: {x: 0.4016393, y: 0}
+    pivot: {x: 0.5, y: 0}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -133,9 +133,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 61
-      height: 24
-    spriteID: 5023efe851f2e07438cd0c6c652af6d9
+      width: 46
+      height: 31
+    spriteID: aa104a86e34c1e8499c29a3c98102e82
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -148,25 +148,25 @@ ScriptedImporter:
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 2703502658
+      value0: 578141630
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: duckface
+    name: KoboldFace
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: duckface
+    - name: KoboldFace
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 13
+        x: 0
         y: 0
-        width: 61
-        height: 24
-      spriteId: 5023efe851f2e07438cd0c6c652af6d9
+        width: 46
+        height: 31
+      spriteId: aa104a86e34c1e8499c29a3c98102e82
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -182,8 +182,32 @@ ScriptedImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     androidETC2FallbackOverride: 0
+  - name: DefaultTexturePlatform
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 512
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Standalone
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 75, y: 25}
-  previousTextureSize: {x: 128, y: 32}
+  canvasSize: {x: 46, y: 31}
+  previousTextureSize: {x: 64, y: 64}
