@@ -11,40 +11,48 @@ public class PokerChipManager : MonoBehaviour
     private GameManager gameManager;
     private BattleMenu battleMenu;
     private PokerTurnManager pokerTurnManager;
+    private BattleManager battleManager;
 
     public int[] playerChips = new int[] { 0, 0, 0, 0 };
     private int partyChips;
     public int potChips;
     public int[] InThePot = new int[] { 0, 0, 0, 0 };
-    public TextMeshProUGUI p1ChipDisplay;
-    public TextMeshProUGUI p2ChipDisplay;
-    public TextMeshProUGUI p3ChipDisplay;
-    public TextMeshProUGUI monChipDisplay;
+    private List<TextMeshProUGUI> ChipDisplay = new List<TextMeshProUGUI>();
     public TextMeshProUGUI potChipDisplay;
     public int anteAmount = 2;
     public int BetSize = 2;
 
 
-    void Start()
+    void Awake()
     {
         gameManager = FindFirstObjectByType<GameManager>();
         battleMenu = FindFirstObjectByType<BattleMenu>();
+        battleManager = FindFirstObjectByType<BattleManager>();
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
-        BattleManager battleManager = FindFirstObjectByType<BattleManager>();
         partyChips = gameManager.PartyChips;
         playerChips[0] = battleManager.monster.monsterChips;
         playerChips[1] = (int)Mathf.FloorToInt(partyChips / 3);
         playerChips[2] = (int)Mathf.Floor((partyChips - playerChips[1]) / 2);
         playerChips[3] = (int)(partyChips - playerChips[1] - playerChips[2]);
+
+        if (battleManager.HUDs.Count > 0)
+        {
+            ChipDisplay.Clear();
+            for (int i = 0; i < battleManager.HUDs.Count; i++)
+            {
+                ChipDisplay.Add(battleManager.HUDs[i].GetComponent<HUD>().chipsDisplay.GetComponent<TextMeshProUGUI>());
+            }
+        }
         UpdateChipDisplay();
     }
 
     public void UpdateChipDisplay()
     {
-        p1ChipDisplay.text = playerChips[1].ToString();
-        p2ChipDisplay.text = playerChips[2].ToString();
-        p3ChipDisplay.text = playerChips[3].ToString();
-        monChipDisplay.text = playerChips[0].ToString();
+        for (int i = 0; i < ChipDisplay.Count; i++)
+        {
+            battleManager.HUDs[i].GetComponent<HUD>().DisplayHUDChips(i);
+        }
+
         potChipDisplay.text = potChips.ToString();
         //throw in those visual sprite chips here
     }
@@ -82,7 +90,6 @@ public class PokerChipManager : MonoBehaviour
     for (int i = 0; i < players.Count; i++)
         {
             playerChips[players[i]] += splitAmount;
-
         }
         if (extraAmount > 0 && players[0] != 0)
     {

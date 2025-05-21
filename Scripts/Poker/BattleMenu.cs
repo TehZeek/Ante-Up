@@ -12,6 +12,7 @@ public class BattleMenu : MonoBehaviour
     public bool AllInTrigger = false;
     public PokerTurnManager pokerTurnManager;
     private PokerChipManager pokerChipManager;
+    private BattleManager battleManager; 
     private PokerTableCards pokerTableCards;
 
     //state images
@@ -41,6 +42,7 @@ public class BattleMenu : MonoBehaviour
     {
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
+        battleManager = FindFirstObjectByType<BattleManager>();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
         Debug.Log("Finished Battle Menu start");
         UpdateButtonDisplay(0);
@@ -127,10 +129,12 @@ public class BattleMenu : MonoBehaviour
             for (int i = 0; i < 4; i++)
             {
                 pokerTurnManager.HasChecked[i] = false;
+                battleManager.HUDs[i].GetComponent<HUD>().isBetter = false;
             }
         pokerTurnManager.HasChecked[pokerTurnManager.turnOrder[2]] = true;
         pokerChipManager.BetToThePot(pokerTurnManager.turnOrder[2], (1 + pokerChipManager.BetSize - pokerChipManager.InThePot[pokerTurnManager.turnOrder[2]]));
         pokerChipManager.BetSize += 1;
+        battleManager.HUDs[pokerTurnManager.turnOrder[2]].GetComponent<HUD>().isBetter = true;
         NextPlayer();
         
         //set a max bet to monster's chips?

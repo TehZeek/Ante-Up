@@ -26,11 +26,13 @@ public class PokerTableCards : MonoBehaviour
     public List<GameObject> monsterPocket = new List<GameObject>();
     public List<GameObject> tableHand = new List<GameObject>();
     public List<GameObject> burnDeck = new List<GameObject>();
+    private BattleManager battleManager;
     // import this from PokerDrawPile public List<GameObject> cardsInHand = new List<GameObject>(); // hold the list of card objects in our hand
 
     void Start()
     {
-        PokerDrawPile pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
+        pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
+        battleManager = FindFirstObjectByType<BattleManager>();
     }
 
     public void Fold(int player)
@@ -59,6 +61,7 @@ public class PokerTableCards : MonoBehaviour
             {
                 Object.Destroy(p1Transform.transform.GetChild(i).gameObject);
             }
+
             //go to player[1] is out
         }
         if (player == 2)
@@ -72,6 +75,7 @@ public class PokerTableCards : MonoBehaviour
             {
                 Object.Destroy(p2Transform.transform.GetChild(i).gameObject);
             }
+
             //go to player[2] is out
         }
         if (player == 3)
@@ -85,6 +89,7 @@ public class PokerTableCards : MonoBehaviour
             {
                 Object.Destroy(p3Transform.transform.GetChild(i).gameObject);
             }
+
             //go to player[3] is out
         }
         UpdateTableVisuals();
@@ -142,8 +147,6 @@ public class PokerTableCards : MonoBehaviour
             burnDeck.Add(newCard);
         }
         UpdateTableVisuals();
-
-
     }
 
     public void ClearTable()
@@ -172,10 +175,12 @@ public class PokerTableCards : MonoBehaviour
         {
             Object.Destroy(burnTransform.transform.GetChild(i).gameObject);
         }
+        battleManager.UpdateHUD();
     }
-    
+
     public void UpdateTableVisuals()
     {
+        battleManager.UpdateHUD();
         UpdateTV(monsterPocket);
         UpdateTV(playerOnePocket);
         UpdateTV(playerTwoPocket);

@@ -16,6 +16,7 @@ public class PokerTurnManager : MonoBehaviour
     private PokerDrawPile pokerDrawPile;
     private PokerTableCards pokerTableCards;
     private BattleMenu battleMenu;
+    private BattleManager battleManager; 
     private PokerHandCompare pokerHandCompare;
     public bool[] IsOut = new bool[] { false, false, false, false };
     public bool[] HasChecked = new bool[] { false, false, false, false };
@@ -30,6 +31,7 @@ public class PokerTurnManager : MonoBehaviour
     void Start()
     {
         gameManager = FindFirstObjectByType<GameManager>();
+        battleManager = FindFirstObjectByType<BattleManager>();
         pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
         turnOrder[0] = gameManager.whichTurn;
         turnOrder[1] = 0;
@@ -211,6 +213,7 @@ public class PokerTurnManager : MonoBehaviour
 
         Debug.Log("[PlayerOptions] Displaying player options.");
         battleMenu.UpdateButtonDisplay(0);
+        battleManager.UpdateHUD();
     }
 
     private void TheFlop()
@@ -478,8 +481,10 @@ public class PokerTurnManager : MonoBehaviour
             isAllIn[i] = false;
             HasChecked[i] = false;
             pokerChipManager.InThePot[i] = 0;
+            battleManager.HUDs[i].GetComponent<HUD>().isBetter = false;
         }
         pokerChipManager.UpdateChipDisplay();
+        battleManager.UpdateHUD();
         pokerDrawPile.Reshuffle();
         stillThisTurn = true;
         Debug.Log("[ClearTurnVariables] Variables reset complete.");

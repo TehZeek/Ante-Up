@@ -12,6 +12,7 @@ public class PokerDrawPile : MonoBehaviour
     public List<Card> drawPile = new List<Card>();
     public List<Card> tempDrawPile = new List<Card>();
     private int currentIndex = 0;
+    public List<int> PocketSize = new List<int>();
     public int playerOnePocketSize = 2;
     public int playerTwoPocketSize = 2;
     public int playerThreePocketSize = 2;
@@ -24,6 +25,7 @@ public class PokerDrawPile : MonoBehaviour
 
     private PokerTableCards pokerTableCards;
     private PokerBurnPile pokerBurnPile;
+    private PokerChipManager pokerChipManager;
     private GameManager gameManager;
     private BattleManager battleManager;
 
@@ -31,6 +33,7 @@ public class PokerDrawPile : MonoBehaviour
     {
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
         battleManager = FindFirstObjectByType<BattleManager>();
+        pokerChipManager = FindFirstObjectByType<PokerChipManager>();
         monsterPocketSize = battleManager.monster.pocketSize;
     }
 
@@ -59,11 +62,13 @@ public class PokerDrawPile : MonoBehaviour
 
     public void DealPocketCards()
     {
-        for (int i = 0; i < monsterPocketSize; i++)
-        {
-            DealCard(0);
-            currentIndex = (currentIndex + 1) % drawPile.Count;
-        }
+            for (int i = 0; i < monsterPocketSize; i++)
+            {
+                DealCard(0);
+                currentIndex = (currentIndex + 1) % drawPile.Count;
+            }
+
+
         for (int i = 0; i < playerOnePocketSize; i++)
         {
             DealCard(1);
