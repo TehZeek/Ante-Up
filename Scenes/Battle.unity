@@ -788,7 +788,7 @@ MonoBehaviour:
   p1Transform: {fileID: 36803905}
   p2Transform: {fileID: 439703473}
   p3Transform: {fileID: 1183416310}
-  monTransform: {fileID: 0}
+  monTransform: {fileID: 1734704294}
   tableTransform: {fileID: 548869500}
   burnTransform: {fileID: 1264775237}
   cardSpacing: 75
@@ -2118,6 +2118,10 @@ MonoBehaviour:
   drawPile: []
   tempDrawPile: []
   PocketSize: 
+  playerOnePocketSize: 2
+  playerTwoPocketSize: 2
+  playerThreePocketSize: 2
+  monsterPocketSize: 2
 --- !u!1 &1309445376
 GameObject:
   m_ObjectHideFlags: 0
