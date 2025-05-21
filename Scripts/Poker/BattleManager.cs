@@ -92,8 +92,16 @@ public class BattleManager : MonoBehaviour
 
         HandScore = (MonsterHand * 15) + MonsterRank;
 
+        List<int> TableRanks = new List<int>();
+        List<int> TableSuits = new List<int>();
+
         if (pokerTurnManager.turnOrder[1]>1)
         {
+            for (int i=0; i < pokerTableCards.tableHand.Count; i++)
+            {
+                //let's fill this list with our suits and ranks
+               //pokerTableCards.tableHand[i].GetComponent<CardDisplay>().cardData.IndexOf()
+            }
             //lets see what potential thing there could be
         }
 
