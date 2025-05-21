@@ -177,6 +177,8 @@ public class BattleMenu : MonoBehaviour
 
     private IEnumerator DelayButtonDisplay()
     {
+        ShiftScene shiftScene = FindFirstObjectByType<ShiftScene>();
+        shiftScene.ShiftTheScene();
         yield return new WaitForSeconds(0.5f); // 30 frames at 60 FPS
         isAnimating = false;
         Debug.Log("Finished button animation");
@@ -258,6 +260,8 @@ public class BattleMenu : MonoBehaviour
         if (displaySwitch == 4)
         {
             allButtonOff();
+            ShiftScene shiftScene = FindFirstObjectByType<ShiftScene>();
+            shiftScene.ShiftTheScene();
         }
         if (displaySwitch == 5)
         {
