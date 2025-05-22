@@ -90,7 +90,7 @@ public class BattleManager : MonoBehaviour
             MonsterRank = monster.minimumRank;
         }
 
-        HandScore = (MonsterHand * 15) + MonsterRank;
+        HandScore = ((MonsterHand -1) * 15) + MonsterRank;
         HandScore += BonusHandPoints();
         int temp = TablePoints();
         if (temp < HandScore)
@@ -99,7 +99,7 @@ public class BattleManager : MonoBehaviour
         }
 
         int roundsLeft = RoundMultiplier();
-        roundsLeft *= 10;
+        roundsLeft *= 5;
         HandScore += roundsLeft;
 
         //BET    CALL    CHECK    FOLD
@@ -195,7 +195,7 @@ public class BattleManager : MonoBehaviour
             }
             else if (rankValues[i + 1] == rankValues[i] + 2)
             {
-                bonusPoints -= 2;
+                bonusPoints -= 1;
                 howManyStraight++;
             }
             if (howManyStraight == 3)
