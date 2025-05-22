@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using ZeekSpace;
+using System.Linq;
 
 public class BattleManager : MonoBehaviour
 {
@@ -51,7 +52,7 @@ public class BattleManager : MonoBehaviour
 
     public enum MonsterChoice
         {
-        Bet, Raise, Call, Check, Fold, AllIn, Flee
+        Bet, Call, Check, Fold, Flee
         }
 
     public MonsterChoice MonsterDecision()
@@ -61,7 +62,6 @@ public class BattleManager : MonoBehaviour
         //pass a MonsterChoice enum
         PokerHandCompare pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
         int HandScore;
-        int PossibleHands;
         int MinimumHandType = pokerHandCompare.allHandTypes.IndexOf(monster.minimumHand);
         int CurrentHandType = pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.MonHand);
         int MonsterHand;
@@ -91,26 +91,230 @@ public class BattleManager : MonoBehaviour
         }
 
         HandScore = (MonsterHand * 15) + MonsterRank;
-
-        List<int> TableRanks = new List<int>();
-        List<int> TableSuits = new List<int>();
-
-        if (pokerTurnManager.turnOrder[1]>1)
+        HandScore += BonusHandPoints();
+        int temp = TablePoints();
+        if (temp < HandScore)
         {
-            for (int i=0; i < pokerTableCards.tableHand.Count; i++)
-            {
-                //let's fill this list with our suits and ranks
-               //pokerTableCards.tableHand[i].GetComponent<CardDisplay>().cardData.IndexOf()
-            }
-            //lets see what potential thing there could be
+            HandScore -= temp;
         }
 
+        int roundsLeft = RoundMultiplier();
+        roundsLeft *= 10;
+        HandScore += roundsLeft;
 
+        //BET    CALL    CHECK    FOLD
+        // subtract for each power enemy uses
+        // add for each one we use, maybe
+        BattleMenu battleMenu = FindFirstObjectByType<BattleMenu>();
+        if (HandScore < 20 && battleMenu.BetIsSet) 
+        { 
+            int bluffmaybe = Random.Range(1, 10);
+            if (bluffmaybe < 3) { return MonsterChoice.Bet; }
+            else { return MonsterChoice.Fold; } 
+        }
 
-        return 0;
+        if (HandScore < 40) {
+            int bluffmaybe = Random.Range(1, 10);
+            if (bluffmaybe < 3) { return MonsterChoice.Bet; }
+            else { return MonsterChoice.Check; }
+        }
+
+        if (HandScore > 40 && battleMenu.BetIsSet) { return MonsterChoice.Call; }
+        if (HandScore > 60) { return MonsterChoice.Bet; }
+        return MonsterChoice.Fold;
     }
 
 
+
+    private int TablePoints()
+    {
+        int multiplier = RoundMultiplier();
+        int bonusPoints = 0;
+        List<Card> currentHand = new List<Card>();
+        for (int i = 0; i < pokerTableCards.tableHand.Count; i++)
+        {
+            Card temp = pokerTableCards.tableHand[i].gameObject.GetComponent<CardDisplay>().cardData;
+            currentHand.Add(temp);
+        }
+
+        var rankedGroups = currentHand.GroupBy(card => card.cardRank.First())
+                                     .Select(group => new { Rank = group.Key, Count = group.Count() })
+                                     .ToList();
+        foreach (var group in rankedGroups)
+        {
+            if (group.Count == 2)
+            {
+                bonusPoints -= 5;
+            }
+            if (group.Count == 3)
+            {
+                bonusPoints -= 15;
+            }
+            if (group.Count == 4)
+            {
+                bonusPoints -= 50;
+            }
+
+        }
+        var flush = currentHand.GroupBy(card => card.cardSuit.First())
+                .Where(group => group.Count() > 2)
+                .Select(group => new { Rank = group.Key, Count = group.Count() })
+                                      .ToList();
+        foreach (var group in flush)
+        {
+            if (group.Count == 2)
+            {
+                bonusPoints -= 1;
+            }
+            if (group.Count == 3)
+            {
+                bonusPoints -= 10;
+            }
+            if (group.Count == 4)
+            {
+                bonusPoints -= 25;
+            }
+            if (group.Count == 5)
+            {
+                bonusPoints -= 35;
+            }
+        }
+
+        List<int> rankValues = currentHand
+                .Select(card => (int)card.cardRank.First())
+                .Distinct()  // Ensures only unique ranks are considered
+                .OrderBy(rank => rank)
+                .ToList();
+        int howManyStraight = 0;
+        for (int i = 0; i <= rankValues.Count - 2; i++)
+        {
+            if (rankValues[i + 1] == rankValues[i] + 1)
+            {
+                bonusPoints -= 2;
+                howManyStraight++;
+            }
+            else if (rankValues[i + 1] == rankValues[i] + 2)
+            {
+                bonusPoints -= 2;
+                howManyStraight++;
+            }
+            if (howManyStraight == 3)
+            {
+                bonusPoints-= 10;
+            }
+            if (howManyStraight >= 4)
+            {
+                bonusPoints -= 20;
+            }
+        }
+        bonusPoints *= multiplier;
+        return bonusPoints;
+
+    }
+
+    private int RoundMultiplier()
+    {
+        int roundDivider = 3;
+        if (pokerTurnManager.HasABonusRound) { roundDivider++; }
+        if (pokerTurnManager.HasARiver) { roundDivider++; }
+        if (pokerTurnManager.turnOrder[1] <= roundDivider) { roundDivider -= pokerTurnManager.turnOrder[1]; }
+        else { roundDivider = 0; }
+        return roundDivider;
+    }
+
+    private int BonusHandPoints()
+    {
+        //make a multiplier based on how many rounds are left
+        int multiplier = RoundMultiplier();
+        int bonusPoints = 0;
+            PokerHandCompare pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
+        List<Card> currentHand = new List<Card>();
+        //get all the cards
+        for (int i = 0; i < pokerTableCards.monsterPocket.Count; i++)
+        {
+            Card temp = pokerTableCards.monsterPocket[i].gameObject.GetComponent<CardDisplay>().cardData;
+            currentHand.Add(temp);
+        }
+        for (int i = 0; i < pokerTableCards.tableHand.Count; i++)
+        {
+            Card temp = pokerTableCards.tableHand[i].gameObject.GetComponent<CardDisplay>().cardData;
+            currentHand.Add(temp);
+        }
+        //check pairs
+        var rankedGroups = currentHand.GroupBy(card => card.cardRank.First())
+                                      .Select(group => new { Rank = group.Key, Count = group.Count() })
+                                      .ToList();
+        foreach (var group in rankedGroups)
+        {
+            if (group.Count == 2)
+            {
+                bonusPoints += 5;
+            }
+            if (group.Count == 3)
+            {
+                bonusPoints += 15;
+            }
+            if (group.Count == 4)
+            {
+                bonusPoints += 50;
+            }
+
+        }
+        var flush = currentHand.GroupBy(card => card.cardSuit.First())
+                .Where(group => group.Count() > 2)
+                .Select(group => new { Rank = group.Key, Count = group.Count() })
+                                      .ToList();
+        foreach (var group in flush)
+        {
+            if (group.Count == 2)
+            {
+                bonusPoints += 1;
+            }
+            if (group.Count == 3)
+            {
+                bonusPoints += 8;
+            }
+            if (group.Count == 4)
+            {
+                bonusPoints += 20;
+            }
+            if (group.Count == 5)
+            {
+                bonusPoints += 35;
+            }
+        }
+
+        List<int> rankValues = currentHand
+                .Select(card => (int)card.cardRank.First())
+                .Distinct()  // Ensures only unique ranks are considered
+                .OrderBy(rank => rank)
+                .ToList();
+        int howManyStraight = 0;
+        for (int i = 0; i <= rankValues.Count-2; i++)
+        {
+            if (rankValues[i + 1] == rankValues[i] + 1) 
+            { 
+                bonusPoints += 2;
+                howManyStraight++;
+            }
+            else if (rankValues[i + 1] == rankValues[i] + 2)
+            { 
+                bonusPoints += 2;
+                howManyStraight++;
+            }
+            if (howManyStraight == 3)
+            {
+                bonusPoints += 5;
+            }
+            if (howManyStraight >= 4)
+            {
+                bonusPoints += 10;
+            }
+        }
+        bonusPoints *= multiplier;
+        return bonusPoints;
+
+    }
 
 
 

@@ -458,16 +458,11 @@ public class PokerHandCompare : MonoBehaviour
     {
      hasPair = false;
      hasTwoPair = false;
-    //   hasHatTrick = false;
       hasThree = false;
       hasStraight = false;
       hasFlush = false;
       hasFour = false;
-    //  hasTwoThree = false;
-    //  hasFive = false;
-    //  hasSix = false;
-        //   hasPlunger = false;
-        //   hasLongBoy = false;
+
     }
 
     private void PairCheck()
@@ -482,8 +477,7 @@ public class PokerHandCompare : MonoBehaviour
         {
             if (group.Count == 2)
             {
-              //  if (hasTwoPair)
-              //  { hasThreePair = true; }
+
                 if (hasPair)
                 { 
                     hasTwoPair = true;
@@ -492,24 +486,14 @@ public class PokerHandCompare : MonoBehaviour
             }
             if (group.Count == 3)
             {
-               // if (hasThree)
-              //  { hasTwoThree = true; }
+
                 hasThree = true;
             }
             if (group.Count == 4)
             {
                 hasFour = true;
             }
-           // if (group.Count == 5)
-           // {
-           //     hasFive = true;
-           //     Debug.Log($"Five of a Kind found: {group.Rank}");
-           // }
-           // if (group.Count == 6)
-           // {
-           //    hasSix = true;
-           //    Debug.Log($"Six of a Kind found: {group.Rank}");
-           // }
+
         }
     }
 
@@ -520,22 +504,13 @@ public class PokerHandCompare : MonoBehaviour
                         .Where(group => group.Count() > 4)
                         .Select(group => new { Rank = group.Key, Count = group.Count() })
                         .ToList();
-        //var plungerFlush = currentHand.GroupBy(card => card.cardSuit.First())
-        //                .Where(group => group.Count() > 5)
-        //                .Select(group => new { Rank = group.Key, Count = group.Count() })
-        //                .ToList();
 
 
         foreach (var group in flush)
         {
             hasFlush = true;
         }
-       // foreach (var group in plungerFlush)
-      //  {
-     //       Debug.Log($"Found {group.Count} of {group.Rank}");
-     //       hasPlunger = true;
-     //   }
-        //add detection for 6 card flush, wild cards, temporary wild cards, defect cards
+
 
     }
 
@@ -580,55 +555,6 @@ public class PokerHandCompare : MonoBehaviour
             handRank[1] = 0;
         }
     }
-    //check for a LongBoy
-    // if (hasStraight)
-    // {
-    //   if (rankValues.Contains((int)Card.CardRank.Ace) &&
-    //   rankValues.Contains((int)Card.CardRank.Two) &&
-    //   rankValues.Contains((int)Card.CardRank.Three) &&
-    //   rankValues.Contains((int)Card.CardRank.Four) &&
-    //   rankValues.Contains((int)Card.CardRank.Five) &&
-    //   rankValues.Contains((int)Card.CardRank.Six))
-    //   {
-    //   Debug.Log("Ace-low LongBoy found: Ace, 2, 3, 4, 5");
-    //   hasLongBoy = true;
-    //   handRank[0] = 5;
-    //}
-    //    else if (rankValues.Contains((int)Card.CardRank.Ace) &&
-    //rankValues.Contains((int)Card.CardRank.King) &&
-    //rankValues.Contains((int)Card.CardRank.Queen) &&
-    //rankValues.Contains((int)Card.CardRank.Jack) &&
-    //rankValues.Contains((int)Card.CardRank.Ten) &&
-    //rankValues.Contains((int)Card.CardRank.Nine))
-    //{
-    //Debug.Log("Ace-high LongBoy found: Ace, K, Q, J, 10");
-    //hasLongBoy = true;
-    //hasRoyal = true;
-    //handRank[0] = 13;
-    //}
-
-    //  else
-    //{
-    //for (int i = 0; i <= rankValues.Count - 5; i++)
-    //{
-    //if (rankValues[i + 1] == rankValues[i] + 1 &&
-    //rankValues[i + 2] == rankValues[i] + 2 &&
-    //rankValues[i + 3] == rankValues[i] + 3 &&
-    //rankValues[i + 4] == rankValues[i] + 4 &&
-    //rankValues[i + 5] == rankValues[i] + 5)
-    //{
-    //Debug.Log($"LongBoy found: {currentHand[i].cardRank.First()} to {currentHand[i + 4].cardRank}");
-    //hasStraight = true;
-    //handRank[0] = rankValues[i + 5];
-    //handRank[1] = 0;
-    //}
-    //}
-//}
-
-
-        //will need to update for wilds and weirdness and extra cards but hey 
-
-        //detect hand type and populate the five cards being used
 
     }
 
