@@ -89,12 +89,13 @@ public class BattleMenu : MonoBehaviour
         CallFoldCall.gameObject.SetActive(false);
         CallFoldFold.gameObject.SetActive(false);
         betWords.gameObject.SetActive(false);
-}
+    }
 
     public void OptionOne()
     {
         if (!StillLoadingTurn)
         {
+            StillLoadingTurn = true;
             if (AllInTrigger && !BetIsSet) { AllInChosen(); }
             else if (AllInTrigger && BetIsSet) { return; }
             else if (BetIsSet) { CallChosen(); }
@@ -106,6 +107,7 @@ public class BattleMenu : MonoBehaviour
     {
         if (!StillLoadingTurn)
         {
+            StillLoadingTurn = true;
             if (pokerTurnManager.isAllIn[0]) { CallChosen(); }
             else if (BetIsSet) { RaiseChosen(); }
             else { CheckChosen(); }
@@ -116,6 +118,7 @@ public class BattleMenu : MonoBehaviour
     {
         if (!StillLoadingTurn)
         {
+            StillLoadingTurn = true;
             FoldChosen();
         }
     }

@@ -97,57 +97,84 @@ public class PokerTableCards : MonoBehaviour
 
     public void AddCardToPosition(Card cardData, int whichPlayer)
     {
-        //make the card
-        if (whichPlayer == 0)
-        {
-            GameObject newCard = Instantiate(cardPrefab, monTransform.position, Quaternion.identity, monTransform);
-            newCard.GetComponent<CardDisplay>().cardData = cardData;
-            newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
-            newCard.GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
-            monsterPocket.Add(newCard);
-        }
-        if (whichPlayer == 1)
-        {
-            GameObject newCard = Instantiate(cardPrefab, p1Transform.position, Quaternion.identity, p1Transform);
-            newCard.GetComponent<CardDisplay>().cardData = cardData;
-            newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
-            playerOnePocket.Add(newCard);
+        Transform targetTransform = GetTargetTransform(whichPlayer);
 
-        }
-        if (whichPlayer == 2)
+        if (targetTransform != null)
         {
-            GameObject newCard = Instantiate(cardPrefab, p2Transform.position, Quaternion.identity, p2Transform);
-            newCard.GetComponent<CardDisplay>().cardData = cardData;
-            newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
-            playerTwoPocket.Add(newCard);
+            Vector3 spawnPosition = GetRandomEdgePosition();
 
-        }
-        if (whichPlayer == 3)
-        {
-            GameObject newCard = Instantiate(cardPrefab, p3Transform.position, Quaternion.identity, p3Transform);
+            GameObject newCard = Instantiate(cardPrefab, spawnPosition, Quaternion.identity, targetTransform);
             newCard.GetComponent<CardDisplay>().cardData = cardData;
             newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
-            playerThreePocket.Add(newCard);
+            if (whichPlayer == 0 || whichPlayer == 9) newCard.GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
+            if (targetTransform == tableTransform)
+            {
+                LeanTween.move(newCard, targetTransform.position, 1f)
+                    .setEase(LeanTweenType.easeOutQuad)
+                    .setOnComplete(() => StartCoroutine(DelayedTableUpdate()));
+            }
+            else
+            {
+                // Instantly move non-table cards
+                newCard.transform.position = targetTransform.position;
+                StartCoroutine(DelayedTableUpdate());
+            }
 
+            AddCardToList(whichPlayer, newCard);
         }
-        if (whichPlayer >3 && whichPlayer < 9)
-        {
-            GameObject newCard = Instantiate(cardPrefab, tableTransform.position, Quaternion.identity, tableTransform);
-            newCard.GetComponent<CardDisplay>().cardData = cardData;
-            newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
-            tableHand.Add(newCard);
+    }
 
-        }
-        if (whichPlayer == 9)
-        {
-            GameObject newCard = Instantiate(cardPrefab, burnTransform.position, Quaternion.identity, burnTransform);
-            newCard.GetComponent<CardDisplay>().cardData = cardData;
-            newCard.GetComponent<CardDisplay>().UpdateCardDisplay();
-            newCard.GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
-            burnDeck.Add(newCard);
-        }
+    private IEnumerator DelayedTableUpdate()
+    {
+        yield return new WaitForSeconds(0.5f); // Wait 1 second before updating visuals
         UpdateTableVisuals();
     }
+
+
+    private Vector3 GetRandomEdgePosition()
+    {
+        float screenWidth = Screen.width;
+        float screenHeight = Screen.height;
+
+        switch (Random.Range(0, 4)) // Pick one of the four edges
+        {
+            case 0: return Camera.main.ScreenToWorldPoint(new Vector3(Random.Range(0, screenWidth), 0, 10)); // Bottom edge
+            case 1: return Camera.main.ScreenToWorldPoint(new Vector3(Random.Range(0, screenWidth), screenHeight, 10)); // Top edge
+            case 2: return Camera.main.ScreenToWorldPoint(new Vector3(0, Random.Range(0, screenHeight), 10)); // Left edge
+            case 3: return Camera.main.ScreenToWorldPoint(new Vector3(screenWidth, Random.Range(0, screenHeight), 10)); // Right edge
+            default: return Vector3.zero;
+        }
+    }
+
+    private Transform GetTargetTransform(int whichPlayer)
+    {
+        return whichPlayer switch
+        {
+            0 => monTransform,
+            1 => p1Transform,
+            2 => p2Transform,
+            3 => p3Transform,
+            > 3 and < 9 => tableTransform,
+            9 => burnTransform,
+            10 => tableTransform,
+            _ => null
+        };
+    }
+
+    private void AddCardToList(int whichPlayer, GameObject newCard)
+    {
+        if (whichPlayer == 0) { monsterPocket.Add(newCard); } 
+        else if (whichPlayer == 1) { playerOnePocket.Add(newCard); }
+        else if (whichPlayer == 2) { playerTwoPocket.Add(newCard); }
+        else if (whichPlayer == 3) { playerThreePocket.Add(newCard); }
+        else if ((whichPlayer > 3 && whichPlayer < 9) || whichPlayer == 10) { tableHand.Add(newCard); }
+        else if (whichPlayer == 9) { burnDeck.Add(newCard); }
+    }
+
+
+
+
+
 
     public void ClearTable()
     {
@@ -193,52 +220,53 @@ public class PokerTableCards : MonoBehaviour
         int cardCount = Cards.Count;
         if (cardCount == 1)
         {
-            Cards[0].transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-            Cards[0].transform.localPosition = new Vector3(0f, 0f, 0f);
+            LeanTween.moveLocal(Cards[0], new Vector3(0f, 0f, 0f), 0.5f).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.rotateLocal(Cards[0], new Vector3(0f, 0f, 0f), 0.5f).setEase(LeanTweenType.easeOutQuad);
             return;
         }
 
         for (int i = 0; i < cardCount; i++)
         {
             float rotationAngle = (fanSpread * (i - (cardCount - 1) / 2f));
-            Cards[i].transform.localRotation = Quaternion.Euler(0f, 0f, rotationAngle);
-
             float horizontalOffset = (cardSpacing * (i - (cardCount - 1) / 2f));
-
             float normalizedPosition = (2f * i / (cardCount - 1) - 1f);
-
             float verticalOffset = verticalSpacing * (1 - normalizedPosition * normalizedPosition);
 
+            Vector3 targetPosition = new Vector3(horizontalOffset, verticalOffset, 0f);
+            Vector3 targetRotation = new Vector3(0f, 0f, rotationAngle);
 
-            Cards[i].transform.localPosition = new Vector3(horizontalOffset, verticalOffset, 0f);
-
+            // Animate position and rotation smoothly
+            LeanTween.moveLocal(Cards[i], targetPosition, 0.5f).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.rotateLocal(Cards[i], targetRotation, 0.5f).setEase(LeanTweenType.easeOutQuad);
         }
-
     }
+
 
     public void UpdateTable(List<GameObject> Cards)
     {
         int cardCount = Cards.Count;
         if (cardCount == 1)
         {
-            Cards[0].transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-            Cards[0].transform.localPosition = new Vector3(0f, 0f, 0f);
+            LeanTween.moveLocal(Cards[0], new Vector3(0f, 0f, 0f), 0.5f).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.rotateLocal(Cards[0], new Vector3(0f, 0f, 0f), 0.5f).setEase(LeanTweenType.easeOutQuad);
             return;
         }
 
         for (int i = 0; i < cardCount; i++)
         {
-            float rotationAngle = (fanSpread * (i - (cardCount - 1) / 5f));
-            Cards[i].transform.localRotation = Quaternion.Euler(0f, 0f, rotationAngle);
-
-            float horizontalOffset = (cardSpacing*3 * (i - (cardCount - 1) / 2f));
-
+            float rotationAngle = (fanSpread * (i - (cardCount - 1) / 3f));
+            float horizontalOffset = (cardSpacing * 3 * (i - (cardCount - 1) / 2f));
             float normalizedPosition = (2f * i / (cardCount - 1) - 1f);
 
-            Cards[i].transform.localPosition = new Vector3(horizontalOffset, 0f, 0f);
+            Vector3 targetPosition = new Vector3(horizontalOffset, 0f, 0f);
+            Vector3 targetRotation = new Vector3(0f, 0f, rotationAngle);
 
+            // Animate position and rotation smoothly
+            LeanTween.moveLocal(Cards[i], targetPosition, 0.25f).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.rotateLocal(Cards[i], targetRotation, 0.25f).setEase(LeanTweenType.easeOutQuad);
         }
     }
+
 
     public void ShowdownReveal()
     {

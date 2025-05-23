@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: JackOfSpades
   HUDSprite: {fileID: 21300000, guid: a8845e766a4eb1f4e8398058f0d0d8a6, type: 3}
-  battleSpritePrefab: {fileID: -2253911629886400664, guid: f95adc1752095154b93a285f4bf73015, type: 3}
-  Silloette: {fileID: 1417022661275003237, guid: 24f0ee158b6f49a47b7ded9c14104705, type: 3}
+  battleSpritePrefab: {fileID: 7757873130746279274, guid: 1a2c8f1a8c762dc48bd7f8e64c0a3c85, type: 3}
+  Silloette: {fileID: 21300000, guid: 24f0ee158b6f49a47b7ded9c14104705, type: 3}
   HandBottom: {fileID: 21300000, guid: 3e947b75dbfe79241bf3a153046e8c7e, type: 3}
   HandTop: {fileID: 21300000, guid: 3b07f0bf63a3dac458ec3035bd337eb7, type: 3}
   isOut: 0

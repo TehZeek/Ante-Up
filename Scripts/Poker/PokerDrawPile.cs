@@ -100,15 +100,24 @@ public class PokerDrawPile : MonoBehaviour
 
     public void DealFlopCards()
     {
+        StartCoroutine(DealFlopWithDelay());
+    }
+
+    private IEnumerator DealFlopWithDelay()
+    {
         BurnCard();
+
         for (int i = 0; i < tableFlopSize; i++)
         {
             int nextcard = (i + 4);
             DealCard(nextcard);
             currentIndex = (currentIndex + 1) % drawPile.Count;
-        }
 
+            yield return new WaitForSeconds(0.5f); // Wait 0.5 seconds before dealing the next card
+        }
     }
+
+
 
     public void DealTurnCards()
     {

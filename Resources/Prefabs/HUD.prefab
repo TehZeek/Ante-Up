@@ -1389,6 +1389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterHud: {fileID: 0}
   monsterHud: {fileID: 0}
+  roomPrefab: {fileID: 0}
   isCharacter: 0
   face: {fileID: 1276402869642621153}
   PocketCardIcons:
