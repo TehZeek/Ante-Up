@@ -17,6 +17,10 @@ public class BattleManager : MonoBehaviour
     private PokerTableCards pokerTableCards;
     private PokerTurnManager pokerTurnManager;
     public List<Transform> hubTransform = new List<Transform>();
+    private int bluffRange;
+    private int foldRange;
+    private int callRange;
+    private int betRange;
 
     void Start()
     {
@@ -40,6 +44,38 @@ public class BattleManager : MonoBehaviour
             HUDs.Add(newHUD);
         }
         Debug.Log("We made " + HUDs.Count + " HUDs");
+        int aiRank = (int)monster.monsterAI;
+        if (aiRank == 0)
+        {
+            //scared
+            bluffRange = 2;
+            foldRange = 30;
+            callRange = 45;
+            betRange = 70;
+        }
+        else if (aiRank == 1)
+        {
+            //brave
+            bluffRange = 4;
+            foldRange = 15;
+            callRange = 35;
+            betRange = 50;
+        }
+        else if (aiRank == 2)
+        {
+            //bluffer
+            bluffRange = 5;
+            foldRange = 30;
+            callRange = 50;
+            betRange = 75;
+        }
+        else
+        {
+            bluffRange = 3;
+            foldRange = 20;
+            callRange = 40;
+            betRange = 60;
+        }
     }
 
     public void UpdateHUD()
@@ -55,7 +91,7 @@ public class BattleManager : MonoBehaviour
         Bet, Call, Check, Fold, Flee
         }
 
-    public MonsterChoice MonsterDecision()
+    public int MonsterDecision()
     {
         //monster AI (Scared, Brave, Bluffs, Neutral, Random
         //look at current cards, money, what's on the table
@@ -91,37 +127,43 @@ public class BattleManager : MonoBehaviour
         }
 
         HandScore = ((MonsterHand -1) * 15) + MonsterRank;
+        Debug.Log("Monster Hand Score, without potential: " + HandScore);
         HandScore += BonusHandPoints();
         int temp = TablePoints();
-        if (temp < HandScore)
-        {
-            HandScore -= temp;
-        }
+        HandScore += temp;
 
         int roundsLeft = RoundMultiplier();
         roundsLeft *= 5;
+        Debug.Log("Rounds remaining adding: " + roundsLeft);
+
         HandScore += roundsLeft;
 
         //BET    CALL    CHECK    FOLD
         // subtract for each power enemy uses
         // add for each one we use, maybe
         BattleMenu battleMenu = FindFirstObjectByType<BattleMenu>();
-        if (HandScore < 20 && battleMenu.BetIsSet) 
+        Debug.Log("Monster Hand Score: " + HandScore);
+        if (HandScore < foldRange && battleMenu.BetIsSet) 
         { 
             int bluffmaybe = Random.Range(1, 10);
-            if (bluffmaybe < 3) { return MonsterChoice.Bet; }
-            else { return MonsterChoice.Fold; } 
+            if (bluffmaybe < bluffRange) {
+                Debug.Log("Monster is Bluffing: " + bluffmaybe);
+                return 0; }
+            else { return 3; } 
         }
 
-        if (HandScore < 40) {
+        else if (HandScore < callRange) {
             int bluffmaybe = Random.Range(1, 10);
-            if (bluffmaybe < 3) { return MonsterChoice.Bet; }
-            else { return MonsterChoice.Check; }
+            if (bluffmaybe < bluffRange) {
+                Debug.Log("Monster is Bluffing: " + bluffmaybe);
+                return 0; }
+            else { return 2; }
         }
 
-        if (HandScore > 40 && battleMenu.BetIsSet) { return MonsterChoice.Call; }
-        if (HandScore > 60) { return MonsterChoice.Bet; }
-        return MonsterChoice.Fold;
+        else if (HandScore > callRange && battleMenu.BetIsSet) { return 1; }
+        else if (HandScore > betRange) { return 0; }
+
+        else return 3;
     }
 
 
@@ -129,6 +171,7 @@ public class BattleManager : MonoBehaviour
     private int TablePoints()
     {
         int multiplier = RoundMultiplier();
+        multiplier += 2;
         int bonusPoints = 0;
         List<Card> currentHand = new List<Card>();
         for (int i = 0; i < pokerTableCards.tableHand.Count; i++)
@@ -208,6 +251,7 @@ public class BattleManager : MonoBehaviour
             }
         }
         bonusPoints *= multiplier;
+        Debug.Log("Table potential removing: " + bonusPoints);
         return bonusPoints;
 
     }
@@ -312,6 +356,8 @@ public class BattleManager : MonoBehaviour
             }
         }
         bonusPoints *= multiplier;
+        Debug.Log("Hand potential adding: " + bonusPoints);
+
         return bonusPoints;
 
     }

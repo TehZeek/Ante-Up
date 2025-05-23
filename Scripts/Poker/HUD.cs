@@ -104,7 +104,6 @@ public class HUD : MonoBehaviour
             ChipImage.SetActive(true);
             chipsDisplay.SetActive(true);
             chipsDisplay.GetComponent<TextMeshProUGUI>().text = pokerChipManager.playerChips[player].ToString();
-            Debug.Log("Refreshed Chips");
         }
     }
 

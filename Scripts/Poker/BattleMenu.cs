@@ -37,6 +37,8 @@ public class BattleMenu : MonoBehaviour
     public GameObject BetInAni;
     public List<GameObject> buttons;
     public bool isAnimating = false;
+    public Image betWords;
+    public TextMeshProUGUI bettingWords;
 
     void Start()
     {
@@ -85,6 +87,7 @@ public class BattleMenu : MonoBehaviour
         CallFoldNone.gameObject.SetActive(false);
         CallFoldCall.gameObject.SetActive(false);
         CallFoldFold.gameObject.SetActive(false);
+        betWords.gameObject.SetActive(false);
 }
 
     public void OptionOne()
@@ -173,7 +176,42 @@ public class BattleMenu : MonoBehaviour
     }
 
 
+    private IEnumerator DelayEnemyTurn()
+    {
+        isAnimating = true;
+        
 
+        ShiftScene shiftScene = FindFirstObjectByType<ShiftScene>();
+        shiftScene.ShiftTheScene();
+        yield return new WaitForSeconds(0.5f); // 30 frames at 60 FPS
+        Debug.Log("Finished button animation");
+        betWords.gameObject.SetActive(true);
+        bettingWords.text = "...";
+        yield return new WaitForSeconds(2f);
+        int monsterChoice = battleManager.MonsterDecision();
+        if (monsterChoice == 0) { Debug.Log("Monster is betting");
+            bettingWords.text = "I'll BET!";
+            yield return new WaitForSeconds(2f);
+            BetChosen();
+        }
+        if (monsterChoice == 1) { Debug.Log("Monster is Calling");
+            bettingWords.text = "I Call";
+            yield return new WaitForSeconds(2f);
+            CallChosen();
+        }
+        if (monsterChoice == 2) { Debug.Log("Monster is Checking");
+            bettingWords.text = "Hmm...  Check.";
+            yield return new WaitForSeconds(2f);
+            CheckChosen();
+        }
+        if (monsterChoice == 3) { Debug.Log("Monster is Folding");
+            bettingWords.text = "...I Fold";
+            yield return new WaitForSeconds(2f); 
+            FoldChosen();
+        }
+        if (monsterChoice == 4) { Debug.Log("Monster is Fleeing"); }
+        isAnimating = false;
+    }
 
     private IEnumerator DelayButtonDisplay()
     {
@@ -193,6 +231,11 @@ public class BattleMenu : MonoBehaviour
     public void UpdateButtonDisplay(int displaySwitch)
     {
         allButtonOff();
+        if (pokerTurnManager.turnOrder[2]==0)
+        {
+            StartCoroutine(DelayEnemyTurn());
+            return;
+        }
         if (displaySwitch == 0)
         {
             isAnimating = true;
