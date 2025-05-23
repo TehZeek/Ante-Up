@@ -55,6 +55,7 @@ public class PokerTurnManager : MonoBehaviour
 
     private IEnumerator ProcessTurn()
     {
+            yield return new WaitForSeconds(0.5f);
             Debug.Log("[Update] stillThisTurn is true. Current phase: " + turnOrder[1]);
 
             switch (turnOrder[1])

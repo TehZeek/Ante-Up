@@ -1,6 +1,11 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
+using ZeekSpace;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using TMPro;
+using System.Runtime.CompilerServices;
 
 public class ShiftScene : MonoBehaviour
 {
@@ -14,11 +19,40 @@ public class ShiftScene : MonoBehaviour
     public Material blurMaterial;
     public float blurFadeStartTime = 0.25f; // Start blur fade before movement ends
     private bool blurIsOn = false;
+    public List<GameObject> Scenes = new List<GameObject>();
+    public List<Transform> sceneTransform = new List<Transform>();
+    public GameObject scenePrefab;
 
     void Awake()
     {
-        pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
+        BattleManager battleManager = FindFirstObjectByType<BattleManager>();
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        PokerTableCards pokerTableCards = FindFirstObjectByType<PokerTableCards>();
+
         blurMaterial.SetFloat("_BlurStrength", 0);
+        for (int i = 0; i<4;i++)
+        {
+            //make a TEMP scene, add it to Scenes
+            GameObject tempScene = Instantiate(scenePrefab, sceneTransform[i].position, Quaternion.identity, sceneTransform[i]);
+            Scenes.Add(tempScene);
+            if (i == 0)
+            {
+                Scenes[i].GetComponent<RoomPerspective>().monster = battleManager.monster;
+                Scenes[i].GetComponent<RoomPerspective>().isCharacter = false;
+                Scenes[i].GetComponent<RoomPerspective>().MakeRoom(i);
+            }
+            else
+            {
+                Scenes[i].GetComponent<RoomPerspective>().character = gameManager.characters[i-1];
+                Scenes[i].GetComponent<RoomPerspective>().isCharacter = true;
+                Scenes[i].GetComponent<RoomPerspective>().MakeRoom(i);
+            }
+            
+        }
+        pokerTableCards.monTransform = Scenes[0].GetComponent<RoomPerspective>().handLocation;
+        pokerTableCards.p1Transform = Scenes[1].GetComponent<RoomPerspective>().handLocation;
+        pokerTableCards.p2Transform = Scenes[2].GetComponent<RoomPerspective>().handLocation;
+        pokerTableCards.p3Transform = Scenes[3].GetComponent<RoomPerspective>().handLocation;
     }
 
     public void ShiftTheScene()

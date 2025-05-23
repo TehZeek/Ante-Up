@@ -13,7 +13,7 @@ public class RoomPerspective : MonoBehaviour
     public GameObject siloette;
     public GameObject handTop;
     public GameObject handBottom;
-    public GameObject handLocation;
+    public Transform handLocation;
     public Character character;
     public Monster monster;
     public bool isCharacter;
@@ -34,18 +34,23 @@ public class RoomPerspective : MonoBehaviour
             handTop.GetComponent<Image>().sprite = monster.HandTop;
             handBottom.GetComponent<Image>().sprite = monster.HandBottom;
         }
-        buildActorList();
+        buildActorList(player);
     }
 
-    private void buildActorList()
+    private void buildActorList(int player)
     {
         gameManager = FindFirstObjectByType<GameManager>();
         battleManager = FindFirstObjectByType<BattleManager>();
-
         actorPrefab[0] = battleManager.monster.battleSpritePrefab;
         actorPrefab[1] = gameManager.characters[0].battleSpritePrefab;
         actorPrefab[2] = gameManager.characters[1].battleSpritePrefab;
         actorPrefab[3] = gameManager.characters[2].battleSpritePrefab;
+
+        for (int i = 0; i < actorPrefab.Count; i++)
+        {
+            if (i == player) { actorPrefab[i].gameObject.SetActive(false); }
+        }
+
     }
 
 }
