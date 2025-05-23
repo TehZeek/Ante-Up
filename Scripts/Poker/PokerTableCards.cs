@@ -185,7 +185,7 @@ public class PokerTableCards : MonoBehaviour
         UpdateTV(playerOnePocket);
         UpdateTV(playerTwoPocket);
         UpdateTV(playerThreePocket);
-        UpdateTV(tableHand);
+        UpdateTable(tableHand);
     }
 
     public void UpdateTV(List<GameObject> Cards)
@@ -214,6 +214,30 @@ public class PokerTableCards : MonoBehaviour
 
         }
 
+    }
+
+    public void UpdateTable(List<GameObject> Cards)
+    {
+        int cardCount = Cards.Count;
+        if (cardCount == 1)
+        {
+            Cards[0].transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            Cards[0].transform.localPosition = new Vector3(0f, 0f, 0f);
+            return;
+        }
+
+        for (int i = 0; i < cardCount; i++)
+        {
+            float rotationAngle = (fanSpread * (i - (cardCount - 1) / 5f));
+            Cards[i].transform.localRotation = Quaternion.Euler(0f, 0f, rotationAngle);
+
+            float horizontalOffset = (cardSpacing*3 * (i - (cardCount - 1) / 2f));
+
+            float normalizedPosition = (2f * i / (cardCount - 1) - 1f);
+
+            Cards[i].transform.localPosition = new Vector3(horizontalOffset, 0f, 0f);
+
+        }
     }
 
     public void ShowdownReveal()

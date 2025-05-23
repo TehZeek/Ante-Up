@@ -77,10 +77,10 @@ public class CardHighlight : MonoBehaviour, IDragHandler, IPointerDownHandler, I
 
     private void HandleDragState()
     {
-        //set the card's rotation to zero
+       //set the card's rotation to zero
         
-        rectTransform.position = Vector3.Lerp(rectTransform.position, Input.mousePosition, lerpFactor);
-
+      //  rectTransform.position = Vector3.Lerp(rectTransform.position, Input.mousePosition, lerpFactor);
+ 
     }
 
 
@@ -122,17 +122,17 @@ public class CardHighlight : MonoBehaviour, IDragHandler, IPointerDownHandler, I
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (currentState == 1)
-        {
-            currentState = 2;
-        }
+ //       if (currentState == 1)
+ //       {
+ //           currentState = 2;
+ //       }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (currentState == 2)
-        {
-        }
+ //       if (currentState == 2)
+ //       {
+ //       }
     }
 
 }

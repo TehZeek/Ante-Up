@@ -39,6 +39,7 @@ public class BattleMenu : MonoBehaviour
     public bool isAnimating = false;
     public Image betWords;
     public TextMeshProUGUI bettingWords;
+    public bool StillLoadingTurn = false;
 
     void Start()
     {
@@ -92,22 +93,31 @@ public class BattleMenu : MonoBehaviour
 
     public void OptionOne()
     {
-        if (AllInTrigger && !BetIsSet) { AllInChosen(); }
-        else if (AllInTrigger && BetIsSet) { return; }
-        else if (BetIsSet) { CallChosen(); }
-        else { BetChosen(); }
+        if (!StillLoadingTurn)
+        {
+            if (AllInTrigger && !BetIsSet) { AllInChosen(); }
+            else if (AllInTrigger && BetIsSet) { return; }
+            else if (BetIsSet) { CallChosen(); }
+            else { BetChosen(); }
+        }
     }
 
     public void OptionTwo()
     {
-        if (pokerTurnManager.isAllIn[0]) { CallChosen(); }
-        else if (BetIsSet) { RaiseChosen(); }
-        else { CheckChosen(); }
+        if (!StillLoadingTurn)
+        {
+            if (pokerTurnManager.isAllIn[0]) { CallChosen(); }
+            else if (BetIsSet) { RaiseChosen(); }
+            else { CheckChosen(); }
+        }
     }
 
     public void OptionThree()
     {
-        FoldChosen();
+        if (!StillLoadingTurn)
+        {
+            FoldChosen();
+        }
     }
 
 
@@ -217,7 +227,9 @@ public class BattleMenu : MonoBehaviour
     {
         ShiftScene shiftScene = FindFirstObjectByType<ShiftScene>();
         shiftScene.ShiftTheScene();
-        yield return new WaitForSeconds(0.5f); // 30 frames at 60 FPS
+        yield return new WaitForSeconds(0.5f);
+        BetInAni.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
         isAnimating = false;
         Debug.Log("Finished button animation");
         if (AllInTrigger && !BetIsSet) { UpdateButtonDisplay(3); }
@@ -225,7 +237,8 @@ public class BattleMenu : MonoBehaviour
         else if (pokerTurnManager.isAllIn[0]) { UpdateButtonDisplay(6); }
         else if (!BetIsSet) { UpdateButtonDisplay(1); }
         else { UpdateButtonDisplay(2); }
-    }
+        StillLoadingTurn = false;
+}
 
 
     public void UpdateButtonDisplay(int displaySwitch)
@@ -233,13 +246,14 @@ public class BattleMenu : MonoBehaviour
         allButtonOff();
         if (pokerTurnManager.turnOrder[2]==0)
         {
+            StillLoadingTurn = true;
             StartCoroutine(DelayEnemyTurn());
             return;
         }
         if (displaySwitch == 0)
         {
+            StillLoadingTurn = true;
             isAnimating = true;
-            BetInAni.gameObject.SetActive(true);
             StartCoroutine(DelayButtonDisplay());
         }
 

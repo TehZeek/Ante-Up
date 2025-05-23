@@ -103,9 +103,9 @@ public class PokerDrawPile : MonoBehaviour
         BurnCard();
         for (int i = 0; i < tableFlopSize; i++)
         {
-            DealCard(4);
+            int nextcard = (i + 4);
+            DealCard(nextcard);
             currentIndex = (currentIndex + 1) % drawPile.Count;
-
         }
 
     }
@@ -115,7 +115,7 @@ public class PokerDrawPile : MonoBehaviour
         BurnCard();
         for (int i = 0; i < tableTurnSize; i++)
         {
-            DealCard(5);
+            DealCard(7);
             currentIndex = (currentIndex + 1) % drawPile.Count;
         }
 
@@ -126,9 +126,19 @@ public class PokerDrawPile : MonoBehaviour
         BurnCard();
         for (int i = 0; i < tableRiverSize; i++)
         {
-            DealCard(6);
+            DealCard(8);
             currentIndex = (currentIndex + 1) % drawPile.Count;
 
+        }
+    }
+
+    public void DealBonusCards()
+    {
+        BurnCard();
+        for (int i = 0; i < tableRiverSize; i++)
+        {
+            DealCard(10);
+            currentIndex = (currentIndex + 1) % drawPile.Count;
         }
 
     }

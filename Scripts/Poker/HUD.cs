@@ -24,12 +24,13 @@ public class HUD : MonoBehaviour
     public GameObject chipsDisplay;
     public GameObject ChipImage;
     public bool isBetter = false;
+    public GameObject MinHand;
 
     void Awake()
     {
+
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
-
     }
 
     public void RefreshHUD(List<GameObject> pocketCards, int player)
@@ -153,7 +154,12 @@ public class HUD : MonoBehaviour
     public void MakeHUD()
     {
         if (isCharacter) { face.sprite = characterHud.HUDSprite; }
-        else { face.sprite = monsterHud.HUDSprite; }
+        else { 
+            face.sprite = monsterHud.HUDSprite;
+            MinHand.SetActive(true);
+            BattleManager battleManager = FindFirstObjectByType<BattleManager>();
+            MinHand.GetComponent<TextMeshProUGUI>().text = ("Minimum Hand: " + battleManager.monster.minimumHand.handRank.ToString() + " of " + battleManager.monster.minimumRank + "'s");
+            }
         ClearHUD();
     }
 
