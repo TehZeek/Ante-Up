@@ -48,7 +48,6 @@ public class BattleMenu : MonoBehaviour
         battleManager = FindFirstObjectByType<BattleManager>();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
         Debug.Log("Finished Battle Menu start");
-        UpdateButtonDisplay(0);
     }
 
     public void NextPlayer()
@@ -192,8 +191,8 @@ public class BattleMenu : MonoBehaviour
     private IEnumerator DelayEnemyTurn()
     {
         isAnimating = true;
-        
 
+        MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
         ShiftScene shiftScene = FindFirstObjectByType<ShiftScene>();
         shiftScene.ShiftTheScene();
         yield return new WaitForSeconds(0.5f); // 30 frames at 60 FPS
@@ -201,7 +200,7 @@ public class BattleMenu : MonoBehaviour
         betWords.gameObject.SetActive(true);
         bettingWords.text = "...";
         yield return new WaitForSeconds(2f);
-        int monsterChoice = battleManager.MonsterDecision();
+        int monsterChoice = monsterManager.MonsterDecision();
         if (monsterChoice == 0) { Debug.Log("Monster is betting");
             bettingWords.text = "I'll BET!";
             yield return new WaitForSeconds(2f);

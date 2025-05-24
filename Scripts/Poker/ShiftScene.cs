@@ -23,9 +23,9 @@ public class ShiftScene : MonoBehaviour
     public List<Transform> sceneTransform = new List<Transform>();
     public GameObject scenePrefab;
 
-    void Awake()
+    public void BuildScenes()
     {
-        BattleManager battleManager = FindFirstObjectByType<BattleManager>();
+        MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
         GameManager gameManager = FindFirstObjectByType<GameManager>();
         PokerTableCards pokerTableCards = FindFirstObjectByType<PokerTableCards>();
 
@@ -37,7 +37,7 @@ public class ShiftScene : MonoBehaviour
             Scenes.Add(tempScene);
             if (i == 0)
             {
-                Scenes[i].GetComponent<RoomPerspective>().monster = battleManager.monster;
+                Scenes[i].GetComponent<RoomPerspective>().monster = monsterManager.monster;
                 Scenes[i].GetComponent<RoomPerspective>().isCharacter = false;
                 Scenes[i].GetComponent<RoomPerspective>().MakeRoom(i);
             }
@@ -57,10 +57,14 @@ public class ShiftScene : MonoBehaviour
 
     public void ShiftTheScene()
     {
+        pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
+        Debug.Log("Shifting the scene!");
         Vector3 targetPosition = imageTransform.anchoredPosition;
 
         if (pokerTurnManager != null)
         {
+            Debug.Log("PokerTurnManager is valid, starting shift");
+
             blurIsOn = true;
             float targetBlurStrength = GetBlurStrengthByTag();
 

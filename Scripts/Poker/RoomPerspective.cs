@@ -18,7 +18,7 @@ public class RoomPerspective : MonoBehaviour
     public Monster monster;
     public bool isCharacter;
     private GameManager gameManager;
-    private BattleManager battleManager;
+    private MonsterManager monsterManager;
 
     public void MakeRoom(int player)
     {
@@ -40,8 +40,8 @@ public class RoomPerspective : MonoBehaviour
     private void buildActorList(int player)
     {
         gameManager = FindFirstObjectByType<GameManager>();
-        battleManager = FindFirstObjectByType<BattleManager>();
-        actorPrefab[0] = battleManager.monster.battleSpritePrefab;
+        monsterManager = FindFirstObjectByType<MonsterManager>();
+        actorPrefab[0] = monsterManager.monster.battleSpritePrefab;
         actorPrefab[1] = gameManager.characters[0].battleSpritePrefab;
         actorPrefab[2] = gameManager.characters[1].battleSpritePrefab;
         actorPrefab[3] = gameManager.characters[2].battleSpritePrefab;

@@ -23,7 +23,7 @@ public class PokerTurnManager : MonoBehaviour
     public bool[] isAllIn = new bool[] { false, false, false, false };
     public bool HasARiver = true;
     public bool HasABonusRound = false;
-    private bool stillThisTurn = true;
+    public bool stillThisTurn = false;
     private List<int> playersStillIn = new List<int>();
     private const int PlayerCount = 4;
 
@@ -398,8 +398,8 @@ public class PokerTurnManager : MonoBehaviour
 
     private int GetMonsterHand()
     {
-        BattleManager battleManager = FindFirstObjectByType<BattleManager>();
-        HandTypes minimumHand = battleManager.monster.minimumHand;
+        MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
+        HandTypes minimumHand = monsterManager.monster.minimumHand;
         int minimumHandRank = pokerHandCompare.allHandTypes.IndexOf(minimumHand);
         int monhandType = pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.MonHand);
         if (monhandType > minimumHandRank)
@@ -445,10 +445,10 @@ public class PokerTurnManager : MonoBehaviour
       {
         if (rank == 0)
         {
-            BattleManager battleManager = FindFirstObjectByType<BattleManager>();
-            int minRank = battleManager.monster.minimumRank;
+            MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
+            int minRank = monsterManager.monster.minimumRank;
             int monRank = pokerHandCompare.monRank[rank];
-            HandTypes minimumHand = battleManager.monster.minimumHand;
+            HandTypes minimumHand = monsterManager.monster.minimumHand;
             int minimumHandRank = pokerHandCompare.allHandTypes.IndexOf(minimumHand);
             int minType = pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.MonHand);
             if( minType > minimumHandRank)

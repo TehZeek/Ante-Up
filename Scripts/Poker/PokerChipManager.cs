@@ -11,6 +11,7 @@ public class PokerChipManager : MonoBehaviour
     private GameManager gameManager;
     private BattleMenu battleMenu;
     private PokerTurnManager pokerTurnManager;
+    private MonsterManager monsterManager;
     private BattleManager battleManager;
 
     public int[] playerChips = new int[] { 0, 0, 0, 0 };
@@ -23,18 +24,19 @@ public class PokerChipManager : MonoBehaviour
     public int BetSize = 2;
 
 
-    void Awake()
+    public void StartChips()
     {
         gameManager = FindFirstObjectByType<GameManager>();
         battleMenu = FindFirstObjectByType<BattleMenu>();
         battleManager = FindFirstObjectByType<BattleManager>();
+        monsterManager = FindFirstObjectByType<MonsterManager>();
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
-        partyChips = gameManager.PartyChips;
-        playerChips[0] = battleManager.monster.monsterChips;
-        playerChips[1] = (int)Mathf.FloorToInt(partyChips / 3);
-        playerChips[2] = (int)Mathf.Floor((partyChips - playerChips[1]) / 2);
-        playerChips[3] = (int)(partyChips - playerChips[1] - playerChips[2]);
+        gameManager.SplitPartyChips();
+        playerChips = gameManager.playerChips;
+    }
 
+    public void UpdateChipDisplay()
+    {
         if (battleManager.HUDs.Count > 0)
         {
             ChipDisplay.Clear();
@@ -43,11 +45,6 @@ public class PokerChipManager : MonoBehaviour
                 ChipDisplay.Add(battleManager.HUDs[i].GetComponent<HUD>().chipsDisplay.GetComponent<TextMeshProUGUI>());
             }
         }
-        UpdateChipDisplay();
-    }
-
-    public void UpdateChipDisplay()
-    {
         for (int i = 0; i < ChipDisplay.Count; i++)
         {
             battleManager.HUDs[i].GetComponent<HUD>().DisplayHUDChips(i);

@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     private int partyChips = 50;
     private int enemyChips;
     private int difficulty = 5;
-
+    public int[] playerChips = new int[] { 0, 0, 0, 0 };
     public OptionsManager optionsManager { get; private set; }
     public AudioMan audioMan { get; private set; }
     public DeckManager deckManager { get; private set; }
@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public bool PlayingCard = false;
     public int whichTurn = 1;
     public List<Character> characters = new List<Character>();
+    public Monster monster;
 
 
     private void Awake()
@@ -44,7 +45,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
+    public void SplitPartyChips()
+    {
+        MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
+        playerChips[0] = monsterManager.monster.monsterChips;
+        playerChips[1] = (int)Mathf.FloorToInt(partyChips / 3);
+        playerChips[2] = (int)Mathf.Floor((partyChips - playerChips[1]) / 2);
+        playerChips[3] = (int)(partyChips - playerChips[1] - playerChips[2]);
+    }
 
 
 

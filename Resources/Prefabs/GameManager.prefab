@@ -50,7 +50,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameOver: 0
   gameOverScreen: {fileID: 0}
+  startDungeonRun: 0
+  startBattle: 0
   PlayingCard: 0
+  whichTurn: 1
+  characters: []
+  monster: {fileID: 11400000, guid: a1c58cdadacb7d147ad95dc0476e952b, type: 2}
 --- !u!1001 &69531297299839441
 PrefabInstance:
   m_ObjectHideFlags: 0

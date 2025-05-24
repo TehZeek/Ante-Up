@@ -23,14 +23,7 @@ public class DeckManager : MonoBehaviour
         gameManager = FindFirstObjectByType<GameManager>();
         pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
     }
-    void Update()
-    {
-        if (gameManager.startBattle)
-        {
-            gameManager.startBattle = false;
-            BattleSetup();
-        }
-    }
+
 
     public void BattleSetup()
     {

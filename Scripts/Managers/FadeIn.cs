@@ -5,26 +5,18 @@ using System.Collections;
 public class FadeOutAndDestroy : MonoBehaviour
 {
     public float fadeDuration = 2f; // Duration of fade effect
-    private Image image;
-    private CanvasGroup canvasGroup; // Alternative for UI fading
+    public Image image;
 
-    void Start()
+
+    public void FadeSplash()
     {
-        image = GetComponent<Image>();
-        canvasGroup = GetComponent<CanvasGroup>();
-
-        if (image != null)
-        {
+        Debug.Log("FadeSplash() called");
             StartCoroutine(FadeOutImage());
-        }
-        else if (canvasGroup != null)
-        {
-            StartCoroutine(FadeOutCanvasGroup());
-        }
     }
 
     private IEnumerator FadeOutImage()
     {
+        Debug.Log("FadeOutImage() called");
         Color color = image.color;
         float elapsedTime = 0f;
 
@@ -41,6 +33,8 @@ public class FadeOutAndDestroy : MonoBehaviour
 
     private IEnumerator FadeOutCanvasGroup()
     {
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        Debug.Log("FadeOutCanvasGroup() called");
         float elapsedTime = 0f;
 
         while (elapsedTime < fadeDuration)

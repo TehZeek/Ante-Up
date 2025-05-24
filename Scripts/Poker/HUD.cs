@@ -153,12 +153,13 @@ public class HUD : MonoBehaviour
 
     public void MakeHUD()
     {
+        MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
         if (isCharacter) { face.sprite = characterHud.HUDSprite; }
         else { 
             face.sprite = monsterHud.HUDSprite;
             MinHand.SetActive(true);
             BattleManager battleManager = FindFirstObjectByType<BattleManager>();
-            MinHand.GetComponent<TextMeshProUGUI>().text = ("Minimum Hand: " + battleManager.monster.minimumHand.handRank.ToString() + " of " + battleManager.monster.minimumRank + "'s");
+            MinHand.GetComponent<TextMeshProUGUI>().text = ("Minimum Hand: " + monsterManager.monster.minimumHand.handRank.ToString() + " of " + monsterManager.monster.minimumRank + "'s");
             }
         ClearHUD();
     }

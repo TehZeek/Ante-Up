@@ -27,14 +27,14 @@ public class PokerDrawPile : MonoBehaviour
     private PokerBurnPile pokerBurnPile;
     private PokerChipManager pokerChipManager;
     private GameManager gameManager;
-    private BattleManager battleManager;
+    private MonsterManager monsterManager;
 
     void Start()
     {
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
-        battleManager = FindFirstObjectByType<BattleManager>();
+        monsterManager = FindFirstObjectByType<MonsterManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
-        monsterPocketSize = battleManager.monster.pocketSize;
+        monsterPocketSize = monsterManager.monster.pocketSize;
     }
 
     // find what passes this from the DeckManager
