@@ -10,6 +10,7 @@ public class RoomPerspective : MonoBehaviour
 {
     public GameObject Background;
     public List<GameObject> actorPrefab = new List<GameObject>();
+    public List<Transform> actorPosition = new List<Transform>();
     public GameObject siloette;
     public GameObject handTop;
     public GameObject handBottom;
@@ -48,7 +49,10 @@ public class RoomPerspective : MonoBehaviour
 
         for (int i = 0; i < actorPrefab.Count; i++)
         {
-            if (i == player) { actorPrefab[i].gameObject.SetActive(false); }
+            if (i != player) 
+            {
+                Instantiate(actorPrefab[i], actorPosition[i].position, Quaternion.identity, actorPosition[i]);
+            }
         }
 
     }

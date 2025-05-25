@@ -4,7 +4,7 @@ using System.Collections;
 
 public class FadeOutAndDestroy : MonoBehaviour
 {
-    public float fadeDuration = 2f; // Duration of fade effect
+    public float fadeDuration = 3f; // Duration of fade effect
     public Image image;
 
 
@@ -18,6 +18,7 @@ public class FadeOutAndDestroy : MonoBehaviour
     {
         Debug.Log("FadeOutImage() called");
         Color color = image.color;
+        yield return new WaitForSeconds(2f);
         float elapsedTime = 0f;
 
         while (elapsedTime < fadeDuration)
@@ -35,6 +36,7 @@ public class FadeOutAndDestroy : MonoBehaviour
     {
         CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         Debug.Log("FadeOutCanvasGroup() called");
+        yield return new WaitForSeconds(2f);
         float elapsedTime = 0f;
 
         while (elapsedTime < fadeDuration)
