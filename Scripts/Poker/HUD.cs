@@ -76,6 +76,7 @@ public class HUD : MonoBehaviour
         }
 
         //add in a "Needs X to call" to current player
+        //do we need a visual indication of who's turn it is?  I'm thinking no?
     }
 
     public void DisplayHUDChips(int player)
@@ -132,9 +133,6 @@ public class HUD : MonoBehaviour
             PocketSuit[i].SetActive(true);
             PocketSuit[i].GetComponent<Image>().sprite = pocketCards[tempswap[i]].GetComponent<CardDisplay>().cardData.suitSprite;
         }
-        // can i do something here to reverse the order they are displayed?
-        // 2 would go from 0, 1 to 1, 0
-        // 3 from 0,1,2 to 2,1,0
     }
 
     public void ClearHUD()
@@ -162,21 +160,6 @@ public class HUD : MonoBehaviour
             MinHand.GetComponent<TextMeshProUGUI>().text = ("Minimum Hand: " + monsterManager.monster.minimumHand.handRank.ToString() + " of " + monsterManager.monster.minimumRank + "'s");
             }
         ClearHUD();
-    }
-
-    private void TransitionSetup()
-    {
-        //we're going to build the scene to the left of the current screen
-    }
-
-    private void TransitionSlide()
-    {
-        //we're going to slide everything to the right
-    }
-
-    private void RemoveOldScene()
-    {
-        //we're going to remove the old scene
     }
 
 }

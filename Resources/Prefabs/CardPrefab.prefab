@@ -93,7 +93,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &5020529450006422182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentRect: {fileID: 9109780126102352336}
+  originalParentRotation: {x: 0, y: 0, z: 0, w: 0}
   originalPosition: {x: 0, y: 0, z: 0}
   selectScale: 1.1
   cardPlay: {x: 0, y: 150}
