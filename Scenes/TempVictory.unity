@@ -2531,7 +2531,7 @@ PrefabInstance:
     - target: {fileID: 819920519629428663, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
       propertyPath: DeadSprite
       value: 
-      objectReference: {fileID: 5786828548451175366, guid: 4cc755ef164d1f540890493b34fd1177, type: 3}
+      objectReference: {fileID: 21300000, guid: b36a8b331b533724d9336f529452ca0f, type: 3}
     - target: {fileID: 819920519629428663, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
       propertyPath: HurtSprite
       value: 
