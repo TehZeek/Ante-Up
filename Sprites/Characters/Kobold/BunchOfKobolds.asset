@@ -19,6 +19,10 @@ MonoBehaviour:
   Silloette: {fileID: 21300000, guid: 1eec4738889671749b2fe8a486141c49, type: 3}
   HandBottom: {fileID: 21300000, guid: 2acd1d3f6575311448dcec2b63cd1395, type: 3}
   HandTop: {fileID: 21300000, guid: 5dbbda34733ced14587805d3a8d65a26, type: 3}
+  BattleSprite: {fileID: -4403647249799851491, guid: f98513f87a8618e4e9e2c351c18649b4, type: 3}
+  Attacksprite: {fileID: 8090276592471704938, guid: 496b0f37918da514abbfa92f99671b7e, type: 3}
+  HurtSprite: {fileID: -7130295420936144058, guid: 5433b8baf036a8448b6aaf35ef0fdc3a, type: 3}
+  DeadSprite: {fileID: -6750342493828268681, guid: 6c46770812690c84bb5eed8afd4ce323, type: 3}
   isOut: 0
   isFolding: 0
   isAllIn: 0
