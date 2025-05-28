@@ -20,14 +20,14 @@ public class ChipManager : MonoBehaviour
     
     public void spendChips(int chipsSpent)
     {
-        chips = gameManager.PartyChips;
+        chips = gameManager.partyChips;
         chips -= chipsSpent;
         UpdateChipsDisplay();
     }
 
     public void winChips(int chipsGained)
     {
-        chips = gameManager.PartyChips;
+        chips = gameManager.partyChips;
         chips += chipsGained;
         UpdateChipsDisplay();
     }
@@ -45,7 +45,7 @@ public class ChipManager : MonoBehaviour
     public void UpdateChipsDisplay()
     {
         chipDisplay.text = chips.ToString();
-        gameManager.PartyChips = chips;
+        gameManager.partyChips = chips;
 
     }
 }

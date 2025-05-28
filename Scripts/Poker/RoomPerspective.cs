@@ -23,18 +23,9 @@ public class RoomPerspective : MonoBehaviour
 
     public void MakeRoom(int player)
     {
-        if (isCharacter) 
-        {
             siloette.GetComponent<Image>().sprite = character.Silloette;
             handTop.GetComponent<Image>().sprite = character.HandTop;
             handBottom.GetComponent<Image>().sprite = character.HandBottom;
-        }
-        else
-        {
-            siloette.GetComponent<Image>().sprite = monster.Silloette;
-            handTop.GetComponent<Image>().sprite = monster.HandTop;
-            handBottom.GetComponent<Image>().sprite = monster.HandBottom;
-        }
         buildActorList(player);
     }
 
@@ -42,10 +33,10 @@ public class RoomPerspective : MonoBehaviour
     {
         gameManager = FindFirstObjectByType<GameManager>();
         monsterManager = FindFirstObjectByType<MonsterManager>();
-        actorPrefab[0] = monsterManager.monster.battleSpritePrefab;
-        actorPrefab[1] = gameManager.characters[0].battleSpritePrefab;
-        actorPrefab[2] = gameManager.characters[1].battleSpritePrefab;
-        actorPrefab[3] = gameManager.characters[2].battleSpritePrefab;
+        for (int i=0; i<4; i++)
+        {
+            actorPrefab[i] = gameManager.characters[0].battleSpritePrefab;
+        }
 
         for (int i = 0; i < actorPrefab.Count; i++)
         {

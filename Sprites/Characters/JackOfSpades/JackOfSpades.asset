@@ -15,11 +15,12 @@ MonoBehaviour:
   characterName: JackOfSpades
   HUDSprite: {fileID: 21300000, guid: a8845e766a4eb1f4e8398058f0d0d8a6, type: 3}
   battleSpritePrefab: {fileID: 7757873130746279274, guid: 1a2c8f1a8c762dc48bd7f8e64c0a3c85, type: 3}
+  RoomSprite: {fileID: 21300000, guid: 25d6d771060c6744a8e1b6b3b6be3ac6, type: 3}
   Silloette: {fileID: 21300000, guid: 24f0ee158b6f49a47b7ded9c14104705, type: 3}
   HandBottom: {fileID: 21300000, guid: 3e947b75dbfe79241bf3a153046e8c7e, type: 3}
   HandTop: {fileID: 21300000, guid: 3b07f0bf63a3dac458ec3035bd337eb7, type: 3}
   BattleSprite: {fileID: -1109977887897632624, guid: 97897380af99050428fac2030b18df54, type: 3}
-  Attacksprite: {fileID: -5795392795171087872, guid: 5b58e79182f3567469dad87feb5d3e06, type: 3}
+  AttackSprite: {fileID: -5795392795171087872, guid: 5b58e79182f3567469dad87feb5d3e06, type: 3}
   HurtSprite: {fileID: -6315623527886529478, guid: b43af8e7a6bb15142b7bf404800c2f71, type: 3}
   DeadSprite: {fileID: 1418783126907046463, guid: 9c0c59a57a1408648916338155c20f0f, type: 3}
   RangedPrefab: {fileID: 0}

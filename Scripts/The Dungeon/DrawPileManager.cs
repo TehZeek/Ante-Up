@@ -68,7 +68,7 @@ public class DrawPileManager : MonoBehaviour
     public void DrawMapCard(MapHandManager mapHandManager)
     {
         gameManager = FindFirstObjectByType<GameManager>();
-        if (gameManager.PartyChips < suppliesCost) {return; }
+        if (gameManager.partyChips < suppliesCost) {return; }
         if (mapHandManager.cardsInHand.Count == maxHandSize) { return; }
         if (drawPile.Count == 0)
         {

@@ -11,15 +11,14 @@ using ZeekSpace;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    private int partyChips = 50;
-    private int enemyChips;
+    public int partyChips = 50;
+    public int enemyChips;
     private int difficulty = 5;
     public int[] playerChips = new int[] { 0, 0, 0, 0 };
     public OptionsManager optionsManager { get; private set; }
     public AudioMan audioMan { get; private set; }
     public DeckManager deckManager { get; private set; }
     public MapDeckManager mapDeckManager { get; private set; }
-    public GridManager gridManager { get; private set; }
     public bool gameOver = false;
     public GameObject gameOverScreen;
     public bool startDungeonRun = false;
@@ -48,7 +47,15 @@ public class GameManager : MonoBehaviour
     public void SplitPartyChips()
     {
         MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
-        playerChips[0] = monsterManager.monster.monsterChips;
+        if (monsterManager == null)
+        {
+            Debug.LogError("MonsterManager not found!");
+            playerChips[0] = 0;
+        }
+        else 
+        {
+            playerChips[0] = monsterManager.monster.monsterChips;
+        }
         playerChips[1] = (int)Mathf.FloorToInt(partyChips / 3);
         playerChips[2] = (int)Mathf.Floor((partyChips - playerChips[1]) / 2);
         playerChips[3] = (int)(partyChips - playerChips[1] - playerChips[2]);
@@ -77,7 +84,10 @@ public class GameManager : MonoBehaviour
             case 1:
                 startBattle = true;
                 break;
+            case 2:
+                break;
         }
+        characters[0] = monster.character;
     }
 
 
@@ -98,7 +108,6 @@ private void InitializeManagers()
         audioMan = GetComponentInChildren<AudioMan>();
         deckManager = GetComponentInChildren<DeckManager>();
         mapDeckManager = GetComponentInChildren<MapDeckManager>();
-        gridManager = FindFirstObjectByType<GridManager>();
 
         if (optionsManager == null)
         {
@@ -163,18 +172,6 @@ private void InitializeManagers()
 
     }
 
-    public int PartyChips
-    {
-        get { return partyChips; }
-        set { partyChips = value; }
-    }
-
-    public int EnemyChips
-    {
-        get { return enemyChips; }
-        set { enemyChips = value; }
-    }
-
     public int Difficulty
     { get { return difficulty; } set { difficulty = value; } }
 
@@ -186,7 +183,6 @@ private void InitializeManagers()
 
     public void RestartGame()
     {
-    //    gridManager.DestroyGrid();
     }
 
 }

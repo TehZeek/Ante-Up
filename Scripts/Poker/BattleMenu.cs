@@ -97,7 +97,7 @@ public class BattleMenu : MonoBehaviour
             StillLoadingTurn = true;
             if (AllInTrigger && !BetIsSet) { AllInChosen(); }
             else if (AllInTrigger && BetIsSet) { return; }
-            else if (BetIsSet) { CallChosen(); }
+            else if (BetIsSet) { RaiseChosen(); }
             else { BetChosen(); }
         }
     }
@@ -108,7 +108,7 @@ public class BattleMenu : MonoBehaviour
         {
             StillLoadingTurn = true;
             if (pokerTurnManager.isAllIn[0]) { CallChosen(); }
-            else if (BetIsSet) { RaiseChosen(); }
+            else if (BetIsSet) { CallChosen(); }
             else { CheckChosen(); }
         }
     }

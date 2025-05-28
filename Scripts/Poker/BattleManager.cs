@@ -76,7 +76,7 @@ public class BattleManager : MonoBehaviour
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerTurnManager.stillThisTurn = true;
 
-        FadeIn.GetComponent<FadeOutAndDestroy>().FadeSplash();
+        FadeIn.GetComponent<ActionScreen>().FadeSplash();
         //make the huds
 
         Debug.Log("We made " + HUDs.Count + " HUDs");

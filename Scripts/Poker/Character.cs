@@ -10,14 +10,15 @@ namespace ZeekSpace
         public string characterName;
         public Sprite HUDSprite;
         public GameObject battleSpritePrefab;
+        public Sprite RoomSprite;
         public Sprite Silloette;
         public Sprite HandBottom;
         public Sprite HandTop;
         public Sprite BattleSprite;
-        public Sprite Attacksprite;
+        public Sprite AttackSprite;
         public Sprite HurtSprite;
         public Sprite DeadSprite;
-        public Sprite RangedPrefab;
+        public GameObject RangedPrefab;
         public bool isOut;
         public bool isFolding;
         public bool isAllIn;

@@ -51,6 +51,7 @@ public class PokerChipManager : MonoBehaviour
         }
 
         potChipDisplay.text = potChips.ToString();
+        gameManager.playerChips = playerChips;
         //throw in those visual sprite chips here
     }
 

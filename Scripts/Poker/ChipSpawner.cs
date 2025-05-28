@@ -2,44 +2,72 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using ZeekSpace;
 
 using UnityEngine.UI;
 using TMPro;
 
 public class SpriteSpawner : MonoBehaviour
 {
-    public GameObject[] spritePrefabs; // Assign multiple sprite prefabs in the Inspector
-    public GameObject projectilePrefab;
-    public float speed = 400f; // Adjust movement speed
-    public float rotationSpeed = 360f; // Degrees per second
-    public Transform parentTransform; // Assign a UI Panel or Canvas element in the Inspector
-    public float spawnDelay = 0.05f; // Delay between spawns
-
-    public RectTransform actor; // Assign the Canvas object in the Inspector
-    public List<Vector2> targetPosition = new List<Vector2>(); // Set the destination position
-    public Sprite BattleSprite; // Assign the sprite to switch to midway
+    [Header("Actor Setup")]
+    public Character character;
+    public RectTransform actor;
+    public Sprite BattleSprite;
     public Sprite HurtSprite;
     public Sprite AttackSprite;
     public Sprite DeadSprite;
-    public float leapDuration = 0.7f; // Total time for the leap
-    public float arcHeight = 50f; // Height of the arc
-    public Image screenFlashOverlay; // Assign a full-screen UI Image in the Inspector
-    public float flashDuration = 0.2f; // Duration of the screen flash
-
-
-    private Vector2 startPosition;
-    private Image canvasImage;
-    private Sprite originalSprite;
+    public Sprite originalSprite;
     public bool isRanged = false;
 
-    void Start()
+    [Header("Projectiles")]
+    public GameObject[] spritePrefabs;
+    public GameObject projectilePrefab;
+    public float speed = 400f;
+    public float rotationSpeed = 360f; 
+    public Transform parentTransform;
+    public float spawnDelay = 0.05f;
+    public List<Vector2> targetPosition = new List<Vector2>();
+
+    [Header("Movement")]
+    public float leapDuration = 0.7f;
+    public float arcHeight = 50f;
+    public Image screenFlashOverlay;
+    public float flashDuration = 0.2f;
+    private Vector2 startPosition;
+    public Image canvasImage;
+    
+
+    public void BuildActor()
     {
+        if (character != null)
+        {
+            Debug.Log("Building Character");
+            canvasImage.sprite = character.RoomSprite;
+            projectilePrefab = character.RangedPrefab;
+            BattleSprite = character.BattleSprite;
+            HurtSprite = character.HurtSprite;
+            AttackSprite = character.AttackSprite;
+            DeadSprite = character.DeadSprite;
+            isRanged = character.isRanged;
+            originalSprite = character.RoomSprite;
+        }
+        else { Debug.Log("no character"); }
+
+            actor = GetComponent<RectTransform>();
+
         if (actor == null) return;
 
         startPosition = actor.anchoredPosition;
-        canvasImage = actor.GetComponent<Image>();
-        if (canvasImage != null) originalSprite = canvasImage.sprite;
+        SetSprite(originalSprite);
         // pull the character or monster, apply the sprites etc from it so we can instantiate this
+    }
+
+    void SetSprite(Sprite newSprite)
+    {
+        Debug.Log("New sprite " + newSprite.name);
+        if (canvasImage == null || newSprite == null) { Debug.Log("no canvas image"); return; }
+        canvasImage.sprite = newSprite;
+        SpriteSizing(newSprite);
     }
 
     public void SpawnChipDamage(int count)
@@ -49,33 +77,26 @@ public class SpriteSpawner : MonoBehaviour
 
     private IEnumerator SpawnChipsWithDelay(int count)
     {
-        canvasImage.sprite = HurtSprite;
-        SpriteSizing(HurtSprite);
-
+        SetSprite(HurtSprite);
         for (int i = 0; i < count; i++)
         {
             SpawnAndMoveChip();
             yield return new WaitForSeconds(spawnDelay);
         }
-        canvasImage.sprite = originalSprite;
-        SpriteSizing(originalSprite);
+        SetSprite(originalSprite);
     }
 
     private void SpawnAndMoveChip()
     {
         if (spritePrefabs.Length == 0 || parentTransform == null) return;
 
-        // Pick a random sprite prefab
         GameObject selectedPrefab = spritePrefabs[Random.Range(0, spritePrefabs.Length)];
-
-        // Instantiate the sprite as a child of the specified parent
         GameObject newSprite = Instantiate(selectedPrefab, parentTransform);
 
         // Set the sprite's position to the center of the parent
         RectTransform rectTransform = newSprite.GetComponent<RectTransform>();
         if (rectTransform == null) rectTransform = newSprite.AddComponent<RectTransform>();
         rectTransform.anchoredPosition = Vector2.zero;
-
         // Ensure the new sprite appears **behind** the parent
         newSprite.transform.SetSiblingIndex(0); // Moves it to the back of the hierarchy
 
@@ -84,11 +105,8 @@ public class SpriteSpawner : MonoBehaviour
 
         // Move outward using UI-friendly movement
         newSprite.AddComponent<SpriteMover>().Initialize(randomDirection, speed);
-
         // Apply spinning effect
         newSprite.AddComponent<Rotator>().rotationSpeed = rotationSpeed;
-
-        // Destroy after a random time between 0.3 and 0.9 seconds
         Destroy(newSprite, Random.Range(0.3f, 0.9f));
     }
 
@@ -106,12 +124,9 @@ public class SpriteSpawner : MonoBehaviour
 
     private IEnumerator RangeRoutine(int targetPos)
     {
-        // Change sprite to BattleSprite
-        canvasImage.sprite = BattleSprite;
-        SpriteSizing(BattleSprite);
+        SetSprite(BattleSprite);
         yield return new WaitForSeconds(0.7f);
-        canvasImage.sprite = AttackSprite;
-        SpriteSizing(AttackSprite);
+        SetSprite(AttackSprite);
         // Instantiate projectile
         if (projectilePrefab != null && targetPos < targetPosition.Count)
         {
@@ -119,9 +134,7 @@ public class SpriteSpawner : MonoBehaviour
             RectTransform projectileTransform = projectile.GetComponent<RectTransform>();
             if (projectileTransform == null) projectileTransform = projectile.AddComponent<RectTransform>();
 
-            // Set projectile to start at the center of parentTransform
             projectileTransform.anchoredPosition = Vector2.zero;
-
             Vector2 targetPosVec = targetPosition[targetPos];
             float travelTime = 0.6f; // Adjust as needed
             float elapsedTime = 0f;
@@ -145,15 +158,12 @@ public class SpriteSpawner : MonoBehaviour
         }
         yield return new WaitForSeconds(0.35f);
 
-        // Restore original sprite
-        canvasImage.sprite = originalSprite;
-        SpriteSizing(originalSprite);
+        SetSprite(originalSprite);
     }
 
     private IEnumerator LeapRoutine(int targetPos)
     {
-        canvasImage.sprite = BattleSprite;
-        SpriteSizing(BattleSprite);
+        SetSprite(BattleSprite);
 
         float elapsedTime = 0f;
 
@@ -170,8 +180,7 @@ public class SpriteSpawner : MonoBehaviour
             // Switch sprite midway
             if (t >= 0.55f && canvasImage != null && canvasImage.sprite != AttackSprite)
             {
-                canvasImage.sprite = AttackSprite;
-                SpriteSizing(AttackSprite);
+                SetSprite(AttackSprite);
             }
 
             yield return null;
@@ -194,15 +203,11 @@ public class SpriteSpawner : MonoBehaviour
             actor.anchoredPosition = interpolatedPosition;
             if (t >= 0.35f && canvasImage != null && canvasImage.sprite != BattleSprite)
             {
-                canvasImage.sprite = BattleSprite;
-                SpriteSizing(BattleSprite);
+                SetSprite(BattleSprite);
             }
             yield return null;
         }
-        // Restore original sprite
-        canvasImage.sprite = originalSprite;
-        SpriteSizing(originalSprite);
-
+        SetSprite(originalSprite);
     }
     private IEnumerator FlashScreen()
     {
@@ -239,10 +244,7 @@ public class SpriteSpawner : MonoBehaviour
 
     private IEnumerator DefeatedRoutine()
     {
-        // Change sprite to HurtSprite
-        canvasImage.sprite = HurtSprite;
-        SpriteSizing(HurtSprite);
-
+        SetSprite(HurtSprite);
         Color originalColor = screenFlashOverlay.color; // Store original color
 
         // Flash screen red twice
@@ -254,11 +256,7 @@ public class SpriteSpawner : MonoBehaviour
             yield return new WaitForSeconds(flashDuration);
         }
 
-        // Change sprite to DeadSprite and adjust size
-        canvasImage.sprite = DeadSprite;
-
-        // Adjust size based on new sprite dimensions
-        SpriteSizing(DeadSprite);
+        SetSprite(DeadSprite);
         screenFlashOverlay.color = originalColor;
 
     }
@@ -286,27 +284,6 @@ public class SpriteSpawner : MonoBehaviour
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Handles movement of the sprite
 public class SpriteMover : MonoBehaviour

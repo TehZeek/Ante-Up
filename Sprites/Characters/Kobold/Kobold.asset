@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d203a5ba7137154b85877135ec19dec, type: 3}
+  m_Name: Kobold
+  m_EditorClassIdentifier: 
+  characterName: Kobold
+  HUDSprite: {fileID: 21300000, guid: b5f3cacd6f6443944a55bc938fe8f41d, type: 3}
+  battleSpritePrefab: {fileID: 7757873130746279274, guid: c3903c5452018194ba07d29bb4fae856, type: 3}
+  RoomSprite: {fileID: 21300000, guid: 8acbd4f6082e3cb408de587aaf7f1414, type: 3}
+  Silloette: {fileID: 21300000, guid: 1eec4738889671749b2fe8a486141c49, type: 3}
+  HandBottom: {fileID: 21300000, guid: 2acd1d3f6575311448dcec2b63cd1395, type: 3}
+  HandTop: {fileID: 21300000, guid: 5dbbda34733ced14587805d3a8d65a26, type: 3}
+  BattleSprite: {fileID: -4403647249799851491, guid: f98513f87a8618e4e9e2c351c18649b4, type: 3}
+  AttackSprite: {fileID: 8090276592471704938, guid: 496b0f37918da514abbfa92f99671b7e, type: 3}
+  HurtSprite: {fileID: -7130295420936144058, guid: 5433b8baf036a8448b6aaf35ef0fdc3a, type: 3}
+  DeadSprite: {fileID: -6750342493828268681, guid: 6c46770812690c84bb5eed8afd4ce323, type: 3}
+  RangedPrefab: {fileID: 0}
+  isOut: 0
+  isFolding: 0
+  isAllIn: 0
+  isBetting: 0
+  isRanged: 0
+  wonHand: 0
+  lostShowdown: 0
+  weapon: 0
+  armor: 0
+  trinket: 0
+  playerSuit: 0
+  playerRank: 0

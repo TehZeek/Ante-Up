@@ -14,21 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterName: The Kobold
   monsterChips: 5
-  HUDSprite: {fileID: 21300000, guid: b5f3cacd6f6443944a55bc938fe8f41d, type: 3}
-  battleSpritePrefab: {fileID: 7757873130746279274, guid: c3903c5452018194ba07d29bb4fae856, type: 3}
-  Silloette: {fileID: 21300000, guid: 1eec4738889671749b2fe8a486141c49, type: 3}
-  HandBottom: {fileID: 21300000, guid: 2acd1d3f6575311448dcec2b63cd1395, type: 3}
-  HandTop: {fileID: 21300000, guid: 5dbbda34733ced14587805d3a8d65a26, type: 3}
-  BattleSprite: {fileID: -4403647249799851491, guid: f98513f87a8618e4e9e2c351c18649b4, type: 3}
-  Attacksprite: {fileID: 8090276592471704938, guid: 496b0f37918da514abbfa92f99671b7e, type: 3}
-  HurtSprite: {fileID: -7130295420936144058, guid: 5433b8baf036a8448b6aaf35ef0fdc3a, type: 3}
-  DeadSprite: {fileID: -6750342493828268681, guid: 6c46770812690c84bb5eed8afd4ce323, type: 3}
-  isOut: 0
-  isFolding: 0
-  isAllIn: 0
-  isBetting: 0
-  wonHand: 0
-  lostShowdown: 0
+  character: {fileID: 11400000, guid: c4c6a184a43ebbc45b2e8e3f9aca1cc4, type: 2}
   minimumHand: {fileID: 11400000, guid: 11e4a3071b36e4d47af7b8be0d67761f, type: 2}
   minimumRank: 6
   pocketSize: 3
