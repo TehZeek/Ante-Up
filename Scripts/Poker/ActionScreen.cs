@@ -22,6 +22,18 @@ public class ActionScreen : MonoBehaviour
     private Dictionary<int, Quaternion> originalRotations = new Dictionary<int, Quaternion>();
     public List<GameObject> FinalCards = new List<GameObject>();
     public TextMeshProUGUI minimumHand;
+    private PokerHandCompare pokerHandCompare;
+    private GameManager gameManager;
+    private BattleManager battleManager;
+    private PokerTurnManager pokerTurnManager;
+
+    void Start()
+    {
+        pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
+        gameManager = FindFirstObjectByType<GameManager>();
+        battleManager = FindFirstObjectByType<BattleManager>();
+        pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
+    }
 
     public void FadeSplash()
     {
@@ -150,8 +162,7 @@ public class ActionScreen : MonoBehaviour
 
     private void buildActors()
     {
-        GameManager gameManager = FindFirstObjectByType<GameManager>();
-        if (gameManager == null) { Debug.Log("no game manager"); }
+        if (gameManager == null) { Debug.Log("no game manager"); return; }
         if (Actors == null || Actors.Count < 4)
         {
             Debug.LogError("Actors list is null or does not have enough elements.");
@@ -168,12 +179,85 @@ public class ActionScreen : MonoBehaviour
         }
     }
 
+public void buildHands(int player)
+    {
+        if (player != 0) FinalCards[player].GetComponent<CardShowdown>().handText.text = pokerHandCompare.HandToString(player);
+        else FinalCards[0].GetComponent<CardShowdown>().handText.text = "?????";
+        for (int j = 0; j < 5; j++)
+        {
+            if (player == 0)
+                {
+                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.monHand[j];
+                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
+                }
+            if (player == 1)
+                {
+                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.p1Hand[j];
+                }
+            if (player == 2)
+                {
+                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.p2Hand[j];
+                }
+            if (player == 3)
+                {
+                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.p3Hand[j];
+                }
+        }
+    }
 
+    public void PlayerFold(int player)
+    {
+        //set player sprite to hurt
+        //set fold text on
+        //keep game object off for cards
+        //check dead, set dead instead
+    }
 
+    public void PlayersFoldShowdown()
+    {
 
-public void ShowdownSetup()
+    }
+    public void MonstersFoldShowdown()
+    {
+
+    }
+
+    public void AllInShowdown()
+    {
+
+    }
+
+    public void RegularShowdown()
+    {
+
+    }
+
+    public void trialShowdownSetup()
+    {
+        //something to test the other functions in the scene
+    }
+
+    public void ShowdownSetup()
     {
         buildActors();
+        if (pokerHandCompare == null || gameManager == null || battleManager == null || pokerTurnManager == null)
+        {
+            trialShowdownSetup();
+            return;
+        }
+        for (int i = 0; i < 4; i++)
+            {
+                if (!pokerTurnManager.IsOut[i] || pokerTurnManager.isAllIn[i])
+                {
+                    buildHands(i);
+                }
+                else
+                {
+                    PlayerFold(i);
+                }
+            }
+
+
         //pokerTurnManager  is out (fold), is all in
         // gameManager is dead with 0 chips and not all in
         //pokerHandCompare  pokerHandCompare.allHandTypes, .p1Hand
@@ -181,7 +265,6 @@ public void ShowdownSetup()
         //need to write a function in hand compare to make a string of the hand type and send it over
         //pokerTurnManager grab the winner(s)
 
-        // load players, chips
         // show who folded, turn on folded text
         //monster attacks
         //bring in player 1 - delay - 2 - delay - 3 - delay

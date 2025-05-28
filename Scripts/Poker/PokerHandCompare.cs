@@ -29,6 +29,24 @@ public class PokerHandCompare : MonoBehaviour
     public List<int> p3Rank;
     public List<int> monRank;
     public List<int> handRank;
+    public List<string> cardRank = new List<string>
+{
+    "Woe",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Jack",
+    "Queen",
+    "King",
+    "Ace"
+};
+
 
     //different bools used to determine hand
 
@@ -556,6 +574,71 @@ public class PokerHandCompare : MonoBehaviour
         }
     }
 
+    }
+
+        
+
+
+    public string HandToString(int player)
+    {
+        HandTypes hand;
+        List<int> rank = new List<int>();
+        if (player == 0)
+        {
+            hand = MonHand;
+            rank = monRank;
+        }
+        else if (player == 1)
+        {
+            hand = P1Hand;
+            rank = p1Rank;
+        }
+        else if (player == 2)
+        {
+            hand = P2Hand;
+            rank = p2Rank;
+        }
+        else if (player == 3)
+        {
+            hand = P3Hand;
+            rank = p3Rank;
+        }
+        else { return "Nope"; }
+        string handString = hand.ToString();
+        string rankString = cardRank[rank[0]].ToString();
+        string rankString2 = cardRank[rank[2]].ToString();
+        string rankString3 = cardRank[rank[3]].ToString();
+        string rankString4 = cardRank[rank[4]].ToString();
+        if (hand == allHandTypes[0]) { return "Woe"; }
+        if (hand == allHandTypes[1])
+        {
+            return rankString + " High";
+        }
+        else if (hand == allHandTypes[2])
+        {
+            return handString + " of " + rankString + "'s";
+        }
+        else if (hand == allHandTypes[3] || hand == allHandTypes[7] || hand == allHandTypes[12] || hand == allHandTypes[17] || hand == allHandTypes[18] || hand == allHandTypes[22] || hand == allHandTypes[23])
+        {
+            return handString + ": " + rankString + "'s and " + rankString3 + "'s";
+        }
+        else if (hand == allHandTypes[4] || hand == allHandTypes[8] || hand == allHandTypes[11] || hand == allHandTypes[13] || hand == allHandTypes[19] || hand == allHandTypes[24] || hand == allHandTypes[25])
+        {
+            return handString + ": " + rankString + "'s";
+        }
+        else if (hand == allHandTypes[5] || hand == allHandTypes[6] || hand == allHandTypes[9] || hand == allHandTypes[15] || hand == allHandTypes[16] || hand == allHandTypes[20])
+        {
+            return handString + " " + rankString + " High";
+        }
+        else if (hand == allHandTypes[10] || hand == allHandTypes[21])
+        {
+            return handString;
+        }
+        else if (hand == allHandTypes[17])
+        {
+            return handString +": "+rankString+"'s, "+rankString2+"'s and"+rankString4+"'s";
+        }
+        else return "Error";
     }
 
     private void UpdateHandToCompare(HandTypes bestHandType, List<int> bestHandRanks, List<Card> bestHandPlayed, int playerNumber)

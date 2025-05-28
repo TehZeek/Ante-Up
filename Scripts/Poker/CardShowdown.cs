@@ -14,7 +14,7 @@ public class CardShowdown : MonoBehaviour
     public TextMeshProUGUI handText;
     public List<Vector2> firstDestination = new List<Vector2>();
     public List<Vector2> secondDestination = new List<Vector2>();
-    public float moveSpeed = 500f; // Adjust the speed as needed
+    public float moveSpeed = 600f; // Adjust the speed as needed
     private Coroutine bounceRoutine;
     public Vector2 startOffset = new Vector2(550, 0);
     public Vector3 handTextOffset = new Vector3(135f, 0, 0);
@@ -139,7 +139,7 @@ public class CardShowdown : MonoBehaviour
 
             StartCoroutine(MoveCard(showdownCards[i], firstDestination[i]));
 
-            yield return new WaitForSeconds(0.3f); // Delay before the next card starts
+            yield return new WaitForSeconds(0.35f); // Delay before the next card starts
         }
         handText.rectTransform.localPosition = startOffset;
         StartCoroutine(MoveHandTextToCard(showdownCards[showdownCards.Count - 1], MoveToSecondScreen));
@@ -148,6 +148,10 @@ public class CardShowdown : MonoBehaviour
 
     public void MoveToSecondScreen()
     {
+        for (int i = 0; i < showdownCards.Count; i++)
+        {
+            showdownCards[i].transform.localPosition = firstDestination[i];
+        }
         StartCoroutine(MoveCardsToTempPositions());
         StartCoroutine(MoveHandTextToCard(showdownCards[showdownCards.Count - 1]));
     }
@@ -157,7 +161,7 @@ public class CardShowdown : MonoBehaviour
         for (int i = (showdownCards.Count-1); i >-1; i--)
         {
             StartCoroutine(MoveCard(showdownCards[i], secondDestination[i]));
-            yield return new WaitForSeconds(0.15f);
+            yield return new WaitForSeconds(0.2f);
         }
         StartCoroutine(MoveHandTextToCard(showdownCards[showdownCards.Count - 1]));
     }
@@ -175,8 +179,8 @@ public class CardShowdown : MonoBehaviour
     IEnumerator MoveCard(GameObject card, Vector2 targetPosition, Action onComplete = null)
     {
         float speed = moveSpeed;
-        float maxFastMoveDuration = 2f;
-        float maxSlowMoveDuration = 1f;
+        float maxFastMoveDuration = 1f;
+        float maxSlowMoveDuration = .5f; 
         float timer = 0f;
 
         while (Vector2.Distance(card.transform.localPosition, targetPosition) > 5f && timer < maxFastMoveDuration)
