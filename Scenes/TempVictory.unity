@@ -4071,6 +4071,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1654436284}
     - target: {fileID: 1369535055080671736, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: minimumHand
+      value: 
+      objectReference: {fileID: 473251822}
+    - target: {fileID: 1369535055080671736, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
       propertyPath: FinalCards.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -4111,6 +4115,34 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 398650467}
     - target: {fileID: 1853730757837950284, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853730757837950284, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[0].x
+      value: 297
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853730757837950284, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[1].x
+      value: -349
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853730757837950284, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[2].x
+      value: -349
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853730757837950284, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[2].y
+      value: -165
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853730757837950284, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[3].x
+      value: -349
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853730757837950284, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[3].y
+      value: 105
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853730757837950284, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
       propertyPath: targetPosition.Array.data[0].x
       value: 460
       objectReference: {fileID: 0}
@@ -4129,6 +4161,14 @@ PrefabInstance:
     - target: {fileID: 2190211019713602665, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2607323851307452596, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2607323851307452596, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SpawnChipDamageTemp
       objectReference: {fileID: 0}
     - target: {fileID: 3770979015492278810, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
       propertyPath: m_Pivot.x
@@ -4218,6 +4258,34 @@ PrefabInstance:
       propertyPath: canvasImage
       value: 
       objectReference: {fileID: 138940972}
+    - target: {fileID: 4589427056217367628, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589427056217367628, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[0].x
+      value: 297
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589427056217367628, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[1].x
+      value: -350
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589427056217367628, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[2].x
+      value: -350
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589427056217367628, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[2].y
+      value: -165
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589427056217367628, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[3].x
+      value: -350
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589427056217367628, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
+      propertyPath: chipTargets.Array.data[3].y
+      value: 105
+      objectReference: {fileID: 0}
     - target: {fileID: 4589427056217367628, guid: 9fd06c68a2c79f441b1a6f96cbf6e6f0, type: 3}
       propertyPath: targetPosition.Array.data[0].x
       value: 460

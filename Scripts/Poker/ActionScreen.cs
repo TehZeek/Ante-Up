@@ -26,6 +26,9 @@ public class ActionScreen : MonoBehaviour
     private GameManager gameManager;
     private BattleManager battleManager;
     private PokerTurnManager pokerTurnManager;
+    private PokerChipManager pokerChipManager;
+    public List<RectTransform> chipsTargets = new List<RectTransform>();
+    private List<bool> IsDead = new List<bool>() { false, false, false, false };
 
     void Start()
     {
@@ -33,6 +36,7 @@ public class ActionScreen : MonoBehaviour
         gameManager = FindFirstObjectByType<GameManager>();
         battleManager = FindFirstObjectByType<BattleManager>();
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
+        pokerChipManager = FindFirstObjectByType<PokerChipManager>();
     }
 
     public void FadeSplash()
@@ -74,6 +78,12 @@ public class ActionScreen : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    public void UpdateChipCounter(int player)
+    {
+        pokerChipManager.playerChips[player]++;
+        TextEffect(pokerChipManager.playerChips[player].ToString(), chipDisplay[player]);
     }
 
     public void TextEffect(string newText, TextMeshProUGUI textToChange)
@@ -207,17 +217,50 @@ public void buildHands(int player)
 
     public void PlayerFold(int player)
     {
-        //set player sprite to hurt
-        //set fold text on
-        //keep game object off for cards
-        //check dead, set dead instead
+        if (!IsDead[player])
+        {
+            Actors[player].GetComponent<SpriteSpawner>().SetSprite(Actors[player].GetComponent<SpriteSpawner>().HurtSprite);
+            Actors[player].GetComponent<SpriteSpawner>().originalSprite = Actors[player].GetComponent<SpriteSpawner>().HurtSprite;
+            TextEffect("Folded!", folded[player]);
+        }
+        else
+        {
+            Actors[player].GetComponent<SpriteSpawner>().SetSprite(Actors[player].GetComponent<SpriteSpawner>().DeadSprite);
+            Actors[player].GetComponent<SpriteSpawner>().originalSprite = Actors[player].GetComponent<SpriteSpawner>().DeadSprite;
+            TextEffect("Out!", folded[player]);
+        }
     }
 
-    public void PlayersFoldShowdown()
+
+    public void PlayersFoldShowdown(List<int> ChipsLost)
     {
-
+        for (int i = 1; i < 4; i++)
+        { 
+            PlayerFold(i);
+        }
+        StartSpinning(0);
+        StartCoroutine(PlayersFoldContinued(ChipsLost));
     }
-    public void MonstersFoldShowdown()
+    private IEnumerator PlayersFoldContinued(List<int> ChipsLost)
+    {
+        yield return new WaitForSeconds(0.5f);
+        TextEffect("Party Folds!", minimumHand);
+        yield return new WaitForSeconds(0.5f);
+        for (int j = 1; j < 4; j++)
+            if (ChipsLost[j] > 0 && !IsDead[j])
+            {
+                Actors[0].GetComponent<SpriteSpawner>().StartLeap(j);
+                yield return new WaitForSeconds(0.7f);
+                List<int> target = new List<int>() { 0 };
+                Actors[j].GetComponent<SpriteSpawner>().SpawnChipDamage(ChipsLost[j], target);
+                yield return new WaitForSeconds(0.7f);
+            }
+        yield return new WaitForSeconds(2f);
+        StopSpinning(0);
+        WrapUpShowdown();
+    }
+
+    public void MonstersFoldShowdown(List<int> playersRemaining, List<int> ChipsLost)
     {
 
     }
@@ -234,15 +277,34 @@ public void buildHands(int player)
 
     public void trialShowdownSetup()
     {
+        List<int> chipsLost = new List<int>() {0,8,8,0};
+        IsDead[3] = true;
+        PlayersFoldShowdown(chipsLost);
         //something to test the other functions in the scene
     }
 
     public void ShowdownSetup()
     {
         buildActors();
-        if (pokerHandCompare == null || gameManager == null || battleManager == null || pokerTurnManager == null)
+        if (pokerHandCompare == null || gameManager == null || battleManager == null || pokerTurnManager == null || pokerChipManager == null)
         {
             trialShowdownSetup();
+            return;
+        }
+        List<int> chipsLost = new List<int>();
+        for (int i = 0; i<4; i++)
+        {
+            chipsLost.Add(pokerChipManager.InThePot[0]);
+            if (pokerChipManager.playerChips[i] == 0 && pokerTurnManager.IsOut[i]) { IsDead[i] = true; }
+        }
+        if (pokerTurnManager.DidMonstersFold())
+        {
+            MonstersFoldShowdown(pokerTurnManager.playersStillIn, chipsLost);
+            return;
+        }
+        if (pokerTurnManager.DidPlayersFold())
+        {
+            PlayersFoldShowdown(chipsLost);
             return;
         }
         for (int i = 0; i < 4; i++)
@@ -256,6 +318,7 @@ public void buildHands(int player)
                     PlayerFold(i);
                 }
             }
+
 
 
         //pokerTurnManager  is out (fold), is all in
@@ -283,5 +346,8 @@ public void buildHands(int player)
         // if game over, dead sprite.  Game over text
         // if not, reset to next round.
     }
+    public void WrapUpShowdown()
+    {
 
+    }
 }

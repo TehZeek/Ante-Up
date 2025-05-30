@@ -24,7 +24,7 @@ public class PokerTurnManager : MonoBehaviour
     public bool HasARiver = true;
     public bool HasABonusRound = false;
     public bool stillThisTurn = false;
-    private List<int> playersStillIn = new List<int>();
+    public List<int> playersStillIn = new List<int>();
     private const int PlayerCount = 4;
 
 
@@ -367,6 +367,17 @@ public class PokerTurnManager : MonoBehaviour
 
     private bool RoundOverEarly()
     {
+        if (DidMonstersFold() || DidPlayersFold())
+        {
+            pokerChipManager.SplitThePot(playersStillIn);
+            ClearTurnVariables();
+            return true;
+        }
+        return false;
+    }
+
+    public bool DidMonstersFold()
+    {
         //If the Monster Folded players still in split the pot
         if (IsOut[0] && !isAllIn[0])
         {
@@ -376,21 +387,20 @@ public class PokerTurnManager : MonoBehaviour
                 {
                     playersStillIn.Add(i);
                     Debug.Log("[FindWhoWon] Monsters Folded, Players who won: " + string.Join(",", playersStillIn));
-                    
+
                 }
             }
-            pokerChipManager.SplitThePot(playersStillIn);
-            ClearTurnVariables();
             return true;
         }
+        return false;
+    }
 
-        //If the players all folded
+    public bool DidPlayersFold()
+    {
         if ((IsOut[1] && !isAllIn[1]) && (IsOut[2] && !isAllIn[2]) && (IsOut[3] && !isAllIn[3]))
         {
             playersStillIn.Add(0);
             Debug.Log("Players folded, Monsters get the pot");
-            pokerChipManager.SplitThePot(playersStillIn);
-            ClearTurnVariables();
             return true;
         }
         return false;
