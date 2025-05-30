@@ -603,12 +603,21 @@ public class PokerHandCompare : MonoBehaviour
             hand = P3Hand;
             rank = p3Rank;
         }
+        else if (player == 4)
+        {
+            GameManager gameManager = FindFirstObjectByType<GameManager>();
+            hand = gameManager.monster.minimumHand;
+            rank[0] = gameManager.monster.minimumRank;
+            rank[1] = 2;
+            rank[2] = 2;
+            rank[3] = 3;
+        }
         else { return "Nope"; }
         string handString = hand.ToString();
         string rankString = cardRank[rank[0]].ToString();
-        string rankString2 = cardRank[rank[2]].ToString();
-        string rankString3 = cardRank[rank[3]].ToString();
-        string rankString4 = cardRank[rank[4]].ToString();
+        string rankString2 = cardRank[rank[1]].ToString();
+        string rankString3 = cardRank[rank[2]].ToString();
+
         if (hand == allHandTypes[0]) { return "Woe"; }
         if (hand == allHandTypes[1])
         {
@@ -620,7 +629,7 @@ public class PokerHandCompare : MonoBehaviour
         }
         else if (hand == allHandTypes[3] || hand == allHandTypes[7] || hand == allHandTypes[12] || hand == allHandTypes[17] || hand == allHandTypes[18] || hand == allHandTypes[22] || hand == allHandTypes[23])
         {
-            return handString + ": " + rankString + "'s and " + rankString3 + "'s";
+            return handString + ": " + rankString + "'s and " + rankString2 + "'s";
         }
         else if (hand == allHandTypes[4] || hand == allHandTypes[8] || hand == allHandTypes[11] || hand == allHandTypes[13] || hand == allHandTypes[19] || hand == allHandTypes[24] || hand == allHandTypes[25])
         {
@@ -636,7 +645,7 @@ public class PokerHandCompare : MonoBehaviour
         }
         else if (hand == allHandTypes[17])
         {
-            return handString +": "+rankString+"'s, "+rankString2+"'s and"+rankString4+"'s";
+            return handString +": "+rankString+"'s, "+rankString2+"'s and"+rankString3+"'s";
         }
         else return "Error";
     }

@@ -204,6 +204,7 @@ public void buildHands(int player)
             if (player == 1)
                 {
                     FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.p1Hand[j];
+                    
                 }
             if (player == 2)
                 {
@@ -213,6 +214,10 @@ public void buildHands(int player)
                 {
                     FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.p3Hand[j];
                 }
+        }
+        for (int k = 1; k<4; k++)
+        {
+            FinalCards[k].GetComponent<CardShowdown>().handText.GetComponent<TextMeshProUGUI>().text = pokerHandCompare.HandToString(k);
         }
     }
 
@@ -316,17 +321,44 @@ public void buildHands(int player)
 
     }
 
-    public void RegularShowdown()
+    public void RegularShowdown(List<int> playersRemaining, List<int> ChipsLost)
     {
+        //setup
+        TextEffect("Showdown!", minimumHand);
+        StartCoroutine(RegularShowdownContinued(ChipsLost, playersRemaining));
+    }
+    public IEnumerator RegularShowdownContinued(List<int> playersRemaining, List<int> ChipsLost)
+    {
+        yield return new WaitForSeconds(2f);
+        for (int i = 0; i < 4; i++)
+            {
+                if (!playersRemaining.Contains(i))
+                {
+                    PlayerFold(i);
+                }
+                else 
+                {
+                    buildHands(i);
+                }
+                yield return new WaitForSeconds(1f);
+            }
+        string showHand = "Minimum Hand:\n";
+        string minHand = pokerHandCompare.HandToString(4);
+
+        TextEffect((showHand + minHand), minimumHand);
+
+        yield return new WaitForSeconds(1f);
 
     }
 
     public void trialShowdownSetup()
     {
-        List<int> chipsLost = new List<int>() {8,4,4,2};
-        List<int> playersIn = new List<int>() {1,2};
-        MonstersFoldShowdown(playersIn, chipsLost);
-        //something to test the other functions in the scene
+        buildHands(1);
+        buildHands(2);
+        buildHands(3);
+        List<int> lista = new List<int>() { 5, 5, 5, 5 };
+        List<int> listb = new List<int>() { 0,1,3 };
+        RegularShowdown(listb, lista);
     }
 
     public void ShowdownSetup()
@@ -353,22 +385,9 @@ public void buildHands(int player)
             PlayersFoldShowdown(chipsLost);
             return;
         }
-        for (int i = 0; i < 4; i++)
-            {
-                if (!pokerTurnManager.IsOut[i] || pokerTurnManager.isAllIn[i])
-                {
-                    buildHands(i);
-                }
-                else
-                {
-                    PlayerFold(i);
-                }
-            }
+        //check for all in showdown
 
 
-
-        //pokerTurnManager  is out (fold), is all in
-        // gameManager is dead with 0 chips and not all in
         //pokerHandCompare  pokerHandCompare.allHandTypes, .p1Hand
         //HUD[0].MinHand for minimum hand text
         //need to write a function in hand compare to make a string of the hand type and send it over
