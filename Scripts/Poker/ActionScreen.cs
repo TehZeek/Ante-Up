@@ -29,6 +29,7 @@ public class ActionScreen : MonoBehaviour
     private PokerChipManager pokerChipManager;
     public List<RectTransform> chipsTargets = new List<RectTransform>();
     private List<bool> IsDead = new List<bool>() { false, false, false, false };
+    private int totalSum;
 
     void Start()
     {
@@ -247,6 +248,7 @@ public void buildHands(int player)
         TextEffect("Party Folds!", minimumHand);
         yield return new WaitForSeconds(0.5f);
         for (int j = 1; j < 4; j++)
+        {
             if (ChipsLost[j] > 0 && !IsDead[j])
             {
                 Actors[0].GetComponent<SpriteSpawner>().StartLeap(j);
@@ -255,6 +257,14 @@ public void buildHands(int player)
                 Actors[j].GetComponent<SpriteSpawner>().SpawnChipDamage(ChipsLost[j], target);
                 yield return new WaitForSeconds(0.7f);
             }
+            if (ChipsLost[0] > 0) { 
+                for (int m = 0; m < ChipsLost[0]; m++)
+                {
+                    UpdateChipCounter(0);
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+        }
         yield return new WaitForSeconds(2f);
         StopSpinning(0);
         WrapUpShowdown();
@@ -262,7 +272,43 @@ public void buildHands(int player)
 
     public void MonstersFoldShowdown(List<int> playersRemaining, List<int> ChipsLost)
     {
+        for (int i = 0; i < 4; i++)
+        {
+            if (!playersRemaining.Contains(i))
+            {
+                PlayerFold(i);
+            }
+        }
+        for (int j = 0; j < playersRemaining.Count; j++)
+        {
+            StartSpinning(playersRemaining[j]);
+        }
+        StartCoroutine(MonstersFoldContinued(playersRemaining, ChipsLost));
+    }
 
+    private IEnumerator MonstersFoldContinued(List<int> playersRemaining, List<int> ChipsLost)
+    {
+        yield return new WaitForSeconds(0.5f);
+        TextEffect("Monster Folds!", minimumHand);
+        yield return new WaitForSeconds(0.5f);
+        for (int i = 0; i < playersRemaining.Count; i++)
+            {
+                Actors[playersRemaining[i]].GetComponent<SpriteSpawner>().StartLeap(0);
+            }
+        yield return new WaitForSeconds(0.7f);
+        for (int l = 0; l < ChipsLost.Count; l++)
+        {
+            totalSum+= ChipsLost[l];
+        }
+
+        Actors[0].GetComponent<SpriteSpawner>().SpawnChipDamage(totalSum, playersRemaining);
+        totalSum = 0;
+        yield return new WaitForSeconds(2.0f);
+        for (int j = 0; j < playersRemaining.Count; j++)
+        {
+            StopSpinning(playersRemaining[j]);
+        }
+        WrapUpShowdown();
     }
 
     public void AllInShowdown()
@@ -277,9 +323,9 @@ public void buildHands(int player)
 
     public void trialShowdownSetup()
     {
-        List<int> chipsLost = new List<int>() {0,8,8,0};
-        IsDead[3] = true;
-        PlayersFoldShowdown(chipsLost);
+        List<int> chipsLost = new List<int>() {8,4,4,2};
+        List<int> playersIn = new List<int>() {1,2};
+        MonstersFoldShowdown(playersIn, chipsLost);
         //something to test the other functions in the scene
     }
 
