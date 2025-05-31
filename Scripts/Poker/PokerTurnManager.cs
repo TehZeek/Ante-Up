@@ -284,12 +284,15 @@ public class PokerTurnManager : MonoBehaviour
         //transition over to the ActionScreen here
 
         playersStillIn.Clear();
+        battleManager.ShowdownTime();
 
-        if(RoundOverEarly())
-        {
-            return;
-        }
-        playShowdown();
+
+
+     //   if(RoundOverEarly())
+     //   {
+     //       return;
+     //   }
+     //   playShowdown();
     }
     public void playShowdown()
     {

@@ -109,9 +109,14 @@ public class BattleManager : MonoBehaviour
         HUDs[3].GetComponent<HUD>().RefreshHUD(pokerTableCards.playerThreePocket, 3);
     }
 
+    public void ShowdownTime()
+    {
+        FadeIn = Instantiate(LoadScreenPrefab, FadeInSpot.position, Quaternion.identity, FadeInSpot);
+        FadeIn.GetComponent<ActionScreen>().GetManagers();
+        FadeIn.GetComponent<ActionScreen>().ShowdownSetup();
+    }
 
 
-    
 
 
 

@@ -31,7 +31,7 @@ public class ActionScreen : MonoBehaviour
     private List<bool> IsDead = new List<bool>() { false, false, false, false };
     private int totalSum;
 
-    void Start()
+    public void GetManagers()
     {
         pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
         gameManager = FindFirstObjectByType<GameManager>();
