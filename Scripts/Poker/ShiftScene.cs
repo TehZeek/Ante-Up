@@ -38,13 +38,11 @@ public class ShiftScene : MonoBehaviour
             GameObject tempScene = Instantiate(scenePrefab, sceneTransform[i].position, Quaternion.identity, sceneTransform[i]);
             Scenes.Add(tempScene);
                 Scenes[i].GetComponent<RoomPerspective>().character = gameManager.characters[i];
-                Scenes[i].GetComponent<RoomPerspective>().isCharacter = true;
                 Scenes[i].GetComponent<RoomPerspective>().MakeRoom(i);            
         }
         GameObject tempyScene = Instantiate(scenePrefab, sceneTransform[4].position, Quaternion.identity, sceneTransform[4]);
         Scenes.Add(tempyScene);
-        Scenes[4].GetComponent<RoomPerspective>().character = gameManager.characters[0];
-        Scenes[4].GetComponent<RoomPerspective>().isCharacter = true;
+        Scenes[4].GetComponent<RoomPerspective>().character = gameManager.characters[1];
         Scenes[4].GetComponent<RoomPerspective>().MakeRoom(1);
         pokerTableCards.monTransform = Scenes[0].GetComponent<RoomPerspective>().handLocation;
         pokerTableCards.p1Transform = Scenes[4].GetComponent<RoomPerspective>().handLocation;

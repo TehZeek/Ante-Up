@@ -35,7 +35,7 @@ public class RoomPerspective : MonoBehaviour
         monsterManager = FindFirstObjectByType<MonsterManager>();
         for (int i=0; i<4; i++)
         {
-            actorPrefab[i] = gameManager.characters[0].battleSpritePrefab;
+            actorPrefab[i] = gameManager.characters[i].battleSpritePrefab;
         }
 
         for (int i = 0; i < actorPrefab.Count; i++)
