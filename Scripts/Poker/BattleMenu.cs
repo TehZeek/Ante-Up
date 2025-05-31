@@ -47,7 +47,6 @@ public class BattleMenu : MonoBehaviour
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
         battleManager = FindFirstObjectByType<BattleManager>();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
-        Debug.Log("Finished Battle Menu start");
     }
 
     public void NextPlayer()
@@ -179,7 +178,6 @@ public class BattleMenu : MonoBehaviour
 
     private void AllInChosen()
     { 
-        Debug.Log("All In special stuff to go here");
         BetChosen();
         //ALL IN set isALLIN bool to true
         //As bet, but amount = current chips
@@ -196,27 +194,26 @@ public class BattleMenu : MonoBehaviour
         ShiftScene shiftScene = FindFirstObjectByType<ShiftScene>();
         shiftScene.ShiftTheScene();
         yield return new WaitForSeconds(0.5f); // 30 frames at 60 FPS
-        Debug.Log("Finished button animation");
         betWords.gameObject.SetActive(true);
         bettingWords.text = "...";
         yield return new WaitForSeconds(2f);
         int monsterChoice = monsterManager.MonsterDecision();
-        if (monsterChoice == 0) { Debug.Log("Monster is betting");
+        if (monsterChoice == 0) { 
             bettingWords.text = "I'll BET!";
             yield return new WaitForSeconds(2f);
             BetChosen();
         }
-        if (monsterChoice == 1) { Debug.Log("Monster is Calling");
+        if (monsterChoice == 1) { 
             bettingWords.text = "I Call";
             yield return new WaitForSeconds(2f);
             CallChosen();
         }
-        if (monsterChoice == 2) { Debug.Log("Monster is Checking");
+        if (monsterChoice == 2) { 
             bettingWords.text = "Hmm...  Check.";
             yield return new WaitForSeconds(2f);
             CheckChosen();
         }
-        if (monsterChoice == 3) { Debug.Log("Monster is Folding");
+        if (monsterChoice == 3) { 
             bettingWords.text = "...I Fold";
             yield return new WaitForSeconds(2f); 
             FoldChosen();
@@ -233,7 +230,6 @@ public class BattleMenu : MonoBehaviour
         BetInAni.gameObject.SetActive(true);
         yield return new WaitForSeconds(0.5f);
         isAnimating = false;
-        Debug.Log("Finished button animation");
         if (AllInTrigger && !BetIsSet) { UpdateButtonDisplay(3); }
         else if (AllInTrigger && BetIsSet) { UpdateButtonDisplay(5); }
         else if (pokerTurnManager.isAllIn[0]) { UpdateButtonDisplay(6); }
@@ -286,18 +282,15 @@ public class BattleMenu : MonoBehaviour
             buttons[2].gameObject.SetActive(true);
         }
         if (displaySwitch == 21)
-        {
-            Debug.Log("turned on call rollover");
+        { 
             CallCall.gameObject.SetActive(true);
         }
         if (displaySwitch == 22)
         {
-            Debug.Log("turned on raise rollover");
             CallRaise.gameObject.SetActive(true);
         }
         if (displaySwitch == 23)
         {
-            Debug.Log("turned on Fold rollover");
             CallFold.gameObject.SetActive(true);
         }
         if (displaySwitch == 3)

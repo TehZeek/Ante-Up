@@ -56,7 +56,7 @@ public class PokerTurnManager : MonoBehaviour
     private IEnumerator ProcessTurn()
     {
             yield return new WaitForSeconds(0.5f);
-            Debug.Log("[Update] stillThisTurn is true. Current phase: " + turnOrder[1]);
+
 
             switch (turnOrder[1])
             {
@@ -167,7 +167,6 @@ public class PokerTurnManager : MonoBehaviour
 
         else
         {
-            Debug.Log("Not ending the round early");
             return false; 
         }
     }
@@ -189,14 +188,12 @@ public class PokerTurnManager : MonoBehaviour
         {
             HasChecked[i] = true;
         }
-        Debug.Log("Finished TurnAssign");
         TickTurn();
     }
 
 
     private void PocketCardDraw()
     {
-        Debug.Log("[PocketCardDraw] Dealing pocket cards.");
         stillThisTurn = false;
         pokerDrawPile.DealPocketCards();
         pokerTableCards.CompareHands();
@@ -211,8 +208,6 @@ public class PokerTurnManager : MonoBehaviour
         {
             battleMenu.AllInTrigger = true;
         }
-
-        Debug.Log("[PlayerOptions] Displaying player options.");
         battleMenu.UpdateButtonDisplay(0);
         battleManager.UpdateHUD();
     }
@@ -251,7 +246,6 @@ public class PokerTurnManager : MonoBehaviour
 
     private void Showdown()
     {
-        Debug.Log("[Showdown] Executing showdown.");
         stillThisTurn = false;
         pokerTableCards.ShowdownReveal();
         battleMenu.UpdateButtonDisplay(4);
@@ -279,7 +273,6 @@ public class PokerTurnManager : MonoBehaviour
                     pokerDrawPile.DealRiverCards();
                 }
             }
-            Debug.Log("Compared Hands");
             FindWhoWon();
 
         }
@@ -290,14 +283,12 @@ public class PokerTurnManager : MonoBehaviour
     {
         //transition over to the ActionScreen here
 
-        Debug.Log("[FindWhoWon] Determining the winner.");
         playersStillIn.Clear();
 
         if(RoundOverEarly())
         {
             return;
         }
-        Debug.Log("We have a showdown!");
         playShowdown();
     }
     public void playShowdown()
@@ -493,8 +484,6 @@ public class PokerTurnManager : MonoBehaviour
 
     public void ClearTurnVariables()
     {
-        Debug.Log("[ClearTurnVariables] Resetting for next hand.");
-
         stillThisTurn = false;
         playersStillIn.Clear();
         turnOrder[0]++;

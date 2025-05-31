@@ -37,19 +37,9 @@ public class ShiftScene : MonoBehaviour
             //make a TEMP scene, add it to Scenes
             GameObject tempScene = Instantiate(scenePrefab, sceneTransform[i].position, Quaternion.identity, sceneTransform[i]);
             Scenes.Add(tempScene);
-            if (i == 0)
-            {
-                Scenes[i].GetComponent<RoomPerspective>().monster = monsterManager.monster;
-                Scenes[i].GetComponent<RoomPerspective>().isCharacter = false;
-                Scenes[i].GetComponent<RoomPerspective>().MakeRoom(i);
-            }
-            else
-            {
-                Scenes[i].GetComponent<RoomPerspective>().character = gameManager.characters[i-1];
+                Scenes[i].GetComponent<RoomPerspective>().character = gameManager.characters[i];
                 Scenes[i].GetComponent<RoomPerspective>().isCharacter = true;
-                Scenes[i].GetComponent<RoomPerspective>().MakeRoom(i);
-            }
-            
+                Scenes[i].GetComponent<RoomPerspective>().MakeRoom(i);            
         }
         GameObject tempyScene = Instantiate(scenePrefab, sceneTransform[4].position, Quaternion.identity, sceneTransform[4]);
         Scenes.Add(tempyScene);

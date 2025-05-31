@@ -91,9 +91,9 @@ public class BattleManager : MonoBehaviour
         newHUDMon.GetComponent<HUD>().MakeHUD();
         HUDs.Add(newHUDMon);
 
-        for (int i = 0; i < (gameManager.characters.Count); i++)
+        for (int i = 1; i < (4); i++)
         {
-            GameObject newHUD = Instantiate(hubPrefab, hubTransform[i + 1].position, Quaternion.identity, hubTransform[i + 1]);
+            GameObject newHUD = Instantiate(hubPrefab, hubTransform[i].position, Quaternion.identity, hubTransform[i]);
             newHUD.GetComponent<HUD>().characterHud = gameManager.characters[i];
             newHUD.GetComponent<HUD>().isCharacter = true;
             newHUD.GetComponent<HUD>().MakeHUD();
