@@ -15,7 +15,7 @@ MonoBehaviour:
   characterName: Queen of Hearts
   HUDSprite: {fileID: 21300000, guid: 60a4c3e18120ab04ea8383dbc0d3ea76, type: 3}
   battleSpritePrefab: {fileID: 7757873130746279274, guid: f81c52147ee66a0479d939267ed54bb9, type: 3}
-  RoomSprite: {fileID: 127600251417244612, guid: 4addf98818dcc674c83fa16f9d165211, type: 3}
+  RoomSprite: {fileID: 21300000, guid: 967f59b2aca29c14784cfe921becf712, type: 3}
   Silloette: {fileID: 21300000, guid: cb8759b1c45f7314993b73b140aaa723, type: 3}
   HandBottom: {fileID: 21300000, guid: 5c6a7fc95ca172b4b972f75346d9a8de, type: 3}
   HandTop: {fileID: 21300000, guid: 641060d34c54563498afe19020682dda, type: 3}

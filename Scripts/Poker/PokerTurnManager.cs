@@ -288,6 +288,8 @@ public class PokerTurnManager : MonoBehaviour
 
     private void FindWhoWon()
     {
+        //transition over to the ActionScreen here
+
         Debug.Log("[FindWhoWon] Determining the winner.");
         playersStillIn.Clear();
 
@@ -296,74 +298,86 @@ public class PokerTurnManager : MonoBehaviour
             return;
         }
         Debug.Log("We have a showdown!");
+        playShowdown();
+    }
+    public void playShowdown()
+    {
         int minimumHandRank = GetMonsterHand();
-        int playerWinners = 0;
-        Debug.Log("Monster Hand: " + minimumHandRank);
-        for (int i = 1; i < PlayerCount; i++)
-        {
-            if (!IsOut[i] || isAllIn[i])
-            {
-                int p = GetPlayerHand(i);
-                Debug.Log("Player "+i+" Hand: " + p);
-                if (p > minimumHandRank)
-                {
-                    playerWinners++;
-                    Debug.Log("Found player " + i + " Whos hand is a better rank");
-                    playersStillIn.Add(i);
-                }
+        int playerWinners = EvaluatePlayers(minimumHandRank);
 
-                else if (p == minimumHandRank)
-                {
-                    Debug.Log("Player " + i + " hand rank tie!");
-
-                    bool resolved = false;
-
-                    for (int j = 0; j < 5; j++) // Compare up to 5 kicker cards
-                    {
-                        int tiebreakerBeat = GetMonsterRank(j);
-                        int tiebreakerHave = GetPlayerRank(i, j);
-
-                        if (tiebreakerHave > tiebreakerBeat)
-                        {
-                            playerWinners++;
-                            playersStillIn.Add(i);
-                            Debug.Log("Player " + i + " wins tie with higher kicker.");
-                            resolved = true;
-                            break; // Stop comparing
-                        }
-                        else if (tiebreakerHave < tiebreakerBeat)
-                        {
-                            Debug.Log("Player " + i + " loses tie with lower kicker.");
-                            resolved = true;
-                            break; // Stop comparing
-                        }
-                    }
-
-                    if (!resolved)
-                    {
-                        // Complete tie after all 5 kickers
-                        Debug.Log("Player " + i + " ties exactly with monster hand. Pot is split.");
-                        playersStillIn.Add(i);
-                        playersStillIn.Add(0);
-                    }
-                }
-                else if (p < minimumHandRank)
-                {
-                    Debug.Log("Player " + i + " Does not win");
-                }
-            }
-        }
-        //check monster win
         if (playerWinners == 0)
         {
             playersStillIn.Add(0);
         }
         Debug.Log("[FindWhoWon] Players who won: " + string.Join(",", playersStillIn));
-       
-        pokerChipManager.SplitThePot(playersStillIn);
-      
-        ClearTurnVariables();
+       // pokerChipManager.SplitThePot(playersStillIn);
+       // ClearTurnVariables();
     }
+
+    public int EvaluatePlayers(int monsterHandRank)
+    {
+        int winners = 0;
+
+        for (int i = 1; i < PlayerCount; i++)
+        {
+            if (!IsOut[i] || isAllIn[i])
+            {
+                int playerHandRank = GetPlayerHand(i);
+                Debug.Log("Player " + i + " Hand: " + playerHandRank);
+
+                if (playerHandRank > monsterHandRank)
+                {
+                    winners++;
+                    playersStillIn.Add(i);
+                    Debug.Log("Found player " + i + " with a better hand.");
+                }
+                else if (playerHandRank == monsterHandRank)
+                {
+                    if (ResolveTie(i))
+                    {
+                        winners++;
+                    }
+                }
+                else
+                {
+                    Debug.Log("Player " + i + " does not win.");
+                }
+            }
+        }
+
+        return winners;
+    }
+
+    private bool ResolveTie(int playerIndex)
+    {
+        Debug.Log("Player " + playerIndex + " hand rank tie!");
+
+        for (int j = 0; j < 5; j++)
+        {
+            int monsterRank = GetMonsterRank(j);
+            int playerRank = GetPlayerRank(playerIndex, j);
+
+            if (playerRank > monsterRank)
+            {
+                playersStillIn.Add(playerIndex);
+                Debug.Log("Player " + playerIndex + " wins tie with higher kicker.");
+                return true;
+            }
+            else if (playerRank < monsterRank)
+            {
+                Debug.Log("Player " + playerIndex + " loses tie with lower kicker.");
+                return false;
+            }
+        }
+
+        // Perfect tie
+        Debug.Log("Player " + playerIndex + " ties exactly with monster hand. Pot is split.");
+        playersStillIn.Add(playerIndex);
+        playersStillIn.Add(0);
+        return true;
+    }
+
+
 
     private bool RoundOverEarly()
     {
@@ -477,7 +491,7 @@ public class PokerTurnManager : MonoBehaviour
 
     }
 
-    private void ClearTurnVariables()
+    public void ClearTurnVariables()
     {
         Debug.Log("[ClearTurnVariables] Resetting for next hand.");
 

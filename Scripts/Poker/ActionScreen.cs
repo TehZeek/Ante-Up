@@ -250,7 +250,7 @@ public void buildHands(int player)
     private IEnumerator PlayersFoldContinued(List<int> ChipsLost)
     {
         yield return new WaitForSeconds(0.5f);
-        TextEffect("Party Folds!", minimumHand);
+        TextEffect("Party Folds!", showdownText);
         yield return new WaitForSeconds(0.5f);
         for (int j = 1; j < 4; j++)
         {
@@ -294,7 +294,7 @@ public void buildHands(int player)
     private IEnumerator MonstersFoldContinued(List<int> playersRemaining, List<int> ChipsLost)
     {
         yield return new WaitForSeconds(0.5f);
-        TextEffect("Monster Folds!", minimumHand);
+        TextEffect("Monster Folds!", showdownText);
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < playersRemaining.Count; i++)
             {
@@ -324,7 +324,7 @@ public void buildHands(int player)
     public void RegularShowdown(List<int> playersRemaining, List<int> ChipsLost)
     {
         //setup
-        TextEffect("Showdown!", minimumHand);
+        TextEffect("Showdown!", showdownText);
         StartCoroutine(RegularShowdownContinued(ChipsLost, playersRemaining));
     }
     public IEnumerator RegularShowdownContinued(List<int> playersRemaining, List<int> ChipsLost)
@@ -347,8 +347,112 @@ public void buildHands(int player)
 
         TextEffect((showHand + minHand), minimumHand);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
+        HandTypes miniHand = gameManager.monster.minimumHand;
+        int minimumHandRank = pokerHandCompare.allHandTypes.IndexOf(miniHand);
+        int winners = pokerTurnManager.EvaluatePlayers(minimumHandRank);
+        if (winners>0)
+        {
+            for (int w = 1; w < 4; w++)
+            {
+                if (!pokerTurnManager.playersStillIn.Contains(w) && !pokerTurnManager.IsOut[w])
+                {
+                    //if players are still in, but some are out due to the minimum hand rule
+                    FinalCards[w].GetComponent<CardShowdown>().ThrowCardsOffscreen();
+                    string defeatString = "Defeated";
+                    TextEffect(defeatString, folded[w]);
+                    yield return new WaitForSeconds(0.5f);
+                    Actors[0].GetComponent<SpriteSpawner>().StartLeap(w);
+                    yield return new WaitForSeconds(0.7f);
+                    List<int> target = new List<int>() { 0 };
+                    Actors[w].GetComponent<SpriteSpawner>().SpawnChipDamage(0, target);
+                    yield return new WaitForSeconds(0.7f);
+                }
+            }
+            pokerTurnManager.playersStillIn.Clear();
+            pokerTurnManager.playShowdown();
 
+            for (int q = 0; q < 5; q++)
+            {
+                FinalCards[0].GetComponent<CardShowdown>().showdownCards[q].GetComponent<CardDisplay>().CardBack.gameObject.SetActive(false);
+            }
+            yield return new WaitForSeconds(1f);
+            FinalCards[0].GetComponent<CardShowdown>().handText.GetComponent<TextMeshProUGUI>().text = pokerHandCompare.HandToString(0);
+            yield return new WaitForSeconds(1f);
+
+            if (pokerTurnManager.playersStillIn.Contains(0))
+            {
+                StartCoroutine(MonstersWinShowdown(ChipsLost));
+            }
+            else
+            {
+                TextEffect("Players Win!", showdownText);
+                yield return new WaitForSeconds(0.5f);
+
+                for (int r = 0; r < pokerTurnManager.playersStillIn.Count; r++)
+                {
+                    StartSpinning(r);
+                    yield return new WaitForSeconds(0.5f);
+                }
+                for (int i = 0; i < pokerTurnManager.playersStillIn.Count; i++)
+                {
+                    Actors[pokerTurnManager.playersStillIn[i]].GetComponent<SpriteSpawner>().StartLeap(0);
+                }
+                yield return new WaitForSeconds(0.7f);
+                for (int l = 0; l < ChipsLost.Count; l++)
+                {
+                    totalSum += ChipsLost[l];
+                }
+
+                Actors[0].GetComponent<SpriteSpawner>().SpawnChipDamage(totalSum, pokerTurnManager.playersStillIn);
+                totalSum = 0;
+                yield return new WaitForSeconds(2.0f);
+                for (int j = 0; j < pokerTurnManager.playersStillIn.Count; j++)
+                {
+                    StopSpinning(pokerTurnManager.playersStillIn[j]);
+                }
+            }
+        }
+        else
+        {
+            StartCoroutine(MonstersWinShowdown(ChipsLost));
+        }
+        WrapUpShowdown();
+    }
+
+    private IEnumerator MonstersWinShowdown(List<int> ChipsLost)
+    {
+        StartSpinning(0);
+        yield return new WaitForSeconds(0.5f);
+        TextEffect("Monsters Win!", showdownText);
+        for (int g = 0; g < 4; g++)
+        {
+            FinalCards[g].GetComponent<CardShowdown>().ThrowCardsOffscreen();
+            yield return new WaitForSeconds(0.25f);
+        }
+        yield return new WaitForSeconds(0.5f);
+        for (int j = 1; j < 4; j++)
+        {
+            if (ChipsLost[j] > 0 && !IsDead[j])
+            {
+                Actors[0].GetComponent<SpriteSpawner>().StartLeap(j);
+                yield return new WaitForSeconds(0.7f);
+                List<int> target = new List<int>() { 0 };
+                Actors[j].GetComponent<SpriteSpawner>().SpawnChipDamage(ChipsLost[j], target);
+                yield return new WaitForSeconds(0.7f);
+            }
+            if (ChipsLost[0] > 0)
+            {
+                for (int m = 0; m < ChipsLost[0]; m++)
+                {
+                    UpdateChipCounter(0);
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+        }
+        yield return new WaitForSeconds(2f);
+        StopSpinning(0);
+        WrapUpShowdown();
     }
 
     public void trialShowdownSetup()
@@ -385,34 +489,16 @@ public void buildHands(int player)
             PlayersFoldShowdown(chipsLost);
             return;
         }
-        //check for all in showdown
-
-
-        //pokerHandCompare  pokerHandCompare.allHandTypes, .p1Hand
-        //HUD[0].MinHand for minimum hand text
-        //need to write a function in hand compare to make a string of the hand type and send it over
-        //pokerTurnManager grab the winner(s)
-
-        // show who folded, turn on folded text
-        //monster attacks
-        //bring in player 1 - delay - 2 - delay - 3 - delay
-        //turn on minimum hand.  Explode player hands that did not beat it
-        //monster attacks
-        //show monster hand
-        // if players lose, explose player hands, monster attacks.
-        // if monster, explode monster hand, players attack
-        //chips rain from those attacked, get sucked into chip counter of winner
-        //player won X chips text
-
-        // game over check to come
-
-        // +1 chip for each additional player to win
-
-        // if game over, dead sprite.  Game over text
-        // if not, reset to next round.
+        RegularShowdown(pokerTurnManager.playersStillIn, chipsLost);
     }
+
     public void WrapUpShowdown()
     {
+        pokerTurnManager.ClearTurnVariables();
 
+        //players fall down if dead
+        //game over check
+        //round over check
+        //set back up
     }
 }
