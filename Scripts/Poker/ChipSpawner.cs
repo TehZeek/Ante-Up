@@ -13,6 +13,7 @@ public class SpriteSpawner : MonoBehaviour
     public RectTransform actor;
     public Sprite BattleSprite;
     public Sprite HurtSprite;
+    public Sprite DefendSprite;
     public Sprite AttackSprite;
     public Sprite DeadSprite;
     public Sprite originalSprite;
@@ -53,6 +54,7 @@ public class SpriteSpawner : MonoBehaviour
             isRanged = character.isRanged;
             originalSprite = character.RoomSprite;
             chipTargets = actionScreen.chipsTargets;
+            DefendSprite = character.DefendSprite;
         }
 
         actor = GetComponent<RectTransform>();

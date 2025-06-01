@@ -282,12 +282,12 @@ public class BattleMenu : MonoBehaviour
             buttons[2].gameObject.SetActive(true);
         }
         if (displaySwitch == 21)
-        { 
-            CallCall.gameObject.SetActive(true);
+        {
+            CallRaise.gameObject.SetActive(true);
         }
         if (displaySwitch == 22)
         {
-            CallRaise.gameObject.SetActive(true);
+            CallCall.gameObject.SetActive(true);
         }
         if (displaySwitch == 23)
         {

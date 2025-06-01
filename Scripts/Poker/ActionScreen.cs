@@ -27,6 +27,7 @@ public class ActionScreen : MonoBehaviour
     private BattleManager battleManager;
     private PokerTurnManager pokerTurnManager;
     private PokerChipManager pokerChipManager;
+    private PokerTableCards pokerTableCards;
     public List<RectTransform> chipsTargets = new List<RectTransform>();
     private List<bool> IsDead = new List<bool>() { false, false, false, false };
     private int totalSum;
@@ -38,6 +39,7 @@ public class ActionScreen : MonoBehaviour
         battleManager = FindFirstObjectByType<BattleManager>();
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
+        pokerTableCards = FindFirstObjectByType<PokerTableCards>();
     }
 
     public void FadeSplash()
@@ -221,12 +223,17 @@ public void buildHands(int player)
         }
     }
 
+public void DestroyCards()
+    {
+        pokerTableCards.ClearTable();
+    }
+
     public void PlayerFold(int player)
     {
         if (!IsDead[player])
         {
-            Actors[player].GetComponent<SpriteSpawner>().SetSprite(Actors[player].GetComponent<SpriteSpawner>().HurtSprite);
-            Actors[player].GetComponent<SpriteSpawner>().originalSprite = Actors[player].GetComponent<SpriteSpawner>().HurtSprite;
+            Actors[player].GetComponent<SpriteSpawner>().SetSprite(Actors[player].GetComponent<SpriteSpawner>().DefendSprite);
+            Actors[player].GetComponent<SpriteSpawner>().originalSprite = Actors[player].GetComponent<SpriteSpawner>().DefendSprite;
             TextEffect("Folded!", folded[player]);
         }
         else
@@ -467,6 +474,7 @@ public void buildHands(int player)
 
     public void ShowdownSetup()
     {
+        DestroyCards();
         buildActors();
         if (pokerHandCompare == null || gameManager == null || battleManager == null || pokerTurnManager == null || pokerChipManager == null)
         {

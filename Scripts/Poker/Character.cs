@@ -18,6 +18,7 @@ namespace ZeekSpace
         public Sprite AttackSprite;
         public Sprite HurtSprite;
         public Sprite DeadSprite;
+        public Sprite DefendSprite;
         public GameObject RangedPrefab;
         public bool isOut;
         public bool isFolding;

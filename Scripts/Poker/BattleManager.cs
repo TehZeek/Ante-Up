@@ -45,6 +45,7 @@ public class BattleManager : MonoBehaviour
     void Start()
     {
         FadeIn = Instantiate(LoadScreenPrefab, FadeInSpot.position, Quaternion.identity, FadeInSpot);
+        FadeIn.GetComponent<ActionScreen>().TextEffect("Loading...", FadeIn.GetComponent<ActionScreen>().showdownText);
         gameManager = FindFirstObjectByType<GameManager>();
         monsterManager.SetUpMonster();
 

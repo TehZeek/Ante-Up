@@ -119,6 +119,30 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1492245129 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6679331217772978981, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
+  m_PrefabInstance: {fileID: 1748822052}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1492245132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492245129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f4a45b5dabce724a9698668f2af5ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPile: []
+  tempDrawPile: []
+  PocketSize: 
+  playerOnePocketSize: 2
+  playerTwoPocketSize: 2
+  playerThreePocketSize: 2
+  monsterPocketSize: 2
 --- !u!1 &1546489292
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,6 +267,10 @@ PrefabInstance:
       propertyPath: 'characters.Array.data[3]'
       value: 
       objectReference: {fileID: 11400000, guid: 2970d7a54358e7a409aec8d0157e343b, type: 2}
+    - target: {fileID: 3948084832539767612, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
+      propertyPath: pokerDrawPile
+      value: 
+      objectReference: {fileID: 1492245132}
     - target: {fileID: 4386334998386925988, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -290,7 +318,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6679331217772978981, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1492245132}
   m_SourcePrefab: {fileID: 100100000, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
 --- !u!1 &1842971108
 GameObject:
@@ -467,7 +498,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3627055089565975589, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

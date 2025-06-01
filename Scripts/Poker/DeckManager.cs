@@ -12,21 +12,13 @@ public class DeckManager : MonoBehaviour
     private int currentIndex = 0;
     private GameManager gameManager;
     private ChipManager chipManager;
-    private PokerDrawPile pokerDrawPile;
-
-    void Start()
-    {
-        //Load all card assets from the Map Folder
-        Card[] Cards = Resources.LoadAll<Card>("CardData");
-        //add the loaded cards to the allCards list
-        allCards.AddRange(Cards);
-        gameManager = FindFirstObjectByType<GameManager>();
-        pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
-    }
-
+    public PokerDrawPile pokerDrawPile;
 
     public void BattleSetup()
     {
+        Card[] Cards = Resources.LoadAll<Card>("CardData");
+        allCards.AddRange(Cards);
+        Debug.Log("Trying to make draw pile with " + allCards.Count);
         pokerDrawPile.MakeDrawPile(allCards);
     }
 
