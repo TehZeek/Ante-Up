@@ -281,19 +281,10 @@ public class PokerTurnManager : MonoBehaviour
 
     private void FindWhoWon()
     {
-        //transition over to the ActionScreen here
-
         playersStillIn.Clear();
         battleManager.ShowdownTime();
-
-
-
-     //   if(RoundOverEarly())
-     //   {
-     //       return;
-     //   }
-     //   playShowdown();
     }
+
     public void playShowdown()
     {
         int minimumHandRank = GetMonsterHand();
@@ -304,8 +295,6 @@ public class PokerTurnManager : MonoBehaviour
             playersStillIn.Add(0);
         }
         Debug.Log("[FindWhoWon] Players who won: " + string.Join(",", playersStillIn));
-       // pokerChipManager.SplitThePot(playersStillIn);
-       // ClearTurnVariables();
     }
 
     public int EvaluatePlayers(int monsterHandRank)
@@ -371,19 +360,6 @@ public class PokerTurnManager : MonoBehaviour
         return true;
     }
 
-
-
-    private bool RoundOverEarly()
-    {
-        if (DidMonstersFold() || DidPlayersFold())
-        {
-            pokerChipManager.SplitThePot(playersStillIn);
-            ClearTurnVariables();
-            return true;
-        }
-        return false;
-    }
-
     public bool DidMonstersFold()
     {
         //If the Monster Folded players still in split the pot
@@ -443,6 +419,7 @@ public class PokerTurnManager : MonoBehaviour
             return pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.P3Hand);
         }
     }
+
     private int GetPlayerRank(int player, int rank)
     {
         if (player == 1)

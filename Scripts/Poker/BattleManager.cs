@@ -26,9 +26,6 @@ public class BattleManager : MonoBehaviour
     //    Check for end of battle or Return to Setup
 
     public MonsterManager monsterManager;
-
-
-
     public GameObject hubPrefab;
     public GameObject scenePrefab;
     public GameObject LoadScreenPrefab;
@@ -39,7 +36,6 @@ public class BattleManager : MonoBehaviour
     public List<Transform> hubTransform = new List<Transform>();
     private PokerTableCards pokerTableCards;
     private PokerTurnManager pokerTurnManager;
-
 
 
     void Start()
@@ -58,6 +54,7 @@ public class BattleManager : MonoBehaviour
         deckManager.BattleSetup();
 
         ShiftScene shiftScene = FindFirstObjectByType<ShiftScene>();
+        Debug.Log("Leaving Battle Manager, onto ShiftScene");
         shiftScene.BuildScenes();
 
 

@@ -1,351 +1,179 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
-using TMPro;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using ZeekSpace;
 using System.Linq;
-
+using ZeekSpace;
 
 public class MonsterManager : MonoBehaviour
 {
-    private int bluffRange;
-    private int foldRange;
-    private int callRange;
-    private int betRange;
+    private int bluffRange, foldRange, callRange, betRange;
     public Monster monster;
+
+    private PokerChipManager chipManager;
+    private BattleMenu battleMenu;
+    private PokerTurnManager pokerTurnManager;
+    private PokerHandCompare handCompare;
+    private PokerTableCards tableCards;
+
+    public enum MonsterChoice { Bet, Call, Check, Fold, Flee }
 
     public void SetUpMonster()
     {
         GameManager gameManager = FindFirstObjectByType<GameManager>();
+        chipManager = FindFirstObjectByType<PokerChipManager>();
+        battleMenu = FindFirstObjectByType<BattleMenu>();
+        pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
+        handCompare = FindFirstObjectByType<PokerHandCompare>();
+        tableCards = FindFirstObjectByType<PokerTableCards>();
+
         monster = gameManager.monster;
         int aiRank = (int)monster.monsterAI;
-        if (aiRank == 0)
-        {
-            //scared
-            bluffRange = 2;
-            foldRange = 30;
-            callRange = 45;
-            betRange = 70;
-        }
-        else if (aiRank == 1)
-        {
-            //brave
-            bluffRange = 4;
-            foldRange = 15;
-            callRange = 35;
-            betRange = 50;
-        }
-        else if (aiRank == 2)
-        {
-            //bluffer
-            bluffRange = 5;
-            foldRange = 30;
-            callRange = 50;
-            betRange = 75;
-        }
-        else
-        {
-            bluffRange = 3;
-            foldRange = 20;
-            callRange = 40;
-            betRange = 60;
-        }
-    }
 
-    public enum MonsterChoice
-    {
-        Bet, Call, Check, Fold, Flee
+        (bluffRange, foldRange, callRange, betRange) = aiRank switch
+        {
+            0 => (2, 30, 45, 70),  // scared
+            1 => (4, 15, 35, 50),  // brave
+            2 => (5, 30, 50, 75),  // bluffer
+            _ => (3, 20, 40, 60)   // neutral
+        };
     }
 
     public int MonsterDecision()
     {
-        //monster AI (Scared, Brave, Bluffs, Neutral, Random)
-        //look at current cards, money, what's on the table
-        //pass a MonsterChoice enum
-        
-        int HandScore;
+        int score = EvaluateHandScore();
 
-        (int MonsterHand, int MonsterRank)= MonsterHandOrMinimumHand();
-        
-        HandScore = ((MonsterHand - 1) * 15) + MonsterRank;
-        Debug.Log("Monster Hand Score, without potential: " + HandScore);
-        HandScore += BonusHandPoints();
-        int temp = TablePoints();
-        HandScore += temp;
+        int potSize = chipManager.potChips;
+        int callAmount = Mathf.Max(0, chipManager.BetSize - chipManager.InThePot[0]);
 
-        int roundsLeft = RoundMultiplier();
-        roundsLeft *= 5;
-        Debug.Log("Rounds remaining adding: " + roundsLeft);
+        // Reward bigger pots, penalize expensive calls
+        score += Mathf.FloorToInt(potSize * 0.2f);           // Encourage big pots
+        score -= Mathf.FloorToInt(callAmount * 0.5f);        // Penalize expensive calls
 
-        HandScore += roundsLeft;
+        Debug.Log($"Monster Hand Score (adjusted): {score}");
 
-        //BET    CALL    CHECK    FOLD
-        // subtract for each power enemy uses
-        // add for each one we use, maybe
-        BattleMenu battleMenu = FindFirstObjectByType<BattleMenu>();
-        Debug.Log("Monster Hand Score: " + HandScore);
-        if (HandScore < foldRange && battleMenu.BetIsSet)
-        {
-            int bluffmaybe = Random.Range(1, 10);
-            if (bluffmaybe < bluffRange)
-            {
-                Debug.Log("Monster is Bluffing: " + bluffmaybe);
-                return 0;
-            }
-            else { return 3; }
-        }
+        if (score < foldRange && battleMenu.BetIsSet)
+            return TryBluffOr(MonsterChoice.Fold);
 
-        else if (HandScore < callRange)
-        {
-            int bluffmaybe = Random.Range(1, 10);
-            if (bluffmaybe < bluffRange)
-            {
-                Debug.Log("Monster is Bluffing: " + bluffmaybe);
-                return 0;
-            }
-            else { return 2; }
-        }
+        if (score < callRange)
+            return TryBluffOr(MonsterChoice.Check);
 
-        else if (HandScore > callRange && battleMenu.BetIsSet) { return 1; }
-        else if (HandScore > betRange) { return 0; }
+        if (score > callRange && battleMenu.BetIsSet)
+            return (int)MonsterChoice.Call;
 
-        else return 3;
+        if (score > betRange)
+            return (int)MonsterChoice.Bet;
+
+        return (int)MonsterChoice.Fold;
     }
 
-    public (int, int) MonsterHandOrMinimumHand()
+    private int TryBluffOr(MonsterChoice fallback)
     {
-        PokerHandCompare pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
-        int MinimumHandType = pokerHandCompare.allHandTypes.IndexOf(monster.minimumHand);
-        int CurrentHandType = pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.MonHand);
-        int Type;
-        int Rank;
-        if (MinimumHandType < CurrentHandType)
+        int bluffRoll = Random.Range(1, 10);
+        if (bluffRoll < bluffRange)
         {
-            Type = CurrentHandType;
-            Rank = pokerHandCompare.monRank[0];
+            Debug.Log($"Monster is bluffing with roll {bluffRoll}");
+            return (int)MonsterChoice.Bet;
         }
-        else if (MinimumHandType == CurrentHandType)
-        {
-            if (monster.minimumRank > pokerHandCompare.monRank[0])
-            {
-                Type = MinimumHandType;
-                Rank = monster.minimumRank;
-            }
-            else
-            {
-                Type = CurrentHandType;
-                Rank = pokerHandCompare.monRank[0];
-            }
-        }
-        else
-        {
-            Type = MinimumHandType;
-            Rank = monster.minimumRank;
-        }
-        return (Type, Rank);
+        return (int)fallback;
     }
 
-    private int TablePoints()
+    private int EvaluateHandScore()
     {
-        PokerTableCards pokerTableCards = FindFirstObjectByType<PokerTableCards>();
+        var (handType, handRank) = GetMonsterHandInfo();
+        int baseScore = (handType - 1) * 15 + handRank;
+        int bonus = GetBonusFromHandPotential();
+        int penalty = GetTableThreatLevel();
+        int roundFactor = RoundMultiplier() * 5;
 
-        int multiplier = RoundMultiplier();
-        multiplier += 2;
-        int bonusPoints = 0;
-        List<Card> currentHand = new List<Card>();
-        for (int i = 0; i < pokerTableCards.tableHand.Count; i++)
-        {
-            Card temp = pokerTableCards.tableHand[i].gameObject.GetComponent<CardDisplay>().cardData;
-            currentHand.Add(temp);
-        }
+        Debug.Log($"Base: {baseScore}, Bonus: {bonus}, Penalty: {penalty}, RoundFactor: {roundFactor}");
 
-        var rankedGroups = currentHand.GroupBy(card => card.cardRank.First())
-                                     .Select(group => new { Rank = group.Key, Count = group.Count() })
-                                     .ToList();
-        foreach (var group in rankedGroups)
-        {
-            if (group.Count == 2)
-            {
-                bonusPoints -= 5;
-            }
-            if (group.Count == 3)
-            {
-                bonusPoints -= 15;
-            }
-            if (group.Count == 4)
-            {
-                bonusPoints -= 50;
-            }
+        return baseScore + bonus + roundFactor + penalty;
+    }
 
-        }
-        var flush = currentHand.GroupBy(card => card.cardSuit.First())
-                .Where(group => group.Count() > 2)
-                .Select(group => new { Rank = group.Key, Count = group.Count() })
-                                      .ToList();
-        foreach (var group in flush)
-        {
-            if (group.Count == 2)
-            {
-                bonusPoints -= 1;
-            }
-            if (group.Count == 3)
-            {
-                bonusPoints -= 10;
-            }
-            if (group.Count == 4)
-            {
-                bonusPoints -= 25;
-            }
-            if (group.Count == 5)
-            {
-                bonusPoints -= 35;
-            }
-        }
-
-        List<int> rankValues = currentHand
-                .Select(card => (int)card.cardRank.First())
-                .Distinct()  // Ensures only unique ranks are considered
-                .OrderBy(rank => rank)
-                .ToList();
-        int howManyStraight = 0;
-        for (int i = 0; i <= rankValues.Count - 2; i++)
-        {
-            if (rankValues[i + 1] == rankValues[i] + 1)
-            {
-                bonusPoints -= 2;
-                howManyStraight++;
-            }
-            else if (rankValues[i + 1] == rankValues[i] + 2)
-            {
-                bonusPoints -= 1;
-                howManyStraight++;
-            }
-            if (howManyStraight == 3)
-            {
-                bonusPoints -= 10;
-            }
-            if (howManyStraight >= 4)
-            {
-                bonusPoints -= 20;
-            }
-        }
-        bonusPoints *= multiplier;
-        Debug.Log("Table potential removing: " + bonusPoints);
-        return bonusPoints;
-
+    private (int, int) GetMonsterHandInfo()
+    {
+        int minType = handCompare.allHandTypes.IndexOf(monster.minimumHand);
+        int curType = handCompare.allHandTypes.IndexOf(handCompare.MonHand);
+        int type = Mathf.Max(minType, curType);
+        int rank = Mathf.Max(monster.minimumRank, handCompare.monRank[0]);
+        return (type, rank);
     }
 
     private int RoundMultiplier()
     {
-        PokerTurnManager pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
+        int rounds = 3;
+        if (pokerTurnManager.HasABonusRound) rounds++;
+        if (pokerTurnManager.HasARiver) rounds++;
 
-        int roundDivider = 3;
-        if (pokerTurnManager.HasABonusRound) { roundDivider++; }
-        if (pokerTurnManager.HasARiver) { roundDivider++; }
-        if (pokerTurnManager.turnOrder[1] <= roundDivider) { roundDivider -= pokerTurnManager.turnOrder[1]; }
-        else { roundDivider = 0; }
-        return roundDivider;
+        return Mathf.Max(0, rounds - pokerTurnManager.turnOrder[1]);
     }
 
-    private int BonusHandPoints()
+    private int GetTableThreatLevel()
     {
-        //make a multiplier based on how many rounds are left
-        int multiplier = RoundMultiplier();
-        int bonusPoints = 0;
-        PokerHandCompare pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
-        PokerTableCards pokerTableCards = FindFirstObjectByType<PokerTableCards>();
-        List<Card> currentHand = new List<Card>();
-        //get all the cards
-        for (int i = 0; i < pokerTableCards.monsterPocket.Count; i++)
-        {
-            Card temp = pokerTableCards.monsterPocket[i].gameObject.GetComponent<CardDisplay>().cardData;
-            currentHand.Add(temp);
-        }
-        for (int i = 0; i < pokerTableCards.tableHand.Count; i++)
-        {
-            Card temp = pokerTableCards.tableHand[i].gameObject.GetComponent<CardDisplay>().cardData;
-            currentHand.Add(temp);
-        }
-        //check pairs
-        var rankedGroups = currentHand.GroupBy(card => card.cardRank.First())
-                                      .Select(group => new { Rank = group.Key, Count = group.Count() })
-                                      .ToList();
-        foreach (var group in rankedGroups)
-        {
-            if (group.Count == 2)
-            {
-                bonusPoints += 5;
-            }
-            if (group.Count == 3)
-            {
-                bonusPoints += 15;
-            }
-            if (group.Count == 4)
-            {
-                bonusPoints += 50;
-            }
+        int threat = 0;
+        List<Card> tableHand = tableCards.tableHand
+            .Select(obj => obj.GetComponent<CardDisplay>().cardData)
+            .ToList();
 
-        }
-        var flush = currentHand.GroupBy(card => card.cardSuit.First())
-                .Where(group => group.Count() > 2)
-                .Select(group => new { Rank = group.Key, Count = group.Count() })
-                                      .ToList();
-        foreach (var group in flush)
-        {
-            if (group.Count == 2)
-            {
-                bonusPoints += 1;
-            }
-            if (group.Count == 3)
-            {
-                bonusPoints += 8;
-            }
-            if (group.Count == 4)
-            {
-                bonusPoints += 20;
-            }
-            if (group.Count == 5)
-            {
-                bonusPoints += 35;
-            }
-        }
-
-        List<int> rankValues = currentHand
-                .Select(card => (int)card.cardRank.First())
-                .Distinct()  // Ensures only unique ranks are considered
-                .OrderBy(rank => rank)
-                .ToList();
-        int howManyStraight = 0;
-        for (int i = 0; i <= rankValues.Count - 2; i++)
-        {
-            if (rankValues[i + 1] == rankValues[i] + 1)
-            {
-                bonusPoints += 2;
-                howManyStraight++;
-            }
-            else if (rankValues[i + 1] == rankValues[i] + 2)
-            {
-                bonusPoints += 2;
-                howManyStraight++;
-            }
-            if (howManyStraight == 3)
-            {
-                bonusPoints += 5;
-            }
-            if (howManyStraight >= 4)
-            {
-                bonusPoints += 10;
-            }
-        }
-        bonusPoints *= multiplier;
-        Debug.Log("Hand potential adding: " + bonusPoints);
-
-        return bonusPoints;
-
+        threat += EvaluateGroups(tableHand, penalty: true);
+        return threat * (RoundMultiplier() + 2);
     }
 
+    private int GetBonusFromHandPotential()
+    {
+        List<Card> hand = tableCards.monsterPocket
+            .Concat(tableCards.tableHand)
+            .Select(obj => obj.GetComponent<CardDisplay>().cardData)
+            .ToList();
 
+        int bonus = EvaluateGroups(hand, penalty: false);
+        return bonus * RoundMultiplier();
+    }
+
+    private int EvaluateGroups(List<Card> cards, bool penalty)
+    {
+        int points = 0;
+        var groupsByRank = cards.GroupBy(c => c.cardRank.First()).ToList();
+        var groupsBySuit = cards.GroupBy(c => c.cardSuit.First()).ToList();
+
+        foreach (var group in groupsByRank)
+        {
+            points += group.Count() switch
+            {
+                2 => penalty ? -5 : 5,
+                3 => penalty ? -15 : 15,
+                4 => penalty ? -50 : 50,
+                _ => 0
+            };
+        }
+
+        foreach (var group in groupsBySuit)
+        {
+            points += group.Count() switch
+            {
+                3 => penalty ? -10 : 8,
+                4 => penalty ? -25 : 20,
+                5 => penalty ? -35 : 35,
+                _ => penalty ? -1 : 1
+            };
+        }
+
+        List<int> ranks = cards.Select(c => (int)c.cardRank.First()).Distinct().OrderBy(r => r).ToList();
+        int straightBonus = 0, streak = 0;
+
+        for (int i = 0; i < ranks.Count - 1; i++)
+        {
+            if (ranks[i + 1] - ranks[i] <= 2)
+            {
+                straightBonus += penalty ? -2 : 2;
+                streak++;
+            }
+        }
+
+        if (streak >= 3)
+            straightBonus += penalty ? -10 : 5;
+        if (streak >= 4)
+            straightBonus += penalty ? -10 : 5;
+
+        return points + straightBonus;
+    }
 }

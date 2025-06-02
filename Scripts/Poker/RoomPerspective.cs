@@ -16,15 +16,16 @@ public class RoomPerspective : MonoBehaviour
     public GameObject handBottom;
     public Transform handLocation;
     public Character character;
-    public Monster monster;
     public bool isCharacter;
     private GameManager gameManager;
-    private MonsterManager monsterManager;
+    public RectTransform Boundary;
+    public PokerActorManager actorManager; // Assign via Inspector
+    private List<BGCharacterActions> instantiatedActors = new List<BGCharacterActions>();
 
     public void MakeRoom(int player)
     {
             siloette.GetComponent<Image>().sprite = character.Silloette;
-            handTop.GetComponent<Image>().sprite = character.HandTop;
+        handTop.GetComponent<Image>().sprite = character.HandTop;
             handBottom.GetComponent<Image>().sprite = character.HandBottom;
         buildActorList(player);
     }
@@ -32,20 +33,26 @@ public class RoomPerspective : MonoBehaviour
     private void buildActorList(int player)
     {
         gameManager = FindFirstObjectByType<GameManager>();
-        monsterManager = FindFirstObjectByType<MonsterManager>();
-        for (int i=0; i<4; i++)
+        List<BGCharacterActions> playerActors = new List<BGCharacterActions>();
+        BGCharacterActions enemyActor = null;
+        for (int i = 0; i < 4; i++)
         {
-            actorPrefab[i] = gameManager.characters[i].battleSpritePrefab;
-        }
-
-        for (int i = 0; i < actorPrefab.Count; i++)
-        {
-            if (i != player) 
+            if (i != player)
             {
-                Instantiate(actorPrefab[i], actorPosition[i].position, Quaternion.identity, actorPosition[i]);
+                GameObject prefab = gameManager.characters[i].battleSpritePrefab;
+                GameObject actorObj = Instantiate(prefab, actorPosition[i].position, Quaternion.identity, actorPosition[i]);
+
+                BGCharacterActions actor = actorObj.GetComponent<BGCharacterActions>();
+                actor.character = gameManager.characters[i];
+                actor.characterIndex = i;
+                actor.characterImage = actorObj.GetComponent<Image>();
+                actor.boundaryRect = Boundary;
+                actor.setCharacter();
+                // initialize state/sprites
+                playerActors.Add(actor);
             }
         }
-
+            actorManager.SetActors(playerActors, new List<BGCharacterActions> { enemyActor });
     }
 
 }

@@ -179,6 +179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3073914530609034740}
   - component: {fileID: 1671509736344806011}
+  - component: {fileID: 2117419868316873118}
   m_Layer: 0
   m_Name: RoomPerspective
   m_TagString: Untagged
@@ -198,6 +199,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5875822927308388152}
   - {fileID: 6944934020849825311}
   - {fileID: 3425181346911506610}
   - {fileID: 6776433825131518133}
@@ -236,8 +238,26 @@ MonoBehaviour:
   handBottom: {fileID: 6955525252049038841}
   handLocation: {fileID: 8109841681063539204}
   character: {fileID: 0}
-  monster: {fileID: 0}
   isCharacter: 0
+  Boundary: {fileID: 5875822927308388152}
+  actorManager: {fileID: 2117419868316873118}
+--- !u!114 &2117419868316873118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2212642539128841741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9567cc59359f92c4fa1a59ce9051e2f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  players: []
+  enemies: []
+  actionInterval: 2
+  pokerTurnManager: {fileID: 0}
+  pokerChipManager: {fileID: 0}
 --- !u!1 &2496865878625079547
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,7 +290,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -302.18, y: -34.62}
+  m_AnchoredPosition: {x: 590, y: -148}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2545593831070611205
@@ -342,7 +362,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 563.04, y: -113.33}
+  m_AnchoredPosition: {x: 341, y: 0.000015259}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3673964057185305627
@@ -659,4 +679,39 @@ RectTransform:
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 261.68, y: 0}
   m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &8234773315641389300
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5875822927308388152}
+  m_Layer: 0
+  m_Name: ActorBoundary
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5875822927308388152
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8234773315641389300}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3073914530609034740}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 23.471111, y: -200.45285}
+  m_SizeDelta: {x: 1266.2443, y: 306.0456}
   m_Pivot: {x: 0.5, y: 0.5}

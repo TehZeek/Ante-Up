@@ -25,20 +25,22 @@ public class ShiftScene : MonoBehaviour
     public GameObject scenePrefab;
     private int whichScene;
 
+
     public void BuildScenes()
     {
         MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
         GameManager gameManager = FindFirstObjectByType<GameManager>();
         PokerTableCards pokerTableCards = FindFirstObjectByType<PokerTableCards>();
-
+ 
         blurMaterial.SetFloat("_BlurStrength", 0);
         for (int i = 0; i<4;i++)
         {
             //make a TEMP scene, add it to Scenes
             GameObject tempScene = Instantiate(scenePrefab, sceneTransform[i].position, Quaternion.identity, sceneTransform[i]);
             Scenes.Add(tempScene);
-                Scenes[i].GetComponent<RoomPerspective>().character = gameManager.characters[i];
-                Scenes[i].GetComponent<RoomPerspective>().MakeRoom(i);            
+            RoomPerspective room = tempScene.GetComponent<RoomPerspective>();
+            room.character = gameManager.characters[i];
+            room.MakeRoom(i);
         }
         GameObject tempyScene = Instantiate(scenePrefab, sceneTransform[4].position, Quaternion.identity, sceneTransform[4]);
         Scenes.Add(tempyScene);
@@ -48,6 +50,7 @@ public class ShiftScene : MonoBehaviour
         pokerTableCards.p1Transform = Scenes[4].GetComponent<RoomPerspective>().handLocation;
         pokerTableCards.p2Transform = Scenes[2].GetComponent<RoomPerspective>().handLocation;
         pokerTableCards.p3Transform = Scenes[3].GetComponent<RoomPerspective>().handLocation;
+        pokerTableCards.remapHands();
     }
 
     public void ShiftTheScene()
@@ -58,34 +61,45 @@ public class ShiftScene : MonoBehaviour
 
         if (pokerTurnManager != null)
         {
-            Debug.Log("PokerTurnManager is valid, starting shift");
-            if (whichScene == 4)
+            for (int i = 0; i < 4; i++)
             {
-                transform.position = P1Position;
-            }
-            blurIsOn = true;
-            float targetBlurStrength = GetBlurStrengthByTag();
+                Scenes[i].GetComponent<RoomPerspective>().actorManager.UpdateActorActivityBasedOnTurn();
 
-            // Smoothly increase blur strength
-            StartCoroutine(AdjustBlur(targetBlurStrength, 0.25f));
-            whichScene = pokerTurnManager.turnOrder[2];
-            if (whichScene == 1) { whichScene = 4; }
-            switch (whichScene)
-            {
-                case 0: targetPosition.x = P0Position.x; break;
-                case 1: targetPosition.x = P1Position.x; break;
-                case 2: targetPosition.x = P2Position.x; break;
-                case 3: targetPosition.x = P3Position.x; break;
-                case 4: targetPosition.x = P4Position.x; break;
-            }
+                if (i == 0)
+                {
+                    Scenes[i].GetComponent<RoomPerspective>().actorManager.StartMonsterIdleMode();
 
-            // Move smoothly while starting blur fade-out early
-            LeanTween.moveX(imageTransform, targetPosition.x, moveTime)
-                .setEase(LeanTweenType.easeOutQuad);
+                }
+                Debug.Log("PokerTurnManager is valid, starting shift");
+                if (whichScene == 4)
+                {
+                    transform.position = P1Position;
+                }
+                blurIsOn = true;
+                float targetBlurStrength = GetBlurStrengthByTag();
+
+                // Smoothly increase blur strength
+                StartCoroutine(AdjustBlur(targetBlurStrength, 0.25f));
+                whichScene = pokerTurnManager.turnOrder[2];
+                // Player 1 uses fake scene index 4
+                if (whichScene == 1) { whichScene = 4; }
+                switch (whichScene)
+                {
+                    case 0: targetPosition.x = P0Position.x; break;
+                    case 1: targetPosition.x = P1Position.x; break;
+                    case 2: targetPosition.x = P2Position.x; break;
+                    case 3: targetPosition.x = P3Position.x; break;
+                    case 4: targetPosition.x = P4Position.x; break;
+                }
+
+                // Move smoothly while starting blur fade-out early
+                LeanTween.moveX(imageTransform, targetPosition.x, moveTime)
+                    .setEase(LeanTweenType.easeOutQuad);
+            }
         }
     }
 
-    private IEnumerator AdjustBlur(float targetBlur, float duration)
+    IEnumerator AdjustBlur(float targetBlur, float duration)
     {
         float startBlur = blurMaterial.GetFloat("_BlurStrength");
         float elapsedTime = 0f;
@@ -102,14 +116,14 @@ public class ShiftScene : MonoBehaviour
         blurIsOn = false;
     }
 
-    private IEnumerator BlurOff()
+    IEnumerator BlurOff()
     {
         blurIsOn = false;
         yield return new WaitForSeconds(0.3f);
         StartCoroutine(AdjustBlur(0, moveTime - blurFadeStartTime));
     }
 
-    private float GetBlurStrengthByTag()
+    float GetBlurStrengthByTag()
     {
         switch (gameObject.tag)
         {

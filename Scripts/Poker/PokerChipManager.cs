@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ZeekSpace;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class PokerChipManager : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class PokerChipManager : MonoBehaviour
         monsterManager = FindFirstObjectByType<MonsterManager>();
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         gameManager.SplitPartyChips();
-        playerChips = gameManager.playerChips;
+        playerChips = (int[])gameManager.playerChips.Clone();
     }
 
     public void UpdateChipDisplay()
@@ -90,28 +91,9 @@ public class PokerChipManager : MonoBehaviour
             playerChips[players[i]] += splitAmount;
         }
         if (extraAmount > 0 && players[0] != 0)
-    {
-        if (playerChips[1] < playerChips[2])
-        { 
-            if (playerChips[1] < playerChips[3])
-            {
-                    playerChips[1] += extraAmount;
-
-                }
-                else if (playerChips[3] < playerChips[2])
-            {
-                    playerChips[3] += extraAmount;
-
-                }
-            }
-        else if (playerChips[2] < playerChips[3])
         {
-                playerChips[2] += extraAmount;
-
-
-            }
-            else { playerChips[3] += extraAmount; }
-
+            int lowest = players.OrderBy(p => playerChips[p]).First();
+            playerChips[lowest] += extraAmount;
         }
         UpdateChipDisplay();
 }
@@ -165,14 +147,5 @@ public class PokerChipManager : MonoBehaviour
         playerChips[player] += amount;
         UpdateChipDisplay();
     }
-
-
-
-
-
-
-
-
-
 
 }

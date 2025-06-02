@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9071190176549546997}
   - component: {fileID: 771603193480958557}
   - component: {fileID: 7476730809149778368}
-  - component: {fileID: 3948008960072245189}
+  - component: {fileID: 179071681760254231}
   m_Layer: 0
   m_Name: Jack
   m_TagString: Sprite
@@ -76,7 +76,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3948008960072245189
+--- !u!114 &179071681760254231
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -85,12 +85,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 7757873130746279274}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d9d4fbabc562db4fa00b3ea8bf3e6f8, type: 3}
+  m_Script: {fileID: 11500000, guid: dadee3b4bfadbf74a986e6622633e16b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardDistance: 2
-  hopHeight: 1
-  hopTime: 0.5
-  returnTime: 0.5
-  multiplier: 10
-  characterType: 0
+  character: {fileID: 11400000, guid: 5f77d980853ca2843a0ce60b8f8e91c1, type: 2}
+  boundaryRect: {fileID: 0}
+  multiplier: 500
+  potentialTargets: []
+  characterIndex: 0
+  characterImage: {fileID: 7476730809149778368}
+  isOut: 0
+  attackType: 0
+  firePoint: {fileID: 9071190176549546997}
+  projectilePrefab: {fileID: 0}

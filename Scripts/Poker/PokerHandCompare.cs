@@ -5,9 +5,7 @@ using ZeekSpace;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
-
-
-//This class determines what hand you actually have, which will eventually be called for enemy logic and determining the winner.
+using System;
 
 public class PokerHandCompare : MonoBehaviour
 {
@@ -30,39 +28,15 @@ public class PokerHandCompare : MonoBehaviour
     public List<int> monRank;
     public List<int> handRank;
     public List<string> cardRank = new List<string>
-{
-    "Woe",
-    "Two",
-    "Three",
-    "Four",
-    "Five",
-    "Six",
-    "Seven",
-    "Eight",
-    "Nine",
-    "Ten",
-    "Jack",
-    "Queen",
-    "King",
-    "Ace"
-};
-
-
-    //different bools used to determine hand
-
+{    "Woe", "Two", "Three", "Four", "Five", "Six",
+    "Seven", "Eight", "Nine", "Ten", "Jack", "Queen",
+    "King", "Ace"};
     private bool hasPair = false;
     private bool hasTwoPair = false;
-    // private bool hasHatTrick = false;
     private bool hasThree = false;
     private bool hasStraight = false;
     private bool hasFlush = false;
     private bool hasFour = false;
-    //bool private hasTwoThree = false;
-    //bool private hasFive = false;
-    //bool private hasSix = false;
-    // bool private hasPlunger = false;
-    // bool private hasLongBoy = false;
-
 
     void Start()
     {
@@ -71,8 +45,6 @@ public class PokerHandCompare : MonoBehaviour
         allHandTypes = allHandTypes.OrderBy(hand => hand.handRank).ToList();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
     }
-
-
 
     public void UpdateHandType(List<GameObject> pocket, List<GameObject> table, int player)
     {
@@ -480,22 +452,18 @@ public class PokerHandCompare : MonoBehaviour
       hasStraight = false;
       hasFlush = false;
       hasFour = false;
-
     }
 
     private void PairCheck()
     {
-        // this checks the card list for pairs
         var rankedGroups = currentHand.GroupBy(card => card.cardRank.First())
                                       .Select(group => new { Rank = group.Key, Count = group.Count() })
                                       .ToList();
 
-        // Detect different types of duplicates
         foreach (var group in rankedGroups)
         {
             if (group.Count == 2)
             {
-
                 if (hasPair)
                 { 
                     hasTwoPair = true;
@@ -504,80 +472,78 @@ public class PokerHandCompare : MonoBehaviour
             }
             if (group.Count == 3)
             {
-
                 hasThree = true;
             }
             if (group.Count == 4)
             {
                 hasFour = true;
             }
-
         }
     }
 
     private void FlushCheck()
     {
-        //detect flush
         var flush = currentHand.GroupBy(card => card.cardSuit.First())
                         .Where(group => group.Count() > 4)
                         .Select(group => new { Rank = group.Key, Count = group.Count() })
                         .ToList();
 
-
         foreach (var group in flush)
         {
             hasFlush = true;
         }
-
-
     }
 
     private void StraightCheck()
     {
-    //straight
-    List<int> rankValues = currentHand
-                    .Select(card => (int)card.cardRank.First())
-                    .Distinct()  // Ensures only unique ranks are considered
-                    .OrderBy(rank => rank)
-                    .ToList();
+        // Convert card ranks to ints and remove duplicates
+        List<int> rankValues = currentHand
+            .Select(card => (int)card.cardRank.First()) // Use .First() only if cardRank is a string like "A"
+            .Distinct()
+            .ToList();
 
-    // Special case: Ace-low straight (Ace-2-3-4-5)
-    if (rankValues.Contains((int)Card.CardRank.Ace) &&
-        rankValues.Contains((int)Card.CardRank.Two) &&
-        rankValues.Contains((int)Card.CardRank.Three) &&
-        rankValues.Contains((int)Card.CardRank.Four) &&
-        rankValues.Contains((int)Card.CardRank.Five))
-    {
-        hasStraight = true;
-        handRank[0] = 5;
-    }
-    if (rankValues.Contains((int)Card.CardRank.Ace) &&
-        rankValues.Contains((int)Card.CardRank.King) &&
-        rankValues.Contains((int)Card.CardRank.Queen) &&
-        rankValues.Contains((int)Card.CardRank.Jack) &&
-        rankValues.Contains((int)Card.CardRank.Ten))
-    {
-        hasStraight = true;
-        handRank[0] = 13;
-    }
-
-    for (int i = 0; i <= rankValues.Count - 5; i++)
-    {
-        if (rankValues[i + 1] == rankValues[i] + 1 &&
-            rankValues[i + 2] == rankValues[i] + 2 &&
-            rankValues[i + 3] == rankValues[i] + 3 &&
-            rankValues[i + 4] == rankValues[i] + 4)
+        // Special case: Add '1' for Ace to handle Ace-low straight (A-2-3-4-5)
+        if (rankValues.Contains((int)Card.CardRank.Ace))
         {
-            hasStraight = true;
-            handRank[0] = rankValues[i + 4];
-            handRank[1] = 0;
+            rankValues.Add(1); // Ace-low value
+        }
+        rankValues.Sort();
+
+        // Look for any 5-card sequence
+        for (int i = 0; i <= rankValues.Count - 5; i++)
+        {
+            bool isStraight = true;
+            for (int j = 1; j < 5; j++)
+            {
+                if (rankValues[i + j] != rankValues[i] + j)
+                {
+                    isStraight = false;
+                    break;
+                }
+            }
+
+            if (isStraight)
+            {
+                hasStraight = true;
+                handRank[0] = rankValues[i + 4]; // Highest card in straight
+                handRank[1] = 0;
+                return;
+            }
         }
     }
 
-    }
+    private bool IsTwoPairHand(HandTypes hand) => new[] {
+    allHandTypes[3], allHandTypes[7], allHandTypes[12],
+    allHandTypes[17], allHandTypes[18], allHandTypes[22], allHandTypes[23]
+    }.Contains(hand);
 
-        
+    private bool IsOfAKind(HandTypes hand) => new[] { allHandTypes[4], allHandTypes[8],
+    allHandTypes[11], allHandTypes[13], allHandTypes[19], allHandTypes[24], allHandTypes[25]}.Contains(hand);
 
+    private bool IsFlushOrStraight(HandTypes hand) => new[] { allHandTypes[5], allHandTypes[6],
+    allHandTypes[9], allHandTypes[15], allHandTypes[16], allHandTypes[20]}.Contains(hand);
+
+    private bool IsACher(HandTypes hand) => new[] { allHandTypes[10], allHandTypes[21], allHandTypes[0] }.Contains(hand);
 
     public string HandToString(int player)
     {
@@ -613,80 +579,73 @@ public class PokerHandCompare : MonoBehaviour
             rank[3] = 3;
         }
         else { return "Nope"; }
+        string rankString = rank.Count > 0 ? cardRank[rank[0]].ToString() : "??";
         string handString = hand.ToString();
-        string rankString = cardRank[rank[0]].ToString();
         string rankString2 = cardRank[rank[1]].ToString();
         string rankString3 = cardRank[rank[2]].ToString();
 
-        if (hand == allHandTypes[0]) { return "Woe"; }
         if (hand == allHandTypes[1])
-        {
-            return rankString + " High";
-        }
-        else if (hand == allHandTypes[2])
-        {
-            return handString + " of " + rankString + "'s";
-        }
-        else if (hand == allHandTypes[3] || hand == allHandTypes[7] || hand == allHandTypes[12] || hand == allHandTypes[17] || hand == allHandTypes[18] || hand == allHandTypes[22] || hand == allHandTypes[23])
-        {
-            return handString + ": " + rankString + "'s and " + rankString2 + "'s";
-        }
-        else if (hand == allHandTypes[4] || hand == allHandTypes[8] || hand == allHandTypes[11] || hand == allHandTypes[13] || hand == allHandTypes[19] || hand == allHandTypes[24] || hand == allHandTypes[25])
-        {
-            return handString + ": " + rankString + "'s";
-        }
-        else if (hand == allHandTypes[5] || hand == allHandTypes[6] || hand == allHandTypes[9] || hand == allHandTypes[15] || hand == allHandTypes[16] || hand == allHandTypes[20])
-        {
-            return handString + " " + rankString + " High";
-        }
-        else if (hand == allHandTypes[10] || hand == allHandTypes[21])
-        {
-            return handString;
-        }
+            return $"{rankString} High";
+        if (hand == allHandTypes[2])
+            return $"{handString} of {rankString}'s";
+        if (IsTwoPairHand(hand))
+            return $"{handString}: {rankString}'s and {rankString2}'s";
+        if (IsOfAKind(hand))
+            return $"{handString}: {rankString}'s";
+        if (IsFlushOrStraight(hand))
+            return $"{handString}: {rankString} high";
+        if (IsACher(hand))
+            return $"{handString}";
         else if (hand == allHandTypes[17])
-        {
-            return handString +": "+rankString+"'s, "+rankString2+"'s and"+rankString3+"'s";
-        }
+            return $"{handString}: {rankString}'s, {rankString2}'s and {rankString3}'s";
         else return "Error";
+    }
+
+    private List<Card> GetPlayerHand(int player)
+    {
+        return player switch
+        {
+            0 => monHand,
+            1 => p1Hand,
+            2 => p2Hand,
+            3 => p3Hand,
+            _ => throw new ArgumentOutOfRangeException(nameof(player))
+        };
+    }
+
+    private void SetPlayerHand(int player, List<Card> hand, List<int> rank, HandTypes handType)
+    {
+        switch (player)
+        {
+            case 0:
+                monHand = hand;
+                monRank = rank;
+                MonHand = handType;
+                break;
+            case 1:
+                p1Hand = hand;
+                p1Rank = rank;
+                P1Hand = handType;
+                break;
+            case 2:
+                p2Hand = hand;
+                p2Rank = rank;
+                P2Hand = handType;
+                break;
+            case 3:
+                p3Hand = hand;
+                p3Rank = rank;
+                P3Hand = handType;
+                break;
+        }
     }
 
     private void UpdateHandToCompare(HandTypes bestHandType, List<int> bestHandRanks, List<Card> bestHandPlayed, int playerNumber)
     {
-        bestHandRanks.Add(0);
-        bestHandRanks.Add(0);
-        bestHandRanks.Add(0);
-        bestHandRanks.Add(0);
-        if (playerNumber == 0)
-        {
-            monHand = bestHandPlayed.ToList();
-            monRank = bestHandRanks.ToList();
-            MonHand = bestHandType;
-        }
-        else if (playerNumber == 1)
-        {
-            p1Hand = bestHandPlayed.ToList();
-            p1Rank = bestHandRanks.ToList();
-            P1Hand = bestHandType;
-        }
-        else if (playerNumber == 2)
-        {
-            p2Hand = bestHandPlayed.ToList();
-            p2Rank = bestHandRanks.ToList();
-            P2Hand = bestHandType;
-        }
-        else if (playerNumber == 3)
-        {
-            p3Hand = bestHandPlayed.ToList();
-            p3Rank = bestHandRanks.ToList();
-            P3Hand = bestHandType;
-        }
+        while (bestHandRanks.Count < 5)
+            bestHandRanks.Add(0);
+
+        SetPlayerHand(playerNumber, bestHandPlayed.ToList(), bestHandRanks.ToList(), bestHandType);
     }
-
-
-
-
-
-
-
 
 }

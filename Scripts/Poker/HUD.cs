@@ -1,36 +1,59 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using ZeekSpace;
 
 public class HUD : MonoBehaviour
 {
     public Character characterHud;
     public Monster monsterHud;
-    private PokerTurnManager pokerTurnManager;
-    private PokerChipManager pokerChipManager;
     public bool isCharacter;
+
+    [Header("UI Elements")]
     public Image face;
     public List<GameObject> PocketCardIcons = new List<GameObject>();
     public List<GameObject> PocketCardHidden = new List<GameObject>();
     public List<GameObject> PocketNumbers = new List<GameObject>();
     public List<GameObject> PocketSuit = new List<GameObject>();
     public List<GameObject> StatusEffect = new List<GameObject>();
-    public List<Sprite> statusEffects = new List<Sprite>();
+    public List<Sprite> statusEffects = new List<Sprite>(); // 0: Folded, 1: Better, 2: All-In, 3: Out, 4: Needs To Call
     public GameObject chipsDisplay;
     public GameObject ChipImage;
-    public bool isBetter = false;
     public GameObject MinHand;
+    public bool isBetter = false;
+    public List<TextMeshProUGUI> StatusTexts = new List<TextMeshProUGUI>(); // parallel to StatusEffect
+    private PokerTurnManager pokerTurnManager;
+    private PokerChipManager pokerChipManager;
 
     void Awake()
     {
-
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
+    }
+
+    public void MakeHUD()
+    {
+        MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
+
+        if (isCharacter)
+        {
+            face.sprite = characterHud.HUDSprite;
+        }
+        else
+        {
+            face.sprite = monsterHud.character.HUDSprite;
+            face.SetNativeSize();
+            MinHand.SetActive(true);
+
+            BattleManager battleManager = FindFirstObjectByType<BattleManager>();
+            MinHand.GetComponent<TextMeshProUGUI>().text =
+                "Minimum Hand: " +
+                monsterManager.monster.minimumHand.handRank +
+                " of " + monsterManager.monster.minimumRank + "'s";
+        }
+
+        ClearHUD();
     }
 
     public void RefreshHUD(List<GameObject> pocketCards, int player)
@@ -41,70 +64,71 @@ public class HUD : MonoBehaviour
         DisplayHUDChips(player);
     }
 
-    private void MakeHUDStatus(int pocketCards, int player)
+    private void MakeHUDStatus(int pocketCardCount, int player)
     {
-        if (pocketCards == 0) { pocketCards = 4; }
-        else {pocketCards--; }
+        int statusIndex = (pocketCardCount == 0) ? 4 : pocketCardCount - 1;
 
-        if (!pokerTurnManager.isAllIn[player] && pokerChipManager.playerChips[player] == 0)
-        {
-            StatusEffect[pocketCards].GetComponent<Image>().sprite = statusEffects[3];
-            StatusEffect[pocketCards].SetActive(true);
-        }
+        Sprite statusSprite = null;
+        bool showStatus = false;
 
-        else if (pokerTurnManager.isAllIn[player])
-        {
-            StatusEffect[pocketCards].GetComponent<Image>().sprite = statusEffects[2];
-            StatusEffect[pocketCards].SetActive(true);
-        }
-        else if (pokerTurnManager.IsOut[player] && !pokerTurnManager.isAllIn[player])
-        {
-            StatusEffect[pocketCards].GetComponent<Image>().sprite = statusEffects[0];
-            StatusEffect[pocketCards].SetActive(true);
-        }
+        bool isCurrentTurn = (pokerTurnManager.turnOrder[2] == player);
+        bool isOut = pokerTurnManager.IsOut[player];
+        bool isAllIn = pokerTurnManager.isAllIn[player];
+        bool hasChips = pokerChipManager.playerChips[player] > 0;
 
+        int amountToCall = Mathf.Max(0, pokerChipManager.BetSize - pokerChipManager.InThePot[player]);
+
+        if (isOut && !isAllIn)
+        {
+            statusSprite = statusEffects[0]; // Folded
+            showStatus = true;
+        }
         else if (isBetter)
         {
-            StatusEffect[pocketCards].GetComponent<Image>().sprite = statusEffects[1];
-            StatusEffect[pocketCards].SetActive(true);
+            statusSprite = statusEffects[1]; // Has better hand
+            showStatus = true;
         }
-
-
-        else
+        else if (isAllIn)
         {
-            StatusEffect[pocketCards].SetActive(false);
+            statusSprite = statusEffects[2]; // All-In
+            showStatus = true;
+        }
+        else if (!hasChips)
+        {
+            statusSprite = statusEffects[3]; // Out (no chips)
+            showStatus = true;
+        }
+        else if (isCurrentTurn && amountToCall > 0)
+        {
+            if (statusIndex < StatusTexts.Count)
+            {
+                StatusTexts[statusIndex].text = "To Call: " + amountToCall;
+                StatusTexts[statusIndex].gameObject.SetActive(true);
+            }
         }
 
-        //add in a "Needs X to call" to current player
-        //do we need a visual indication of who's turn it is?  I'm thinking no?
+        if (showStatus && statusSprite != null && statusIndex < StatusEffect.Count)
+        {
+            StatusEffect[statusIndex].GetComponent<Image>().sprite = statusSprite;
+            StatusEffect[statusIndex].SetActive(true);
+        }
     }
 
     public void DisplayHUDChips(int player)
     {
-        if (chipsDisplay == null)
-        {
-            Debug.LogError($"chipsDisplay is null in HUD for player {player}");
-        }
-        if (ChipImage == null)
-        {
-            Debug.LogError("ChipImage is null in HUD");
-        }
-        if (pokerChipManager == null)
-        {
-            Debug.LogError("PokerChipManager is not found in HUD.");
-        }
         if (player < 0 || player >= pokerChipManager.playerChips.Length)
         {
-            Debug.LogError($"Invalid player index {player}. Array length: {pokerChipManager.playerChips.Length}");
+            Debug.LogError($"Invalid player index {player}.");
             return;
         }
 
+        bool showChips = pokerChipManager.playerChips[player] > 0 || pokerTurnManager.isAllIn[player];
 
+        ChipImage?.SetActive(showChips);
+        chipsDisplay?.SetActive(showChips);
 
-        if (pokerChipManager.playerChips[player] > 0 || pokerTurnManager.isAllIn[player])
+        if (showChips)
         {
-            ChipImage.SetActive(true);
-            chipsDisplay.SetActive(true);
             chipsDisplay.GetComponent<TextMeshProUGUI>().text = pokerChipManager.playerChips[player].ToString();
         }
     }
@@ -112,26 +136,21 @@ public class HUD : MonoBehaviour
     private void MakeHUDCards(List<GameObject> pocketCards, int player)
     {
         int numCards = pocketCards.Count;
-        List<int> tempswap = new List<int>();
-        for (int j = numCards-1; j >=0; j--)
-        {
-            tempswap.Add(j);
-        }
 
         for (int i = 0; i < numCards; i++)
         {
+            int reversedIndex = numCards - 1 - i;
+            GameObject card = pocketCards[reversedIndex];
+            CardDisplay display = card.GetComponent<CardDisplay>();
 
             PocketCardIcons[i].SetActive(true);
-            if (player == 0)
-            {
-                PocketCardHidden[i].SetActive(true);
-            }
-            
+            PocketCardHidden[i].SetActive(player == 0); // Only show hidden card for player 0 (character)
             PocketNumbers[i].SetActive(true);
-            PocketNumbers[i].GetComponent<Image>().sprite = pocketCards[tempswap[i]].GetComponent<CardDisplay>().rankImage[0].sprite;
-            PocketNumbers[i].GetComponent<Image>().color = pocketCards[tempswap[i]].GetComponent<CardDisplay>().rankImage[0].color;
             PocketSuit[i].SetActive(true);
-            PocketSuit[i].GetComponent<Image>().sprite = pocketCards[tempswap[i]].GetComponent<CardDisplay>().cardData.suitSprite;
+
+            PocketNumbers[i].GetComponent<Image>().sprite = display.rankImage[0].sprite;
+            PocketNumbers[i].GetComponent<Image>().color = display.rankImage[0].color;
+            PocketSuit[i].GetComponent<Image>().sprite = display.cardData.suitSprite;
         }
     }
 
@@ -145,21 +164,13 @@ public class HUD : MonoBehaviour
             PocketSuit[i].SetActive(false);
             StatusEffect[i].SetActive(false);
         }
-            ChipImage.SetActive(false);
-            chipsDisplay.SetActive(false);
-    }
+        for (int i = 0; i < StatusTexts.Count; i++)
+        {
+            StatusTexts[i].text = "";
+            StatusTexts[i].gameObject.SetActive(false);
+        }
 
-    public void MakeHUD()
-    {
-        MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
-        if (isCharacter) { face.sprite = characterHud.HUDSprite; }
-        else { 
-            face.sprite = monsterHud.character.HUDSprite;
-            MinHand.SetActive(true);
-            BattleManager battleManager = FindFirstObjectByType<BattleManager>();
-            MinHand.GetComponent<TextMeshProUGUI>().text = ("Minimum Hand: " + monsterManager.monster.minimumHand.handRank.ToString() + " of " + monsterManager.monster.minimumRank + "'s");
-            }
-        ClearHUD();
+        ChipImage?.SetActive(false);
+        chipsDisplay?.SetActive(false);
     }
-
 }

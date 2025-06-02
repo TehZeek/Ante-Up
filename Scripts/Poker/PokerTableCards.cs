@@ -19,7 +19,6 @@ public class PokerTableCards : MonoBehaviour
     public float verticalSpacing = 25f;
     public float fanSpread = -5f;
     private PokerDrawPile pokerDrawPile;
-    public GameObject newCard;
     public List<GameObject> playerOnePocket = new List<GameObject>();
     public List<GameObject> playerTwoPocket = new List<GameObject>();
     public List<GameObject> playerThreePocket = new List<GameObject>();
@@ -27,6 +26,8 @@ public class PokerTableCards : MonoBehaviour
     public List<GameObject> tableHand = new List<GameObject>();
     public List<GameObject> burnDeck = new List<GameObject>();
     private BattleManager battleManager;
+    public  Dictionary<int, (List<GameObject> pocket, Transform transform)> playerMap;
+    [SerializeField] private float spawnZDepth = 10f;
     // import this from PokerDrawPile public List<GameObject> cardsInHand = new List<GameObject>(); // hold the list of card objects in our hand
 
     void Start()
@@ -35,62 +36,26 @@ public class PokerTableCards : MonoBehaviour
         battleManager = FindFirstObjectByType<BattleManager>();
     }
 
+    public void remapHands()
+    {
+        playerMap = new Dictionary<int, (List<GameObject>, Transform)>
+    {
+        { 0, (monsterPocket, monTransform) },
+        { 1, (playerOnePocket, p1Transform) },
+        { 2, (playerTwoPocket, p2Transform) },
+        { 3, (playerThreePocket, p3Transform) }
+    };
+    }
+
     public void Fold(int player)
     {
-        if (player == 0)
+        if (!playerMap.ContainsKey(player)) return;
+        var (pocket, transform) = playerMap[player];
+        burnDeck.AddRange(pocket);
+        pocket.Clear();
+        for (int i = transform.childCount - 1; i >= 0; i--)
         {
-            for (int i = 0; i < monsterPocket.Count; i++)
-            {
-                burnDeck.Add(monsterPocket[i]);
-            }
-            monsterPocket.Clear();
-            for (var i = monTransform.transform.childCount - 1; i >= 0; i--)
-            {
-                Object.Destroy(monTransform.transform.GetChild(i).gameObject);
-            }
-            //go to player[0] is out / end round
-        }
-        if (player == 1)
-        {
-            for (int i = 0; i < playerOnePocket.Count; i++)
-            {
-                burnDeck.Add(playerOnePocket[i]);
-            }
-            playerOnePocket.Clear();
-            for (var i = p1Transform.transform.childCount - 1; i >= 0; i--)
-            {
-                Object.Destroy(p1Transform.transform.GetChild(i).gameObject);
-            }
-
-            //go to player[1] is out
-        }
-        if (player == 2)
-        {
-            for (int i = 0; i < playerTwoPocket.Count; i++)
-            {
-                burnDeck.Add(playerTwoPocket[i]);
-            }
-            playerTwoPocket.Clear();
-            for (var i = p2Transform.transform.childCount - 1; i >= 0; i--)
-            {
-                Object.Destroy(p2Transform.transform.GetChild(i).gameObject);
-            }
-
-            //go to player[2] is out
-        }
-        if (player == 3)
-        {
-            for (int i = 0; i < playerThreePocket.Count; i++)
-            {
-                burnDeck.Add(playerThreePocket[i]);
-            }
-            playerThreePocket.Clear();
-            for (var i = p3Transform.transform.childCount - 1; i >= 0; i--)
-            {
-                Object.Destroy(p3Transform.transform.GetChild(i).gameObject);
-            }
-
-            //go to player[3] is out
+            Destroy(transform.GetChild(i).gameObject);
         }
         UpdateTableVisuals();
     }
@@ -133,17 +98,15 @@ public class PokerTableCards : MonoBehaviour
 
     private Vector3 GetRandomEdgePosition()
     {
-        float screenWidth = Screen.width;
-        float screenHeight = Screen.height;
-
-        switch (Random.Range(0, 4)) // Pick one of the four edges
+        Vector3 pos = Random.Range(0, 4) switch
         {
-            case 0: return Camera.main.ScreenToWorldPoint(new Vector3(Random.Range(0, screenWidth), 0, 10)); // Bottom edge
-            case 1: return Camera.main.ScreenToWorldPoint(new Vector3(Random.Range(0, screenWidth), screenHeight, 10)); // Top edge
-            case 2: return Camera.main.ScreenToWorldPoint(new Vector3(0, Random.Range(0, screenHeight), 10)); // Left edge
-            case 3: return Camera.main.ScreenToWorldPoint(new Vector3(screenWidth, Random.Range(0, screenHeight), 10)); // Right edge
-            default: return Vector3.zero;
-        }
+            0 => new Vector3(Random.Range(0, Screen.width), 0, spawnZDepth),
+            1 => new Vector3(Random.Range(0, Screen.width), Screen.height, spawnZDepth),
+            2 => new Vector3(0, Random.Range(0, Screen.height), spawnZDepth),
+            3 => new Vector3(Screen.width, Random.Range(0, Screen.height), spawnZDepth),
+            _ => Vector3.zero
+        };
+        return Camera.main.ScreenToWorldPoint(pos);
     }
 
     private Transform GetTargetTransform(int whichPlayer)
@@ -171,99 +134,58 @@ public class PokerTableCards : MonoBehaviour
         else if (whichPlayer == 9) { burnDeck.Add(newCard); }
     }
 
-
-
-
-
-
     public void ClearTable()
     {
-        for (var i = p1Transform.transform.childCount - 1; i >= 0; i--)
+        foreach (var entry in playerMap.Values)
         {
-            Object.Destroy(p1Transform.transform.GetChild(i).gameObject);
+            ClearTransformChildren(entry.transform);
         }
-        for (var i = p2Transform.transform.childCount - 1; i >= 0; i--)
-        {
-            Object.Destroy(p2Transform.transform.GetChild(i).gameObject);
-        }
-        for (var i = p3Transform.transform.childCount - 1; i >= 0; i--)
-        {
-            Object.Destroy(p3Transform.transform.GetChild(i).gameObject);
-        }
-        for (var i = monTransform.transform.childCount - 1; i >= 0; i--)
-        {
-            Object.Destroy(monTransform.transform.GetChild(i).gameObject);
-        }
-        for (var i = tableTransform.transform.childCount - 1; i >= 0; i--)
-        {
-            Object.Destroy(tableTransform.transform.GetChild(i).gameObject);
-        }
-        for (var i = burnTransform.transform.childCount - 1; i >= 0; i--)
-        {
-            Object.Destroy(burnTransform.transform.GetChild(i).gameObject);
-        }
+
+        ClearTransformChildren(tableTransform);
+        ClearTransformChildren(burnTransform);
+
         battleManager.UpdateHUD();
+    }
+
+    private void ClearTransformChildren(Transform parent)
+    {
+        for (int i = parent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(parent.GetChild(i).gameObject);
+        }
     }
 
     public void UpdateTableVisuals()
     {
         battleManager.UpdateHUD();
-        UpdateTV(monsterPocket);
-        UpdateTV(playerOnePocket);
-        UpdateTV(playerTwoPocket);
-        UpdateTV(playerThreePocket);
-        UpdateTable(tableHand);
+        UpdateCardLayout(monsterPocket, cardSpacing, 3f, 2f);
+        UpdateCardLayout(playerOnePocket, cardSpacing, 3f, 2f);
+        UpdateCardLayout(playerTwoPocket, cardSpacing, 3f, 2f);
+        UpdateCardLayout(playerThreePocket, cardSpacing, 3f, 2f);
+        UpdateCardLayout(tableHand, cardSpacing * 3, 3f, 0.25f);
     }
 
-    public void UpdateTV(List<GameObject> Cards)
+    private void UpdateCardLayout(List<GameObject> cards, float spacing, float fanMultiplier, float duration = 0.5f)
     {
-        int cardCount = Cards.Count;
-        if (cardCount == 1)
+        int count = cards.Count;
+        if (count == 1)
         {
-            LeanTween.moveLocal(Cards[0], new Vector3(0f, 0f, 0f), 0.5f).setEase(LeanTweenType.easeOutQuad);
-            LeanTween.rotateLocal(Cards[0], new Vector3(0f, 0f, 0f), 0.5f).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.moveLocal(cards[0], Vector3.zero, duration).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.rotateLocal(cards[0], Vector3.zero, duration).setEase(LeanTweenType.easeOutQuad);
             return;
         }
 
-        for (int i = 0; i < cardCount; i++)
+        for (int i = 0; i < count; i++)
         {
-            float rotationAngle = (fanSpread * (i - (cardCount - 1) / 2f));
-            float horizontalOffset = (cardSpacing * (i - (cardCount - 1) / 2f));
-            float normalizedPosition = (2f * i / (cardCount - 1) - 1f);
-            float verticalOffset = verticalSpacing * (1 - normalizedPosition * normalizedPosition);
+            float angle = fanSpread * (i - (count - 1) / fanMultiplier);
+            float x = spacing * (i - (count - 1) / 2f);
+            float y = verticalSpacing * (1 - Mathf.Pow(2f * i / (count - 1) - 1f, 2));
 
-            Vector3 targetPosition = new Vector3(horizontalOffset, verticalOffset, 0f);
-            Vector3 targetRotation = new Vector3(0f, 0f, rotationAngle);
+            Vector3 pos = new Vector3(x, y, 0);
+            Vector3 rot = new Vector3(0, 0, angle);
 
-            // Animate position and rotation smoothly
-            LeanTween.moveLocal(Cards[i], targetPosition, 0.5f).setEase(LeanTweenType.easeOutQuad);
-            LeanTween.rotateLocal(Cards[i], targetRotation, 0.5f).setEase(LeanTweenType.easeOutQuad);
-        }
-    }
-
-
-    public void UpdateTable(List<GameObject> Cards)
-    {
-        int cardCount = Cards.Count;
-        if (cardCount == 1)
-        {
-            LeanTween.moveLocal(Cards[0], new Vector3(0f, 0f, 0f), 0.5f).setEase(LeanTweenType.easeOutQuad);
-            LeanTween.rotateLocal(Cards[0], new Vector3(0f, 0f, 0f), 0.5f).setEase(LeanTweenType.easeOutQuad);
-            return;
-        }
-
-        for (int i = 0; i < cardCount; i++)
-        {
-            float rotationAngle = (fanSpread * (i - (cardCount - 1) / 3f));
-            float horizontalOffset = (cardSpacing * 3 * (i - (cardCount - 1) / 2f));
-            float normalizedPosition = (2f * i / (cardCount - 1) - 1f);
-
-            Vector3 targetPosition = new Vector3(horizontalOffset, 0f, 0f);
-            Vector3 targetRotation = new Vector3(0f, 0f, rotationAngle);
-
-            // Animate position and rotation smoothly
-            LeanTween.moveLocal(Cards[i], targetPosition, 0.25f).setEase(LeanTweenType.easeOutQuad);
-            LeanTween.rotateLocal(Cards[i], targetRotation, 0.25f).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.moveLocal(cards[i], pos, duration).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.rotateLocal(cards[i], rot, duration).setEase(LeanTweenType.easeOutQuad);
         }
     }
 
@@ -279,17 +201,19 @@ public class PokerTableCards : MonoBehaviour
 
     public void CompareHands()
     {
-        PokerHandCompare pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
-        int guy = 0;
-        int guy2 = 1;
-        int guy3 = 2;
-        int guy4 = 3;
+        PokerHandCompare comparer = FindFirstObjectByType<PokerHandCompare>();
+        var pockets = new List<(List<GameObject>, int)>
+    {
+        (monsterPocket, 0),
+        (playerOnePocket, 1),
+        (playerTwoPocket, 2),
+        (playerThreePocket, 3)
+    };
 
-        pokerHandCompare.UpdateHandType(monsterPocket, tableHand, guy);
-        pokerHandCompare.UpdateHandType(playerOnePocket, tableHand, guy2);
-        pokerHandCompare.UpdateHandType(playerTwoPocket, tableHand, guy3);
-        pokerHandCompare.UpdateHandType(playerThreePocket, tableHand, guy4);
-
+        foreach (var (hand, id) in pockets)
+        {
+            comparer.UpdateHandType(hand, tableHand, id);
+        }
     }
 
 }
