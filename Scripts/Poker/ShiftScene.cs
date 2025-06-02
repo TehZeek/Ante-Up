@@ -16,6 +16,7 @@ public class ShiftScene : MonoBehaviour
     private Vector3 P3Position = new Vector3(4537, 0, 0);
     private Vector3 P0Position = new Vector3(6809, 0, 0);
     private Vector3 P4Position = new Vector3(9100, 0, 0);
+    private Vector3 ShowdownPosition = new Vector3(0, -1280, 0);
     private PokerTurnManager pokerTurnManager;
     public Material blurMaterial;
     public float blurFadeStartTime = 0.25f; // Start blur fade before movement ends
@@ -50,6 +51,7 @@ public class ShiftScene : MonoBehaviour
         pokerTableCards.p1Transform = Scenes[4].GetComponent<RoomPerspective>().handLocation;
         pokerTableCards.p2Transform = Scenes[2].GetComponent<RoomPerspective>().handLocation;
         pokerTableCards.p3Transform = Scenes[3].GetComponent<RoomPerspective>().handLocation;
+
         pokerTableCards.remapHands();
     }
 
@@ -95,6 +97,39 @@ public class ShiftScene : MonoBehaviour
                     .setEase(LeanTweenType.easeOutQuad);
             }
         }
+    }
+
+
+    public void ShowDownShift()
+    {
+        blurIsOn = true;
+        float targetBlurStrength = GetBlurStrengthByTag();
+        LeanTween.moveX(imageTransform, ShowdownPosition.x, moveTime)
+                    .setEase(LeanTweenType.easeOutQuad);
+        StartCoroutine(ShiftUp());
+    }
+    public IEnumerator ShiftUp()
+    {
+        yield return new WaitForSeconds(1f);
+        blurIsOn = true;
+        float targetBlurStrength = GetBlurStrengthByTag();
+        LeanTween.moveY(imageTransform, ShowdownPosition.y, moveTime)
+                    .setEase(LeanTweenType.easeOutQuad);
+    }
+
+    public void ShiftDown()
+    {
+        blurIsOn = true;
+        float targetBlurStrength = GetBlurStrengthByTag();
+        LeanTween.moveY(imageTransform, P0Position.y, moveTime)
+            .setEase(LeanTweenType.easeOutQuad);
+        StartCoroutine(BackToPlay());
+    }
+
+    public IEnumerator BackToPlay()
+    {
+        yield return new WaitForSeconds(1f);
+        ShiftTheScene();
     }
 
     IEnumerator AdjustBlur(float targetBlur, float duration)

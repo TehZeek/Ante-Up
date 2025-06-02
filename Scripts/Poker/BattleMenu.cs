@@ -170,6 +170,7 @@ public class BattleMenu : MonoBehaviour
     private void FoldChosen()
     {
         int player = pokerTurnManager.turnOrder[2];
+        Debug.Log("FOLD BUTTON CALLED " + player);
         pokerTurnManager.IsOut[player] = true;
         pokerTableCards.Fold(player);
         //fold powers

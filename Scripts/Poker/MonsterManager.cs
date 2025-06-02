@@ -108,9 +108,13 @@ public class MonsterManager : MonoBehaviour
         int minType = handCompare.allHandTypes.IndexOf(monster.minimumHand);
         int curType = handCompare.allHandTypes.IndexOf(handCompare.MonHand);
         int type = Mathf.Max(minType, curType);
-        int rank = Mathf.Max(monster.minimumRank, handCompare.monRank[0]);
+
+        int safeRank = (handCompare.monRank.Count > 0) ? handCompare.monRank[0] : 0;
+        int rank = Mathf.Max(monster.minimumRank, safeRank);
+
         return (type, rank);
     }
+
 
     private int RoundMultiplier()
     {

@@ -30,12 +30,14 @@ public class BattleManager : MonoBehaviour
     public GameObject scenePrefab;
     public GameObject LoadScreenPrefab;
     public GameObject FadeIn;
+    public GameObject ActionScreenScene;
     public Transform FadeInSpot;
     public List<GameObject> HUDs = new List<GameObject>();
     private GameManager gameManager;
     public List<Transform> hubTransform = new List<Transform>();
     private PokerTableCards pokerTableCards;
     private PokerTurnManager pokerTurnManager;
+    private ShiftScene shiftScene;
 
 
     void Start()
@@ -53,7 +55,7 @@ public class BattleManager : MonoBehaviour
         DeckManager deckManager = FindFirstObjectByType<DeckManager>();
         deckManager.BattleSetup();
 
-        ShiftScene shiftScene = FindFirstObjectByType<ShiftScene>();
+        shiftScene = FindFirstObjectByType<ShiftScene>();
         Debug.Log("Leaving Battle Manager, onto ShiftScene");
         shiftScene.BuildScenes();
 
@@ -107,11 +109,37 @@ public class BattleManager : MonoBehaviour
         HUDs[3].GetComponent<HUD>().RefreshHUD(pokerTableCards.playerThreePocket, 3);
     }
 
+    public void TurnOffHUD()
+    {
+        HUDs[0].SetActive(false);
+        HUDs[1].SetActive(false);
+        HUDs[2].SetActive(false);
+        HUDs[3].SetActive(false);
+    }
+
+    public void TurnOnHUD()
+    {
+        HUDs[0].SetActive(true);
+        HUDs[1].SetActive(true);
+        HUDs[2].SetActive(true);
+        HUDs[3].SetActive(true);
+    }
+
+    public void TurnOffTableCards()
+    {
+        for (int i = 0; i < pokerTableCards.tableHand.Count; i++)
+        {
+            pokerTableCards.tableHand[i].SetActive(false);
+        }
+    }
+
     public void ShowdownTime()
     {
-        FadeIn = Instantiate(LoadScreenPrefab, FadeInSpot.position, Quaternion.identity, FadeInSpot);
-        FadeIn.GetComponent<ActionScreen>().GetManagers();
-        FadeIn.GetComponent<ActionScreen>().ShowdownSetup();
+        TurnOffHUD();
+        TurnOffTableCards();
+        shiftScene.ShowDownShift();
+        ActionScreenScene.GetComponent<ActionScreen>().GetManagers();
+        ActionScreenScene.GetComponent<ActionScreen>().ShowdownSetup();
     }
 
 

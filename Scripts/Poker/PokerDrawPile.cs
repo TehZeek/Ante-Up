@@ -40,14 +40,10 @@ public class PokerDrawPile : MonoBehaviour
     // find what passes this from the DeckManager
     public void MakeDrawPile(List<Card> cardsToAdd)
     {
-        Debug.Log("Making Draw Pile with "+cardsToAdd.Count);
         drawPile.AddRange(cardsToAdd);
-        Debug.Log("Draw Pile Made: "+drawPile.Count);
         tempDrawPile.AddRange(drawPile);
-        Debug.Log("temp Draw Pile made with "+tempDrawPile.Count);
         //    UpdateDrawPileCount();
         Utility.Shuffle(drawPile);
-        Debug.Log("Draw Pile Shuffled");
     }
 
     public void Reshuffle()
@@ -88,6 +84,7 @@ public class PokerDrawPile : MonoBehaviour
             DealCard(3);
             currentIndex = (currentIndex + 1) % drawPile.Count;
         }
+        pokerTableCards.remapHands();
 
     }
 

@@ -30,27 +30,36 @@ public class PokerHandCompare : MonoBehaviour
     public void UpdateHandType(List<GameObject> pocket, List<GameObject> table, int player)
     {
         ClearHandData(player);
+        var combined = new List<GameObject>(pocket);
+        combined.AddRange(table);
 
-        foreach (var cardObj in pocket.Concat(table))
+        for (int i = 0; i<combined.Count; i++)
         {
-            if (cardObj.TryGetComponent<CardDisplay>(out var disp))
-                currentHand.Add(disp.cardData);
+            Card tempCard = combined[i].GetComponent<CardDisplay>().cardData;
+            currentHand.Add(tempCard);
         }
-
+        Debug.Log("Found Cards: " + currentHand.Count);
         currentHand = currentHand.OrderByDescending(card => card.cardRank.First()).ToList();
         
 
         // Evaluate hands in descending order of strength
         if (TryEvaluateStraightFlush() || TryEvaluateFourOfAKind() || TryEvaluateFullHouse() || TryEvaluateFlush() || TryEvaluateStraight()
             || TryEvaluateThreeOfAKind() || TryEvaluateTwoPair() || TryEvaluatePair())
+        {
+            UpdateHandToCompare(bestHandType, handRank, bestHand, player);
             return;
+        }
 
         // High card fallback
         bestHand = currentHand.Take(5).ToList();
         handRank = bestHand.Select(card => (int)card.cardRank.First()).ToList();
         while (handRank.Count < 5) handRank.Add(0);
         bestHandType = allHandTypes[1];
+        Debug.Log("Sending #bestHand, #handRank, HandType "+bestHand.Count+handRank.Count+bestHandType.name);
+
         UpdateHandToCompare(bestHandType, handRank, bestHand, player);
+        Debug.Log($"[PostUpdateHandToCompare] Player {player} has {pocket.Count} pocket cards and {table.Count} table cards.");
+
     }
 
     private bool TryEvaluateStraightFlush()
@@ -219,6 +228,7 @@ public class PokerHandCompare : MonoBehaviour
             case 2: p2Hand = cards.ToList(); p2Rank = rank.ToList(); P2Hand = handType; break;
             case 3: p3Hand = cards.ToList(); p3Rank = rank.ToList(); P3Hand = handType; break;
         }
+
     }
 
     public string HandToString(int player)

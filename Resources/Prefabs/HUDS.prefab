@@ -106,13 +106,13 @@ MonoBehaviour:
   cardSpacing: 75
   verticalSpacing: 25
   fanSpread: -5
-  newCard: {fileID: 0}
   playerOnePocket: []
   playerTwoPocket: []
   playerThreePocket: []
   monsterPocket: []
   tableHand: []
   burnDeck: []
+  spawnZDepth: 10
 --- !u!1 &2582411855289160142
 GameObject:
   m_ObjectHideFlags: 0

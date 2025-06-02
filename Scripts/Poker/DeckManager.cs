@@ -18,7 +18,6 @@ public class DeckManager : MonoBehaviour
     {
         Card[] Cards = Resources.LoadAll<Card>("CardData");
         allCards.AddRange(Cards);
-        Debug.Log("Trying to make draw pile with " + allCards.Count);
         pokerDrawPile.MakeDrawPile(allCards);
     }
 

@@ -79,6 +79,8 @@ public class PokerTurnManager : MonoBehaviour
 
     public void TickTurn()
     {
+        Debug.Log($"TickTurn: Player {turnOrder[2]} | IsOut: {string.Join(",", IsOut)}");
+
         AdvanceTurnIndex();
         if (CheckForEndOfRound()) { return; }
         Debug.Log("[TickTurn] Ending. turnOrder: [" + turnOrder[0] + ", " + turnOrder[1] + ", " + turnOrder[2] + "]");
@@ -196,6 +198,12 @@ public class PokerTurnManager : MonoBehaviour
     {
         stillThisTurn = false;
         pokerDrawPile.DealPocketCards();
+        StartCoroutine(DelayHandCompare());
+    }
+
+    private IEnumerator DelayHandCompare()
+    {
+        yield return new WaitForSeconds(1f);
         pokerTableCards.CompareHands();
         PlayerOptions();
     }
@@ -216,32 +224,28 @@ public class PokerTurnManager : MonoBehaviour
     {
         stillThisTurn = false;
         pokerDrawPile.DealFlopCards();
-        pokerTableCards.CompareHands();
-        PlayerOptions();
+        StartCoroutine(DelayHandCompare());
     }
 
     private void TheTurn()
     {
         stillThisTurn = false;
         pokerDrawPile.DealTurnCards();
-        pokerTableCards.CompareHands();
-        PlayerOptions();
+        StartCoroutine(DelayHandCompare());
     }
 
     private void TheRiver()
     {
         stillThisTurn = false;
         pokerDrawPile.DealRiverCards();
-        pokerTableCards.CompareHands();
-        PlayerOptions();
+        StartCoroutine(DelayHandCompare());
     }
 
     private void BonusRound()
     {
         stillThisTurn = false;
         pokerDrawPile.DealRiverCards();
-        pokerTableCards.CompareHands();
-        PlayerOptions();
+        StartCoroutine(DelayHandCompare());
     }
 
     private void Showdown()
@@ -464,6 +468,7 @@ public class PokerTurnManager : MonoBehaviour
 
     public void ClearTurnVariables()
     {
+        Debug.LogWarning("CLEAR TURN VARIABLES WAS CALLED!");
         stillThisTurn = false;
         playersStillIn.Clear();
         turnOrder[0]++;

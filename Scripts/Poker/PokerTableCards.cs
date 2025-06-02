@@ -49,6 +49,8 @@ public class PokerTableCards : MonoBehaviour
 
     public void Fold(int player)
     {
+        Debug.Log("HAS FOLDED");
+        if (playerMap == null) remapHands();
         if (!playerMap.ContainsKey(player)) return;
         var (pocket, transform) = playerMap[player];
         burnDeck.AddRange(pocket);
@@ -201,20 +203,14 @@ public class PokerTableCards : MonoBehaviour
 
     public void CompareHands()
     {
-        PokerHandCompare comparer = FindFirstObjectByType<PokerHandCompare>();
-        var pockets = new List<(List<GameObject>, int)>
-    {
-        (monsterPocket, 0),
-        (playerOnePocket, 1),
-        (playerTwoPocket, 2),
-        (playerThreePocket, 3)
-    };
-
-        foreach (var (hand, id) in pockets)
-        {
-            comparer.UpdateHandType(hand, tableHand, id);
-        }
+        PokerHandCompare pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
+        pokerHandCompare.UpdateHandType(monsterPocket, tableHand, 0);
+        pokerHandCompare.UpdateHandType(playerOnePocket, tableHand, 1);
+        pokerHandCompare.UpdateHandType(playerTwoPocket, tableHand, 2);
+        pokerHandCompare.UpdateHandType(playerThreePocket, tableHand, 3);
     }
+
+
 
 }
 
