@@ -56,7 +56,6 @@ public class ShiftScene : MonoBehaviour
     public void ShiftTheScene()
     {
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
-        Debug.Log("Shifting the scene!");
         Vector3 targetPosition = imageTransform.anchoredPosition;
 
         if (pokerTurnManager != null)
@@ -70,7 +69,6 @@ public class ShiftScene : MonoBehaviour
                     Scenes[i].GetComponent<RoomPerspective>().actorManager.StartMonsterIdleMode();
 
                 }
-                Debug.Log("PokerTurnManager is valid, starting shift");
                 if (whichScene == 4)
                 {
                     transform.position = P1Position;

@@ -139,6 +139,7 @@ public class BGCharacterActions : MonoBehaviour
     private void SetSpriteForState(ActorState state)
     {
         if (characterImage == null || characterIndex >= 4) return;
+        Sprite newSprite = null;
 
         var poses = characterPose[characterIndex];
         switch (state)
@@ -150,6 +151,13 @@ public class BGCharacterActions : MonoBehaviour
             case ActorState.Folding: characterImage.sprite = poses.defend; break;
             case ActorState.KnockedOut: characterImage.sprite = poses.outPose; break;
         }
+        Image image = GetComponent<Image>();
+        if (image != null && newSprite != null)
+        {
+            image.sprite = newSprite;
+            image.SetNativeSize();
+        }
+
     }
 
     public IEnumerator PerformAttack()
@@ -163,12 +171,10 @@ public class BGCharacterActions : MonoBehaviour
 
         if (attackType == AttackType.Melee)
         {
-            Debug.Log($"{name} performing melee attack.");
             yield return HopTowardAndAttack(target);
         }
         else if (attackType == AttackType.Ranged)
         {
-            Debug.Log($"{name} performing ranged attack.");
             yield return new WaitForSeconds(0.3f);
             FireProjectile(target);
             yield return new WaitForSeconds(0.1f);
@@ -204,25 +210,8 @@ public class BGCharacterActions : MonoBehaviour
 
     public void FireProjectile(Transform target)
     {
-        if (projectilePrefab == null || firePoint == null || target == null)
-        {
-            Debug.LogWarning($"{name} cannot fire: Missing firePoint or projectile.");
-            return;
-        }
-        Debug.Log($"{name} is firing projectile at {target.name}");
-
         GameObject proj = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation, firePoint.parent);
         proj.SetActive(true);
-
-
-        if (proj == null)
-        {
-            Debug.LogError($"{name} tried to fire, but Instantiate returned null.");
-        }
-        else
-        {
-            Debug.Log($"{name} successfully instantiated a projectile at {firePoint.position}");
-        }
 
         LeanTween.move(proj, target.position, 0.6f)
             .setEase(LeanTweenType.easeOutQuad)

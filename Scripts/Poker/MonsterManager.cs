@@ -44,17 +44,31 @@ public class MonsterManager : MonoBehaviour
         int potSize = chipManager.potChips;
         int callAmount = Mathf.Max(0, chipManager.BetSize - chipManager.InThePot[0]);
 
-        // Reward bigger pots, penalize expensive calls
-        score += Mathf.FloorToInt(potSize * 0.2f);           // Encourage big pots
-        score -= Mathf.FloorToInt(callAmount * 0.5f);        // Penalize expensive calls
+        // Encourage big pots, penalize expensive calls
+        score += Mathf.FloorToInt(potSize * 0.2f);
+        score -= Mathf.FloorToInt(callAmount * 0.5f);
 
-        Debug.Log($"Monster Hand Score (adjusted): {score}");
+        Debug.Log($"Monster Hand Score (adjusted): {score}, Call Amount: {callAmount}");
+
+        if (callAmount == 0)
+        {
+            if (score >= betRange)
+            {
+                Debug.Log("Monster chooses to Bet (strong hand, no penalty to stay in).");
+                return (int)MonsterChoice.Bet;
+            }
+            else
+            {
+                Debug.Log("Monster checks (no call required).");
+                return (int)MonsterChoice.Check;
+            }
+        }
 
         if (score < foldRange && battleMenu.BetIsSet)
             return TryBluffOr(MonsterChoice.Fold);
 
         if (score < callRange)
-            return TryBluffOr(MonsterChoice.Check);
+            return TryBluffOr(MonsterChoice.Check); // It's a weak hand, might bluff
 
         if (score > callRange && battleMenu.BetIsSet)
             return (int)MonsterChoice.Call;
