@@ -39,6 +39,11 @@ public class MonsterManager : MonoBehaviour
 
     public int MonsterDecision()
     {
+        if (pokerTurnManager.isShowdownInProgress)
+        {
+            Debug.Log("MonsterDecision skipped: showdown in progress.");
+            return (int)MonsterChoice.Check;
+        }
         int score = EvaluateHandScore();
 
         int potSize = chipManager.potChips;

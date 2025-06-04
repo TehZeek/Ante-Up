@@ -192,6 +192,13 @@ public class BattleMenu : MonoBehaviour
         isAnimating = true;
 
         MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
+
+        if (pokerTurnManager.isShowdownInProgress)
+        {
+            Debug.Log("DelayEnemyTurn canceled: showdown in progress.");
+            yield break;
+        }
+
         ShiftScene shiftScene = FindFirstObjectByType<ShiftScene>();
         shiftScene.ShiftTheScene();
         yield return new WaitForSeconds(0.5f); // 30 frames at 60 FPS

@@ -196,26 +196,22 @@ public void buildHands(int player)
     {
         if (player != 0) FinalCards[player].GetComponent<CardShowdown>().handText.text = pokerHandCompare.HandToString(player);
         else FinalCards[0].GetComponent<CardShowdown>().handText.text = "?????";
+        
         for (int j = 0; j < 5; j++)
         {
-            if (player == 0)
+            List<Card> currentHand = GetHandForPlayer(player);
+            if (j < currentHand.Count)
+            {
+                FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = currentHand[j];
+                if (player == 0)
                 {
-                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.monHand[j];
                     FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
                 }
-            if (player == 1)
-                {
-                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.p1Hand[j];
-                    
-                }
-            if (player == 2)
-                {
-                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.p2Hand[j];
-                }
-            if (player == 3)
-                {
-                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = pokerHandCompare.p3Hand[j];
-                }
+            }
+            else
+            {
+                Debug.LogWarning($"[buildHands] Player {player}'s hand has fewer than {j + 1} cards.");
+            }
         }
         for (int k = 1; k<4; k++)
         {
@@ -223,7 +219,20 @@ public void buildHands(int player)
         }
     }
 
-public void DestroyCards()
+
+    private List<Card> GetHandForPlayer(int player)
+    {
+        return player switch
+        {
+            0 => pokerHandCompare.monHand,
+            1 => pokerHandCompare.p1Hand,
+            2 => pokerHandCompare.p2Hand,
+            3 => pokerHandCompare.p3Hand,
+            _ => new List<Card>()
+        };
+    }
+
+    public void DestroyCards()
     {
         pokerTableCards.ClearTable();
     }
@@ -464,6 +473,7 @@ public void DestroyCards()
 
     public void trialShowdownSetup()
     {
+        Debug.Log("TRIAL SHOWDOWN");
         buildHands(1);
         buildHands(2);
         buildHands(3);

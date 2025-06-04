@@ -402,6 +402,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1849838066 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5094243922579901616, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+  m_PrefabInstance: {fileID: 494387184335367808}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1849838070 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4492653958235989416, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+  m_PrefabInstance: {fileID: 494387184335367808}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &494387184335367808
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -414,10 +424,50 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1546489294}
+    - target: {fileID: 349591105966255650, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: showdownTransform
+      value: 
+      objectReference: {fileID: 1849838070}
+    - target: {fileID: 1262299655019329970, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1262299655019329970, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1262299655019329970, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2217828349992085136, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492653958235989416, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4519399571207539303, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1280
+      objectReference: {fileID: 0}
     - target: {fileID: 6937995522083359827, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
       propertyPath: m_Name
       value: BattleManager
       objectReference: {fileID: 0}
+    - target: {fileID: 7062484038294776162, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606621560607841922, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: FadeIn
+      value: 
+      objectReference: {fileID: 1849838066}
+    - target: {fileID: 7606621560607841922, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+      propertyPath: ActionScreenScene
+      value: 
+      objectReference: {fileID: 1849838066}
     - target: {fileID: 8568763425354438684, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -498,8 +548,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 3627055089565975589, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

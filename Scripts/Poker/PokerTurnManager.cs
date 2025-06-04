@@ -26,6 +26,7 @@ public class PokerTurnManager : MonoBehaviour
     public bool stillThisTurn = false;
     public List<int> playersStillIn = new List<int>();
     private const int PlayerCount = 4;
+    public bool isShowdownInProgress = false;
 
 
     void Start()
@@ -285,6 +286,7 @@ public class PokerTurnManager : MonoBehaviour
 
     private void FindWhoWon()
     {
+        isShowdownInProgress = true;
         playersStillIn.Clear();
         battleManager.ShowdownTime();
     }

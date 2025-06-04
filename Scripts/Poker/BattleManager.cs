@@ -31,7 +31,6 @@ public class BattleManager : MonoBehaviour
     public GameObject LoadScreenPrefab;
     public GameObject FadeIn;
     public GameObject ActionScreenScene;
-    public Transform FadeInSpot;
     public List<GameObject> HUDs = new List<GameObject>();
     private GameManager gameManager;
     public List<Transform> hubTransform = new List<Transform>();
@@ -42,7 +41,6 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
-        FadeIn = Instantiate(LoadScreenPrefab, FadeInSpot.position, Quaternion.identity, FadeInSpot);
         FadeIn.GetComponent<ActionScreen>().TextEffect("Loading...", FadeIn.GetComponent<ActionScreen>().showdownText);
         gameManager = FindFirstObjectByType<GameManager>();
         monsterManager.SetUpMonster();
@@ -59,15 +57,7 @@ public class BattleManager : MonoBehaviour
         Debug.Log("Leaving Battle Manager, onto ShiftScene");
         shiftScene.BuildScenes();
 
-
-        // build things: Scenes, draw deck
-        // assign things: monster AI, chips, turn order
-
-
-
         // Raise Load Screen
-
-        Debug.Log("Calling FadeSplash");
 
         BattleMenu battleMenu = FindFirstObjectByType<BattleMenu>();
         battleMenu.UpdateButtonDisplay(0);
@@ -76,22 +66,20 @@ public class BattleManager : MonoBehaviour
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerTurnManager.stillThisTurn = true;
 
-        FadeIn.GetComponent<ActionScreen>().FadeSplash();
-        //make the huds
+        //before the below, we can do battle setup scene??
+        StartCoroutine(LoadWaitThenShift());
+    }
 
-        Debug.Log("We made " + HUDs.Count + " HUDs");
-
+    private IEnumerator LoadWaitThenShift()
+    {
+        yield return new WaitForSeconds(2f);
+        FadeIn.GetComponent<ActionScreen>().TextEffect("", FadeIn.GetComponent<ActionScreen>().showdownText);
+        shiftScene.ShiftDown();
     }
 
     private void MakeHUDs()
     {
-        GameObject newHUDMon = Instantiate(hubPrefab, hubTransform[0].position, Quaternion.identity, hubTransform[0]);
-        newHUDMon.GetComponent<HUD>().monsterHud = monsterManager.monster;
-        newHUDMon.GetComponent<HUD>().isCharacter = false;
-        newHUDMon.GetComponent<HUD>().MakeHUD();
-        HUDs.Add(newHUDMon);
-
-        for (int i = 1; i < (4); i++)
+        for (int i = 0; i < (4); i++)
         {
             GameObject newHUD = Instantiate(hubPrefab, hubTransform[i].position, Quaternion.identity, hubTransform[i]);
             newHUD.GetComponent<HUD>().characterHud = gameManager.characters[i];
