@@ -13,6 +13,10 @@ public class MonsterManager : MonoBehaviour
     private PokerTurnManager pokerTurnManager;
     private PokerHandCompare handCompare;
     private PokerTableCards tableCards;
+    public HandTypes Flush;
+    public HandTypes Straight;
+    public HandTypes StraightFlush;
+    public HandTypes RoyalFlush;
 
     public enum MonsterChoice { Bet, Call, Check, Fold, Flee }
 
@@ -98,7 +102,7 @@ public class MonsterManager : MonoBehaviour
     private int EvaluateHandScore()
     {
         var (handType, handRank) = GetMonsterHandInfo();
-        int baseScore = (handType - 1) * 15 + handRank;
+        int baseScore = ((handType - 1) * 15) + handRank;
         int bonus = GetBonusFromHandPotential();
         int penalty = GetTableThreatLevel();
         int roundFactor = RoundMultiplier() * 5;
@@ -113,11 +117,22 @@ public class MonsterManager : MonoBehaviour
         int minType = handCompare.allHandTypes.IndexOf(monster.minimumHand);
         int curType = handCompare.allHandTypes.IndexOf(handCompare.MonHand);
         int type = Mathf.Max(minType, curType);
-
-        int safeRank = (handCompare.monRank.Count > 0) ? handCompare.monRank[0] : 0;
-        int rank = Mathf.Max(monster.minimumRank, safeRank);
-
-        return (type, rank);
+        int rank;
+        if (type == minType && type != curType)
+        {
+            rank = monster.minimumRank;
+        }
+        else if (type != minType && type == curType)
+        {
+            rank = (handCompare.monRank.Count > 0) ? handCompare.monRank[0] : 0;
+        }
+        else
+        {
+            int monMin = monster.minimumRank;
+            int monHas = (handCompare.monRank.Count > 0) ? handCompare.monRank[0] : 0;
+            rank = Mathf.Max(monMin, monHas);
+        }
+            return (type, rank);
     }
 
 
@@ -132,13 +147,33 @@ public class MonsterManager : MonoBehaviour
 
     private int GetTableThreatLevel()
     {
-        int threat = 0;
-        List<Card> tableHand = tableCards.tableHand
+        List<Card> tableOnly = tableCards.tableHand
             .Select(obj => obj.GetComponent<CardDisplay>().cardData)
             .ToList();
 
-        threat += EvaluateGroups(tableHand, penalty: true);
-        return threat * (RoundMultiplier() + 2);
+        int penalty = EvaluateGroups(tableOnly, penalty: true);
+
+        bool flushThreat = tableOnly
+            .GroupBy(c => c.cardSuit.First())
+            .Any(g => g.Count() >= 3);          // three to a flush
+
+        bool straightThreat = IsStraightPossible(tableOnly);
+
+        if (flushThreat && MonsterHasFlush())
+        {
+            penalty = MonsterFlushIsNut()
+                ? 0                                      // ❌ no fear, nut flush
+                : Mathf.RoundToInt(penalty * 0.5f);      // 😌 half fear, has flush
+        }
+
+        if (straightThreat && MonsterHasStraight())
+        {
+            penalty = MonsterStraightIsNut()
+                ? 0
+                : Mathf.RoundToInt(penalty * 0.5f);
+        }
+
+        return penalty * (RoundMultiplier() + 2);
     }
 
     private int GetBonusFromHandPotential()
@@ -199,4 +234,50 @@ public class MonsterManager : MonoBehaviour
 
         return points + straightBonus;
     }
+
+    private bool MonsterHasFlush()
+    {
+        // Anything ≥ Flush counts (Flush, Straight-Flush, Royal…)
+        return handCompare.MonHand == Flush
+            || handCompare.MonHand == StraightFlush
+            || handCompare.MonHand == RoyalFlush;
+    }
+
+    private bool MonsterHasStraight()
+    {
+        // Straight-Flush & Royal-Flush are also straights
+        return handCompare.MonHand == Straight
+            || handCompare.MonHand == StraightFlush
+            || handCompare.MonHand == RoyalFlush;
+    }
+
+    private bool IsStraightPossible(List<Card> cards)
+    {
+        // A 'loose' straight check – four sequential ranks within gaps ≤1
+        var ranks = cards
+            .Select(c => (int)c.cardRank.First())
+            .Distinct()
+            .OrderBy(r => r)
+            .ToList();
+
+        int consecutive = 1;
+        for (int i = 1; i < ranks.Count; i++)
+        {
+            consecutive = (ranks[i] - ranks[i - 1] <= 1) ? consecutive + 1 : 1;
+            if (consecutive >= 4)        // ≥4 means the river could finish it
+                return true;
+        }
+        return false;
+    }
+
+    private bool MonsterFlushIsNut()
+    {
+        return MonsterHasFlush() && handCompare.monRank[0] >= 13;
+    }
+
+    private bool MonsterStraightIsNut()
+    {
+        return MonsterHasStraight() && handCompare.monRank[0] >= 13;
+    }
+
 }

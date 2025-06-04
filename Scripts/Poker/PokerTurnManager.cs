@@ -115,6 +115,10 @@ public class PokerTurnManager : MonoBehaviour
 
         Debug.Log("[TickTurn] All players checked or are out. Advancing round.");
         battleMenu.BetIsSet = false;
+        for (int i = 0; i<4; i++)
+        {
+            battleManager.HUDs[i].GetComponent<HUD>().isBetter = false;
+        }
 
         if (turnOrder[1] < 6) { turnOrder[1]++; } else { FindWhoWon(); }
        

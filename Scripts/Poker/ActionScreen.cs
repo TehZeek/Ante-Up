@@ -42,47 +42,6 @@ public class ActionScreen : MonoBehaviour
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
     }
 
-    public void FadeSplash()
-    {
-        Debug.Log("FadeSplash() called");
-            StartCoroutine(FadeOutImage());
-    }
-
-    private IEnumerator FadeOutImage()
-    {
-        Debug.Log("FadeOutImage() called");
-        Color color = image.color;
-        yield return new WaitForSeconds(2f);
-        float elapsedTime = 0f;
-
-        while (elapsedTime < fadeDuration)
-        {
-            color.a = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
-            image.color = color;
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        Destroy(gameObject); // Destroy after fade out
-    }
-
-    private IEnumerator FadeOutCanvasGroup()
-    {
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
-        Debug.Log("FadeOutCanvasGroup() called");
-        yield return new WaitForSeconds(2f);
-        float elapsedTime = 0f;
-
-        while (elapsedTime < fadeDuration)
-        {
-            canvasGroup.alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        Destroy(gameObject);
-    }
-
     public void UpdateChipCounter(int player)
     {
         pokerChipManager.playerChips[player]++;
@@ -202,10 +161,10 @@ public void buildHands(int player)
             List<Card> currentHand = GetHandForPlayer(player);
             if (j < currentHand.Count)
             {
-                FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = currentHand[j];
+                FinalCards[player].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = currentHand[j];
                 if (player == 0)
                 {
-                    FinalCards[j].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
+                    FinalCards[player].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
                 }
             }
             else
@@ -213,10 +172,7 @@ public void buildHands(int player)
                 Debug.LogWarning($"[buildHands] Player {player}'s hand has fewer than {j + 1} cards.");
             }
         }
-        for (int k = 1; k<4; k++)
-        {
-            FinalCards[k].GetComponent<CardShowdown>().handText.GetComponent<TextMeshProUGUI>().text = pokerHandCompare.HandToString(k);
-        }
+            FinalCards[player].GetComponent<CardShowdown>().handText.GetComponent<TextMeshProUGUI>().text = pokerHandCompare.HandToString(player);
     }
 
 
@@ -230,11 +186,6 @@ public void buildHands(int player)
             3 => pokerHandCompare.p3Hand,
             _ => new List<Card>()
         };
-    }
-
-    public void DestroyCards()
-    {
-        pokerTableCards.ClearTable();
     }
 
     public void PlayerFold(int player)
@@ -337,18 +288,18 @@ public void buildHands(int player)
 
     }
 
-    public void RegularShowdown(List<int> playersRemaining, List<int> ChipsLost)
+    public void RegularShowdown(List<int> ChipsLost)
     {
         //setup
         TextEffect("Showdown!", showdownText);
-        StartCoroutine(RegularShowdownContinued(ChipsLost, playersRemaining));
+        StartCoroutine(RegularShowdownContinued(ChipsLost));
     }
-    public IEnumerator RegularShowdownContinued(List<int> playersRemaining, List<int> ChipsLost)
+    public IEnumerator RegularShowdownContinued(List<int> ChipsLost)
     {
         yield return new WaitForSeconds(2f);
         for (int i = 0; i < 4; i++)
             {
-                if (!playersRemaining.Contains(i))
+                if (pokerTurnManager.IsOut[i] && !pokerTurnManager.isAllIn[i])
                 {
                     PlayerFold(i);
                 }
@@ -471,31 +422,20 @@ public void buildHands(int player)
         WrapUpShowdown();
     }
 
-    public void trialShowdownSetup()
-    {
-        Debug.Log("TRIAL SHOWDOWN");
-        buildHands(1);
-        buildHands(2);
-        buildHands(3);
-        List<int> lista = new List<int>() { 5, 5, 5, 5 };
-        List<int> listb = new List<int>() { 0,1,3 };
-        RegularShowdown(listb, lista);
-    }
 
     public void ShowdownSetup()
     {
-        DestroyCards();
         buildActors();
         if (pokerHandCompare == null || gameManager == null || battleManager == null || pokerTurnManager == null || pokerChipManager == null)
         {
-            trialShowdownSetup();
+            Debug.Log("Can't load a showdown due to managers");
             return;
         }
         List<int> chipsLost = new List<int>();
         for (int i = 0; i<4; i++)
         {
             chipsLost.Add(pokerChipManager.InThePot[0]);
-            if (pokerChipManager.playerChips[i] == 0 && pokerTurnManager.IsOut[i]) { IsDead[i] = true; }
+            if (pokerChipManager.playerChips[i] == 0 && pokerTurnManager.IsOut[i] && !pokerTurnManager.isAllIn[i]) { IsDead[i] = true; }
         }
         if (pokerTurnManager.DidMonstersFold())
         {
@@ -507,13 +447,14 @@ public void buildHands(int player)
             PlayersFoldShowdown(chipsLost);
             return;
         }
-        RegularShowdown(pokerTurnManager.playersStillIn, chipsLost);
+        RegularShowdown(chipsLost);
     }
 
     public void WrapUpShowdown()
     {
-        pokerTurnManager.ClearTurnVariables();
-
+        TextEffect("showdoen over", showdownText);
+        //  pokerTurnManager.ClearTurnVariables();
+      //  pokerTableCards.ClearTable();
         //players fall down if dead
         //game over check
         //round over check
