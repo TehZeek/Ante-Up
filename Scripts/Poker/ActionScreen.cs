@@ -21,7 +21,7 @@ public class ActionScreen : MonoBehaviour
     private Dictionary<int, Coroutine> spinningCoroutines = new Dictionary<int, Coroutine>();
     private Dictionary<int, Quaternion> originalRotations = new Dictionary<int, Quaternion>();
     public List<GameObject> FinalCards = new List<GameObject>();
-    public TextMeshProUGUI minimumHand;
+    public TextMeshProUGUI miniHand;
     private PokerHandCompare pokerHandCompare;
     private GameManager gameManager;
     private BattleManager battleManager;
@@ -310,13 +310,13 @@ public void buildHands(int player)
                 yield return new WaitForSeconds(1f);
             }
         string showHand = "Minimum Hand:\n";
-        string minHand = pokerHandCompare.HandToString(4);
+        string minHand = gameManager.monster.minimumHand.name;
 
-        TextEffect((showHand + minHand), minimumHand);
+        TextEffect((showHand + minHand), miniHand);
 
         yield return new WaitForSeconds(1.5f);
-        HandTypes miniHand = gameManager.monster.minimumHand;
-        int minimumHandRank = pokerHandCompare.allHandTypes.IndexOf(miniHand);
+        HandTypes minimHand = gameManager.monster.minimumHand;
+        int minimumHandRank = pokerHandCompare.allHandTypes.IndexOf(minimHand);
         int winners = pokerTurnManager.EvaluatePlayers(minimumHandRank);
         if (winners>0)
         {
@@ -452,7 +452,7 @@ public void buildHands(int player)
 
     public void WrapUpShowdown()
     {
-        TextEffect("showdoen over", showdownText);
+        TextEffect("showdown over", showdownText);
         //  pokerTurnManager.ClearTurnVariables();
       //  pokerTableCards.ClearTable();
         //players fall down if dead
