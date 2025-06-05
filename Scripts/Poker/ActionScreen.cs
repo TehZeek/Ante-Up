@@ -160,6 +160,7 @@ public class ActionScreen : MonoBehaviour
 
     public void buildHands(int player)
     {
+
         if (player != 0) FinalCards[player].GetComponent<CardShowdown>().handText.text = pokerHandCompare.HandToString(player);
         else FinalCards[0].GetComponent<CardShowdown>().handText.text = "?????";
 

@@ -210,6 +210,8 @@ public void CleanUpShowdown()
         //---------------------------------------------------------------------
 
         TurnOnHUD();
+        for (int i = 0; i < 4; i++) HUDs[i].GetComponent<HUD>().ClearHUD();
+        pokerTurnManager.TurnAssign();
         StartCoroutine(LoadWaitThenShift());
     }
 

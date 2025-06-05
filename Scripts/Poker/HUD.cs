@@ -24,11 +24,13 @@ public class HUD : MonoBehaviour
     public List<TextMeshProUGUI> StatusTexts = new List<TextMeshProUGUI>(); // parallel to StatusEffect
     private PokerTurnManager pokerTurnManager;
     private PokerChipManager pokerChipManager;
+    private GameManager gameManager;
 
     void Awake()
     {
         pokerTurnManager = FindFirstObjectByType<PokerTurnManager>();
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
+        gameManager = FindFirstObjectByType<GameManager>();
     }
 
     public void MakeHUD()
@@ -76,14 +78,11 @@ public class HUD : MonoBehaviour
 
         int amountToCall = Mathf.Max(0, pokerChipManager.BetSize - pokerChipManager.InThePot[player]);
 
+
+
         if (isOut && !isAllIn)
         {
             statusSprite = statusEffects[0]; // Folded
-            showStatus = true;
-        }
-        else if (isBetter)
-        {
-            statusSprite = statusEffects[1]; // Has better hand
             showStatus = true;
         }
         else if (isAllIn)
@@ -91,11 +90,17 @@ public class HUD : MonoBehaviour
             statusSprite = statusEffects[2]; // All-In
             showStatus = true;
         }
-        else if (!hasChips)
+        else if(gameManager.characters[player].isDead || !hasChips)
         {
             statusSprite = statusEffects[3]; // Out (no chips)
             showStatus = true;
         }
+        else if (isBetter)
+        {
+            statusSprite = statusEffects[1]; // Has better hand
+            showStatus = true;
+        }
+
         else if (isCurrentTurn && amountToCall > 0)
         {
             if (statusIndex < StatusTexts.Count)
@@ -104,7 +109,6 @@ public class HUD : MonoBehaviour
                 StatusTexts[statusIndex].gameObject.SetActive(true);
             }
         }
-
         if (showStatus && statusSprite != null && statusIndex < StatusEffect.Count)
         {
             StatusEffect[statusIndex].GetComponent<Image>().sprite = statusSprite;

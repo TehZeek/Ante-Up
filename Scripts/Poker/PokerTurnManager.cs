@@ -180,7 +180,7 @@ public class PokerTurnManager : MonoBehaviour
         }
     }
 
-    private void TurnAssign()
+    public void TurnAssign()
     {
         Debug.Log("[TurnAssign] Assigning blinds.");
 
