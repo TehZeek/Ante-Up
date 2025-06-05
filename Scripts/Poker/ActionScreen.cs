@@ -309,70 +309,64 @@ public void buildHands(int player)
         StartCoroutine(AllInThrowDown(ChipsLost));
     }
 
-    private IEnumerator AllInThrowDown(List<int> chipsLost)
+        private IEnumerator AllInThrowDown(List<int> ChipsLost)
     {
-        const float revealDelay = 1.5f;
+        yield return new WaitForSeconds(1.5f);
 
-        if (pokerTableCards == null) GetManagers();   // safety net
-        yield return new WaitForSeconds(revealDelay);
-
-        // Parallel lists:   seat-index → { all-in pocket, table pocket }
-        var allInPockets = new List<List<GameObject>> { AllInPocket0, AllInPocket1, AllInPocket2, AllInPocket3 };
-        var tablePockets = new List<List<GameObject>>
-    {
-        pokerTableCards.monsterPocket,
-        pokerTableCards.playerOnePocket,
-        pokerTableCards.playerTwoPocket,
-        pokerTableCards.playerThreePocket
-    };
-
-        for (int seat = 0; seat < 4; seat++)
+        //display players who have not folded and fold players who have's pocket cards
+        //throw down table cards one at a time, and deal remaining
         {
-            bool isFolded = pokerTurnManager.IsOut[seat] && !pokerTurnManager.isAllIn[seat];
-
-            if (isFolded)
-                PlayerFold(seat);
-            else
-                ReplacePocket(allInPockets[seat], tablePockets[seat]);
-
-            yield return new WaitForSeconds(revealDelay);
-        }
-    }
-
-    private static void ReplacePocket(
-        List<GameObject> allInPocketCards,
-        List<GameObject> destinationPocketSlots)
-    {
-        for (int slotIndex = 0; slotIndex < destinationPocketSlots.Count; slotIndex++)
-        {
-            bool replacementCardExists =
-                slotIndex < allInPocketCards.Count && allInPocketCards[slotIndex] != null;
-
-            if (replacementCardExists)
+            if (pokerTableCards == null) GetManagers();   // safety net
+            if (pokerTurnManager.IsOut[0] && !pokerTurnManager.isAllIn[0])
             {
-                CardDisplay replacementCardDisplay =
-                    allInPocketCards[slotIndex].GetComponent<CardDisplay>();
-                CardDisplay destinationCardDisplay =
-                    destinationPocketSlots[slotIndex].GetComponent<CardDisplay>();
-
-                if (replacementCardDisplay != null && destinationCardDisplay != null)
-                {
-                    destinationCardDisplay.cardData = replacementCardDisplay.cardData;
-                    destinationCardDisplay.UpdateCardDisplay();
-                }
-
-                destinationPocketSlots[slotIndex].SetActive(true);
-                destinationPocketSlots[slotIndex].GetComponent<CardDisplay>().UpdateCardDisplay();
+                PlayerFold(0);
             }
             else
             {
-                if (destinationPocketSlots[slotIndex] != null)
-                {
-                    destinationPocketSlots[slotIndex].SetActive(false);
-                }
+                ReplacePocket(AllInPocket0, pokerTableCards.monsterPocket);
             }
+            yield return new WaitForSeconds(1.5f);
+            if (pokerTurnManager.IsOut[1] && !pokerTurnManager.isAllIn[1])
+            {
+                PlayerFold(1);
+            }
+            else
+            {
+                ReplacePocket(AllInPocket1, pokerTableCards.playerOnePocket);
+            }
+            yield return new WaitForSeconds(1.5f);
+            if (pokerTurnManager.IsOut[2] && !pokerTurnManager.isAllIn[2])
+            {
+                PlayerFold(2);
+            }
+            else
+            {
+                ReplacePocket(AllInPocket2, pokerTableCards.playerTwoPocket);
+            }
+            yield return new WaitForSeconds(1.5f);
+            if (pokerTurnManager.IsOut[3] && !pokerTurnManager.isAllIn[3])
+            {
+                PlayerFold(3);
+            }
+            else
+            {
+                ReplacePocket(AllInPocket3, pokerTableCards.playerThreePocket);
+            }
+            yield return new WaitForSeconds(1.5f);
+            
         }
     }
+}
+
+private void ReplacePocket(List<GameObject> NewPocket, List<GameObject> OldPocket)
+{
+    for (int i=0; i<OldPocket.Count; i++)
+    {
+        var theCard = OldPocket[i].GetComponent<CardDisplay>().cardData;
+        NewPocket[i].SetActive(true);
+        NewPocket[i].GetComponent<CardDisplay>().cardData = theCard;
+    }
+}
 
 
     public void RegularShowdown(List<int> ChipsLost)
