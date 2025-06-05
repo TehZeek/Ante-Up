@@ -36,3 +36,5 @@ MonoBehaviour:
   steal: The Kobold knows when to run!
   challenge: You are ambushed by a lone Kobold!\n  A Boot on he head and a dagger
     at your heart!
+  keepfighting: The Kobold lunges at you again\n Dagger ready for blood!
+  willRun: 0

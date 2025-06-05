@@ -157,7 +157,7 @@ public class BattleManager : MonoBehaviour
         ActionScreenScene.GetComponent<ActionScreen>().ShowdownSetup();
     }
 
-    public void ShowdownOver()
+    public void CleanUpShowdown()
     {
         //turn these back on
     }

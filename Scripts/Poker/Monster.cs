@@ -30,6 +30,7 @@ namespace ZeekSpace
         public string escape;
         public string steal;
         public string challenge;
+        public string keepfighting;
         public bool willRun = false;
 
 

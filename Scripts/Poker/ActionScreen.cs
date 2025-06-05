@@ -819,14 +819,14 @@ public class ActionScreen : MonoBehaviour
             TextEffect(gameManager.monster.scared, showdownText);
             gameManager.monster.willRun = true;
             yield return new WaitForSeconds(2f);
-            CleanUpShowdown();
+            battleManager.CleanUpShowdown();
         }
         if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 2.5f))
         {
             TextEffect(gameManager.monster.confident, showdownText);
             gameManager.monster.willRun = true;
             yield return new WaitForSeconds(2f);
-            CleanUpShowdown();
+            battleManager.CleanUpShowdown();
         }
         if (pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.2f) ||
                 (gameManager.monster.willRun && pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.5f)))
@@ -841,12 +841,11 @@ public class ActionScreen : MonoBehaviour
             yield return new WaitForSeconds(2f);
             BattleOver();
         }
+        TextEffect(gameManager.monster.keepfighting, showdownText);
+        yield return new WaitForSeconds(2f);
+        battleManager.CleanUpShowdown();
     }
 
-    private void CleanUpShowdown()
-    {
-
-    }
     private void RewardScreen()
     {
         TextEffect("You'll get a reward here", miniHand);
