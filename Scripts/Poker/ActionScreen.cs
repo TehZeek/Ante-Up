@@ -35,8 +35,9 @@ public class ActionScreen : MonoBehaviour
     public List<GameObject> AllInPocket1 = new List<GameObject>();
     public List<GameObject> AllInPocket2 = new List<GameObject>();
     public List<GameObject> AllInPocket3 = new List<GameObject>();
-    public List<GameObject> AllInTable = new List<GameObject>();
-
+    public List<RectTransform> AllInTable = new List<RectTransform>();
+    public List<TextMeshProUGUI> AllInResults = new List<TextMeshProUGUI>();
+    private List<GameObject> table = new List<GameObject>();
 
     public void GetManagers()
     {
@@ -291,11 +292,19 @@ public void buildHands(int player)
         WrapUpShowdown();
     }
 
-    public void AllInShowdown(List<int> ChipsLost)
+    public int CardsLeftToDraw()
     {
         int cardRound = 3;
         if (pokerTurnManager.HasARiver) cardRound++;
         if (pokerTurnManager.HasABonusRound) cardRound++;
+        return cardRound;
+    }
+
+    public void AllInShowdown(List<int> ChipsLost)
+    {
+        int cardRound = CardsLeftToDraw();
+        table.Clear();
+
         if (pokerTurnManager.turnOrder[1] >= cardRound)
         {
             RegularShowdown(ChipsLost);
@@ -311,52 +320,79 @@ public void buildHands(int player)
 
         private IEnumerator AllInThrowDown(List<int> ChipsLost)
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
 
         //display players who have not folded and fold players who have's pocket cards
         //throw down table cards one at a time, and deal remaining
         {
             if (pokerTableCards == null) GetManagers();   // safety net
-            if (pokerTurnManager.IsOut[0] && !pokerTurnManager.isAllIn[0])
+            for (int i=0; i<4; i++)
             {
-                PlayerFold(0);
+                if (pokerTurnManager.IsOut[i] && !pokerTurnManager.isAllIn[i]) PlayerFold(i);
+                else
+                {
+                    if (i==0) ReplacePocket(AllInPocket0, pokerTableCards.monsterPocket);
+                    if (i==1) ReplacePocket(AllInPocket1, pokerTableCards.playerOnePocket);
+                    if (i==2) ReplacePocket(AllInPocket2, pokerTableCards.playerTwoPocket);
+                    if (i==3) ReplacePocket(AllInPocket3, pokerTableCards.playerThreePocket);
+                    AllInCardDrama(i);
+                }
+                yield return new WaitForSeconds(1f);
+
             }
-            else
+
+            TextEffect("", showdownText);
+            int cardsToDraw = CardsLeftToDraw();
+            for (int i = 0; i<cardsToDraw; i++)
             {
-                ReplacePocket(AllInPocket0, pokerTableCards.monsterPocket);
+                PlaceTableCardDramatically(i);
+                yield return new WaitForSeconds(1f);
+                for (int j = 0; j < 4; j++)
+                {
+                    if (!pokerTurnManager.IsOut[j] || pokerTurnManager.isAllIn[j])
+                    {
+                        AllInCardDrama(j);
+                        yield return new WaitForSeconds(0.75f);
+                    }
+                }
+                yield return new WaitForSeconds(1f);
             }
-            yield return new WaitForSeconds(1.5f);
-            if (pokerTurnManager.IsOut[1] && !pokerTurnManager.isAllIn[1])
-            {
-                PlayerFold(1);
-            }
-            else
-            {
-                ReplacePocket(AllInPocket1, pokerTableCards.playerOnePocket);
-            }
-            yield return new WaitForSeconds(1.5f);
-            if (pokerTurnManager.IsOut[2] && !pokerTurnManager.isAllIn[2])
-            {
-                PlayerFold(2);
-            }
-            else
-            {
-                ReplacePocket(AllInPocket2, pokerTableCards.playerTwoPocket);
-            }
-            yield return new WaitForSeconds(1.5f);
-            if (pokerTurnManager.IsOut[3] && !pokerTurnManager.isAllIn[3])
-            {
-                PlayerFold(3);
-            }
-            else
-            {
-                ReplacePocket(AllInPocket3, pokerTableCards.playerThreePocket);
-            }
-            yield return new WaitForSeconds(1.5f);
-            
+            //compare cards and destroy losers
+            // winners attack
         }
     }
-}
+
+
+    private void PlaceTableCardDramatically(int whichCard)
+    {
+        PokerDrawPile pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
+        //check if a table card already exists, if so place it
+        //if not, draw a new card and place it
+        if (pokerTableCards.tableHand[whichCard] != null)
+        {
+
+            //instantiate the next card onto the table space?
+        }
+        else
+        {
+            pokerDrawPile.DealCard(20 + whichCard);
+            GameObject nextCard;
+            nextCard = pokerTableCards.tableHand[whichCard];
+            table.Add(nextCard);
+        }
+        
+    }
+
+    private void AllInCardDrama(int player)
+    {
+        if (player == 0) pokerHandCompare.UpdateHandType(pokerTableCards.monsterPocket, table, 0);
+        if (player == 1) pokerHandCompare.UpdateHandType(pokerTableCards.playerOnePocket, table, 1);
+        if (player == 2) pokerHandCompare.UpdateHandType(pokerTableCards.playerTwoPocket, table, 2);
+        if (player == 3) pokerHandCompare.UpdateHandType(pokerTableCards.playerThreePocket, table, 3);
+        string hand = pokerHandCompare.HandToString(player);
+        TextEffect(hand, AllInResults[player]);
+        //make this bigger or smaller if ahead of or behind monster
+    }
 
 private void ReplacePocket(List<GameObject> NewPocket, List<GameObject> OldPocket)
 {

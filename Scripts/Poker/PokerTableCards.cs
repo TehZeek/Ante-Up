@@ -15,6 +15,7 @@ public class PokerTableCards : MonoBehaviour
     public Transform monTransform;
     public Transform tableTransform;
     public Transform burnTransform;
+    public List<RectTransform> allInTransform = new List<RectTransform>();
     public float cardSpacing = 150f;
     public float verticalSpacing = 25f;
     public float fanSpread = -5f;
@@ -122,6 +123,12 @@ public class PokerTableCards : MonoBehaviour
             > 3 and < 9 => tableTransform,
             9 => burnTransform,
             10 => tableTransform,
+            20 => allInTransform[0],
+            21 => allInTransform[1],
+            22 => allInTransform[2],
+            23 => allInTransform[3],
+            24 => allInTransform[4],
+            25 => allInTransform[5],
             _ => null
         };
     }
@@ -132,7 +139,7 @@ public class PokerTableCards : MonoBehaviour
         else if (whichPlayer == 1) { playerOnePocket.Add(newCard); }
         else if (whichPlayer == 2) { playerTwoPocket.Add(newCard); }
         else if (whichPlayer == 3) { playerThreePocket.Add(newCard); }
-        else if ((whichPlayer > 3 && whichPlayer < 9) || whichPlayer == 10) { tableHand.Add(newCard); }
+        else if ((whichPlayer > 3 && whichPlayer < 9) || whichPlayer == 10 || whichPlayer >= 20) { tableHand.Add(newCard); }
         else if (whichPlayer == 9) { burnDeck.Add(newCard); }
     }
 
