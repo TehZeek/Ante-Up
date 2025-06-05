@@ -31,6 +31,12 @@ public class ActionScreen : MonoBehaviour
     public List<RectTransform> chipsTargets = new List<RectTransform>();
     private List<bool> IsDead = new List<bool>() { false, false, false, false };
     private int totalSum;
+    public List<GameObject> AllInPocket0 = new List<GameObject>();
+    public List<GameObject> AllInPocket1 = new List<GameObject>();
+    public List<GameObject> AllInPocket2 = new List<GameObject>();
+    public List<GameObject> AllInPocket3 = new List<GameObject>();
+    public List<GameObject> AllInTable = new List<GameObject>();
+
 
     public void GetManagers()
     {
@@ -58,7 +64,7 @@ public class ActionScreen : MonoBehaviour
     private IEnumerator ZoomOutEffect(TextMeshProUGUI textToChange)
     {
         textToChange.transform.localScale = new Vector3(5f, 5f, 5f); // Start scale (larger than normal)
-        float duration = 0.35f; // Duration of the effect
+        float duration = 0.25f; // Duration of the effect
         float elapsedTime = 0f;
 
         while (elapsedTime < duration)
@@ -162,6 +168,7 @@ public void buildHands(int player)
             if (j < currentHand.Count)
             {
                 FinalCards[player].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().cardData = currentHand[j];
+                FinalCards[player].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().UpdateCardDisplay();
                 if (player == 0)
                 {
                     FinalCards[player].GetComponent<CardShowdown>().showdownCards[j].GetComponent<CardDisplay>().CardBack.gameObject.SetActive(true);
@@ -173,6 +180,7 @@ public void buildHands(int player)
             }
         }
             FinalCards[player].GetComponent<CardShowdown>().handText.GetComponent<TextMeshProUGUI>().text = pokerHandCompare.HandToString(player);
+            FinalCards[player].GetComponent<CardShowdown>().EnterScreen();
     }
 
 
@@ -283,10 +291,89 @@ public void buildHands(int player)
         WrapUpShowdown();
     }
 
-    public void AllInShowdown()
+    public void AllInShowdown(List<int> ChipsLost)
     {
-
+        int cardRound = 3;
+        if (pokerTurnManager.HasARiver) cardRound++;
+        if (pokerTurnManager.HasABonusRound) cardRound++;
+        if (pokerTurnManager.turnOrder[1] >= cardRound)
+        {
+            RegularShowdown(ChipsLost);
+            return;
+        }
+        int cardsLeftToPlay = (cardRound - pokerTurnManager.turnOrder[1] - 1);
+        string showHand = "Minimum Hand:\n";
+        string minHand = pokerHandCompare.HandToString(4);
+        TextEffect((showHand + minHand), miniHand);
+        TextEffect("ALL IN\nShowdown!", showdownText);
+        StartCoroutine(AllInThrowDown(ChipsLost));
     }
+
+    private IEnumerator AllInThrowDown(List<int> chipsLost)
+    {
+        const float revealDelay = 1.5f;
+
+        if (pokerTableCards == null) GetManagers();   // safety net
+        yield return new WaitForSeconds(revealDelay);
+
+        // Parallel lists:   seat-index → { all-in pocket, table pocket }
+        var allInPockets = new List<List<GameObject>> { AllInPocket0, AllInPocket1, AllInPocket2, AllInPocket3 };
+        var tablePockets = new List<List<GameObject>>
+    {
+        pokerTableCards.monsterPocket,
+        pokerTableCards.playerOnePocket,
+        pokerTableCards.playerTwoPocket,
+        pokerTableCards.playerThreePocket
+    };
+
+        for (int seat = 0; seat < 4; seat++)
+        {
+            bool isFolded = pokerTurnManager.IsOut[seat] && !pokerTurnManager.isAllIn[seat];
+
+            if (isFolded)
+                PlayerFold(seat);
+            else
+                ReplacePocket(allInPockets[seat], tablePockets[seat]);
+
+            yield return new WaitForSeconds(revealDelay);
+        }
+    }
+
+    private static void ReplacePocket(
+        List<GameObject> allInPocketCards,
+        List<GameObject> destinationPocketSlots)
+    {
+        for (int slotIndex = 0; slotIndex < destinationPocketSlots.Count; slotIndex++)
+        {
+            bool replacementCardExists =
+                slotIndex < allInPocketCards.Count && allInPocketCards[slotIndex] != null;
+
+            if (replacementCardExists)
+            {
+                CardDisplay replacementCardDisplay =
+                    allInPocketCards[slotIndex].GetComponent<CardDisplay>();
+                CardDisplay destinationCardDisplay =
+                    destinationPocketSlots[slotIndex].GetComponent<CardDisplay>();
+
+                if (replacementCardDisplay != null && destinationCardDisplay != null)
+                {
+                    destinationCardDisplay.cardData = replacementCardDisplay.cardData;
+                    destinationCardDisplay.UpdateCardDisplay();
+                }
+
+                destinationPocketSlots[slotIndex].SetActive(true);
+                destinationPocketSlots[slotIndex].GetComponent<CardDisplay>().UpdateCardDisplay();
+            }
+            else
+            {
+                if (destinationPocketSlots[slotIndex] != null)
+                {
+                    destinationPocketSlots[slotIndex].SetActive(false);
+                }
+            }
+        }
+    }
+
 
     public void RegularShowdown(List<int> ChipsLost)
     {
@@ -307,10 +394,10 @@ public void buildHands(int player)
                 {
                     buildHands(i);
                 }
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(1.5f);
             }
         string showHand = "Minimum Hand:\n";
-        string minHand = gameManager.monster.minimumHand.name;
+        string minHand = pokerHandCompare.HandToString(4);
 
         TextEffect((showHand + minHand), miniHand);
 
@@ -445,6 +532,11 @@ public void buildHands(int player)
         if (pokerTurnManager.DidPlayersFold())
         {
             PlayersFoldShowdown(chipsLost);
+            return;
+        }
+        if (pokerTurnManager.isAllIn[0] || ((pokerTurnManager.isAllIn[1] || pokerTurnManager.isAllIn[2] || pokerTurnManager.isAllIn[3]) && (pokerTurnManager.IsOut[1] && pokerTurnManager.IsOut[2] && pokerTurnManager.IsOut[3])))
+        {
+            AllInShowdown(chipsLost);
             return;
         }
         RegularShowdown(chipsLost);

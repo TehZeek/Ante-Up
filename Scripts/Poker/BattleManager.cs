@@ -99,32 +99,59 @@ public class BattleManager : MonoBehaviour
 
     public void TurnOffHUD()
     {
-        HUDs[0].SetActive(false);
-        HUDs[1].SetActive(false);
-        HUDs[2].SetActive(false);
-        HUDs[3].SetActive(false);
+        foreach (GameObject hudPanel in HUDs)
+            HideUiObject(hudPanel);
+
+        foreach (GameObject tableCard in pokerTableCards.tableHand)
+            HideUiObject(tableCard);
+
+        BattleMenu battleMenu = FindFirstObjectByType<BattleMenu>();
+        if (battleMenu != null)
+            HideUiObject(battleMenu.gameObject);
+    }
+
+    private static void HideUiObject(GameObject uiObject)
+    {
+        if (uiObject == null) return;
+
+        CanvasGroup canvasGroup = uiObject.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+            canvasGroup = uiObject.AddComponent<CanvasGroup>();
+
+        canvasGroup.alpha = 0f;   // fully transparent
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
     }
 
     public void TurnOnHUD()
     {
-        HUDs[0].SetActive(true);
-        HUDs[1].SetActive(true);
-        HUDs[2].SetActive(true);
-        HUDs[3].SetActive(true);
+        foreach (GameObject hudPanel in HUDs)
+            ShowUiObject(hudPanel);
+
+        foreach (GameObject tableCard in pokerTableCards.tableHand)
+            ShowUiObject(tableCard);
+
+        BattleMenu battleMenu = FindFirstObjectByType<BattleMenu>();
+        if (battleMenu != null)
+            ShowUiObject(battleMenu.gameObject);
     }
 
-    public void TurnOffTableCards()
+    private static void ShowUiObject(GameObject uiObject)
     {
-        for (int i = 0; i < pokerTableCards.tableHand.Count; i++)
-        {
-            pokerTableCards.tableHand[i].SetActive(false);
-        }
+        if (uiObject == null) return;
+
+        CanvasGroup canvasGroup = uiObject.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+            canvasGroup = uiObject.AddComponent<CanvasGroup>();
+
+        canvasGroup.alpha = 1f;   // fully opaque
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
     }
 
     public void ShowdownTime()
     {
         TurnOffHUD();
-        TurnOffTableCards();
         shiftScene.ShowDownShift();
         ActionScreenScene.GetComponent<ActionScreen>().GetManagers();
         ActionScreenScene.GetComponent<ActionScreen>().ShowdownSetup();

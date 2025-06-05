@@ -233,12 +233,16 @@ public class PokerHandCompare : MonoBehaviour
 
     public string HandToString(int player)
     {
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        HandTypes MinHand = gameManager.monster.minimumHand;
+        List<int> MinRank = new List<int>() { gameManager.monster.minimumRank };
         var hand = player switch
         {
             0 => MonHand,
             1 => P1Hand,
             2 => P2Hand,
             3 => P3Hand,
+            4 => MinHand,
             _ => allHandTypes[0]
         };
 
@@ -248,6 +252,7 @@ public class PokerHandCompare : MonoBehaviour
             1 => p1Rank,
             2 => p2Rank,
             3 => p3Rank,
+            4 => MinRank,
             _ => new List<int>()
         };
 

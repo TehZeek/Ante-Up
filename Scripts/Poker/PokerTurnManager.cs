@@ -80,6 +80,7 @@ public class PokerTurnManager : MonoBehaviour
 
     public void TickTurn()
     {
+
         Debug.Log($"TickTurn: Player {turnOrder[2]} | IsOut: {string.Join(",", IsOut)}");
 
         AdvanceTurnIndex();
@@ -152,8 +153,9 @@ public class PokerTurnManager : MonoBehaviour
         if (isAllIn[0] || ((isAllIn[1] || IsOut[1]) && (isAllIn[2] || IsOut[2]) && (isAllIn[3] || IsOut[3])))
         {
             Debug.Log("ALL IN LOOP");
+
+            FindWhoWon();
             stillThisTurn = false;
-            AllInLoop();
             return true;
         }
         return false;
@@ -260,34 +262,7 @@ public class PokerTurnManager : MonoBehaviour
         battleMenu.UpdateButtonDisplay(4);
         FindWhoWon();
     }
-    private void  AllInLoop()
-
-    {
-        if (!IsOut[1] || isAllIn[1] || !IsOut[2] || isAllIn[2] || !IsOut[3] || isAllIn[3])
-        {
-            // Call ShowdownReveal and wait 1 second
-            pokerTableCards.ShowdownReveal();
-            int cardsLeftToDeal = 5;
-            if (HasABonusRound) { cardsLeftToDeal++; }
-            if (!HasARiver) { cardsLeftToDeal--; }
-            if (turnOrder[1] == 2 && cardsLeftToDeal >= 3) { cardsLeftToDeal -= 3; }
-            if (turnOrder[1] == 3 && cardsLeftToDeal >= 1) { cardsLeftToDeal--; }
-            if (turnOrder[1] == 4 && cardsLeftToDeal >= 1) { cardsLeftToDeal--; }
-            if (turnOrder[1] == 5 && cardsLeftToDeal >= 1) { cardsLeftToDeal--; }
-
-            if (cardsLeftToDeal > 0)
-            {
-                for (int i = 0; i < cardsLeftToDeal; i++)
-                {
-                    pokerDrawPile.DealRiverCards();
-                }
-            }
-            FindWhoWon();
-
-        }
-        else { FindWhoWon(); }
-    }
-
+    
     private void FindWhoWon()
     {
         isShowdownInProgress = true;
