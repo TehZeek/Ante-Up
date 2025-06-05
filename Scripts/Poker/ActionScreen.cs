@@ -812,38 +812,44 @@ public class ActionScreen : MonoBehaviour
     }
     private IEnumerator MonsterDecision()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         if (pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * .6f))
         {
             TextEffect(gameManager.monster.scared, showdownText);
             gameManager.monster.willRun = true;
+            yield return new WaitForSeconds(2f);
             CleanUpShowdown();
         }
         if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 2.5f))
         {
             TextEffect(gameManager.monster.confident, showdownText);
             gameManager.monster.willRun = true;
+            yield return new WaitForSeconds(2f);
             CleanUpShowdown();
         }
-        if (pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * .2f) || (gameManager.monster.willRun && pokerChipManager.playerChips[0] < <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.5))
+        if (pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.2f) ||
+                (gameManager.monster.willRun && pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.5f)))
         {
             TextEffect(gameManager.monster.escape, showdownText);
+            yield return new WaitForSeconds(2f);
             RewardScreen();
         }
         if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 4f) || (gameManager.monster.willRun && pokerChipManager.playerChips[0] > gameManager.monster.monsterChips*2))
         {
             TextEffect(gameManager.monster.steal, showdownText);
+            yield return new WaitForSeconds(2f);
             BattleOver();
         }
     }
+
     private void CleanUpShowdown()
     {
 
     }
     private void RewardScreen()
     {
-        TextEffect("You'll get a reward here", miniText);
+        TextEffect("You'll get a reward here", miniHand);
         BattleOver();
     }
     private void BattleOver()
