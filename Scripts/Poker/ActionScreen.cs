@@ -294,7 +294,7 @@ public void buildHands(int player)
 
     public int CardsLeftToDraw()
     {
-        int cardRound = 3;
+        int cardRound = 4;
         if (pokerTurnManager.HasARiver) cardRound++;
         if (pokerTurnManager.HasABonusRound) cardRound++;
         return cardRound;
@@ -305,7 +305,7 @@ public void buildHands(int player)
         int cardRound = CardsLeftToDraw();
         table.Clear();
 
-        if (pokerTurnManager.turnOrder[1] >= cardRound)
+        if (pokerTableCards.tableHand.Count >= cardRound)
         {
             RegularShowdown(ChipsLost);
             return;
@@ -343,6 +343,7 @@ public void buildHands(int player)
 
             TextEffect("", showdownText);
             int cardsToDraw = CardsLeftToDraw();
+
             for (int i = 0; i<cardsToDraw; i++)
             {
                 PlaceTableCardDramatically(i);
@@ -366,21 +367,18 @@ public void buildHands(int player)
     private void PlaceTableCardDramatically(int whichCard)
     {
         PokerDrawPile pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
-        //check if a table card already exists, if so place it
-        //if not, draw a new card and place it
-        if (pokerTableCards.tableHand[whichCard] != null)
-        {
-
-            //instantiate the next card onto the table space?
-        }
-        else
+        if ((pokerTableCards.tableHand.Count == 0 && whichCard == 0) || whichCard>= pokerTableCards.tableHand.Count)
         {
             pokerDrawPile.DealCard(20 + whichCard);
             GameObject nextCard;
             nextCard = pokerTableCards.tableHand[whichCard];
             table.Add(nextCard);
         }
-        
+        else
+        {
+            //instantiate pokerTableCards.tableHand[whichCard] onto the space AllInTable[whichCard]
+            //add that game object to the table game object list
+        }        
     }
 
     private void AllInCardDrama(int player)

@@ -7,8 +7,7 @@ using ZeekSpace;
 public class HUD : MonoBehaviour
 {
     public Character characterHud;
-    public Monster monsterHud;
-    public bool isCharacter;
+    public bool isCharacter = false;
 
     [Header("UI Elements")]
     public Image face;
@@ -34,7 +33,6 @@ public class HUD : MonoBehaviour
 
     public void MakeHUD()
     {
-        MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
 
         if (isCharacter)
         {
@@ -42,10 +40,10 @@ public class HUD : MonoBehaviour
         }
         else
         {
-            face.sprite = monsterHud.character.HUDSprite;
-            face.SetNativeSize();
+            face.sprite = characterHud.HUDSprite;
             MinHand.SetActive(true);
 
+            MonsterManager monsterManager = FindFirstObjectByType<MonsterManager>();
             BattleManager battleManager = FindFirstObjectByType<BattleManager>();
             MinHand.GetComponent<TextMeshProUGUI>().text =
                 "Minimum Hand: " +

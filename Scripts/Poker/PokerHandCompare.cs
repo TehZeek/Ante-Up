@@ -235,7 +235,7 @@ public class PokerHandCompare : MonoBehaviour
     {
         GameManager gameManager = FindFirstObjectByType<GameManager>();
         HandTypes MinHand = gameManager.monster.minimumHand;
-        List<int> MinRank = new List<int>() { gameManager.monster.minimumRank };
+        List<int> MinRank = new List<int>() { (gameManager.monster.minimumRank - 1) };
         var hand = player switch
         {
             0 => MonHand,
@@ -258,11 +258,11 @@ public class PokerHandCompare : MonoBehaviour
 
         if (hand == allHandTypes[1]) return $"{cardRank[rank[0]]} High";
         if (hand == allHandTypes[2]) return $"Pair of {cardRank[rank[0]]}s";
-        if (hand == allHandTypes[3]) return $"Two Pair: {cardRank[rank[0]]}s and {cardRank[rank[1]]}s";
+        if (hand == allHandTypes[3]) return $"Two Pair: {cardRank[rank[0]]}s and {cardRank[rank[2]]}s";
         if (hand == allHandTypes[4]) return $"Three of a Kind: {cardRank[rank[0]]}s";
         if (hand == allHandTypes[5]) return $"Straight to {cardRank[rank[0]]}";
         if (hand == allHandTypes[6]) return $"Flush: {cardRank[rank[0]]} high";
-        if (hand == allHandTypes[7]) return $"Full House: {cardRank[rank[0]]}s over {cardRank[rank[1]]}s";
+        if (hand == allHandTypes[7]) return $"Full House: {cardRank[rank[0]]}s over {cardRank[rank[3]]}s";
         if (hand == allHandTypes[8]) return $"Four of a Kind: {cardRank[rank[0]]}s";
         if (hand == allHandTypes[9]) return $"Straight Flush to: {cardRank[rank[0]]}";
         if (hand == allHandTypes[10]) return $"Royal Flush";
