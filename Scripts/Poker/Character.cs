@@ -25,6 +25,7 @@ namespace ZeekSpace
         public bool isAllIn;
         public bool isBetting;
         public bool isRanged;
+        public bool isDead;
         public bool wonHand;
         public bool lostShowdown;
         public Weapon weapon;

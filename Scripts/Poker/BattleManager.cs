@@ -157,18 +157,64 @@ public class BattleManager : MonoBehaviour
         ActionScreenScene.GetComponent<ActionScreen>().ShowdownSetup();
     }
 
-    public void CleanUpShowdown()
+        /// <summary>
+/// Clears all showdown-only state and prepares every system for the next hand.
+/// Must be called exactly once after the pot is settled and BEFORE new cards
+/// are dealt.
+/// </summary>
+public void CleanUpShowdown()
     {
-        //turn these back on
+        //---------------------------------------------------------------------
+        // 1️⃣  Update persistent data that carries across hands
+        //---------------------------------------------------------------------
+        // – player chip stacks were already modified during damage / reward
+        //   animations, so nothing to do here.
+        // – propagate "IsDead" flags to the master list in GameManager
+        PokerDrawPile pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
+        pokerDrawPile.Reshuffle();
+        for (int seat = 0; seat < 4; seat++)
+            gameManager.characters[seat].isDead = FadeIn.GetComponent<ActionScreen>().IsDead[seat];
+        //---------------------------------------------------------------------
+        // 2️⃣  Reset PokerTurnManager to its pre-hand defaults
+        //---------------------------------------------------------------------
+        pokerTurnManager.turnOrder[0]++;                   // monster → next encounter
+        pokerTurnManager.turnOrder[1] = 0;                // round counter (pre-flop)
+        pokerTurnManager.turnOrder[2] = 0;                // action counter
+        pokerTurnManager.playersStillIn.Clear();
+
+        for (int i = 0; i<4; i++)
+        {
+            if (gameManager.characters[i].isDead) pokerTurnManager.IsOut[i] = true;
+            else pokerTurnManager.IsOut[i] = false;
+            pokerTurnManager.isAllIn[i] = false;
+            pokerTurnManager.HasChecked[i] = false;
+        }
+
+        pokerTurnManager.isShowdownInProgress = false;
+
+        //---------------------------------------------------------------------
+        // 3️⃣  Wipe the table and pocket visuals
+        //---------------------------------------------------------------------
+        pokerTableCards.ClearTable();                       // destroys community card GOs
+        pokerTableCards.showdownLayoutActive = false;       // restore normal spacing
+
+        //---------------------------------------------------------------------
+        // 4️⃣  Reset the ActionScreen & HUD
+        //---------------------------------------------------------------------
+        FadeIn.GetComponent<ActionScreen>().FlingAllInCardsOffScreen();  // any late survivors
+        FadeIn.GetComponent<ActionScreen>().ClearShowdownUI();           // hides results text, etc.
+
+
+        //---------------------------------------------------------------------
+        // 5️⃣  Tell DeckManager to reshuffle and deal a fresh hand
+        //---------------------------------------------------------------------
+
+        TurnOnHUD();
+        StartCoroutine(LoadWaitThenShift());
     }
 
 
 
-
-
-
-    // set up the monster
-    // set up the battle/table
-    // set up the monster logic
-
 }
+
+

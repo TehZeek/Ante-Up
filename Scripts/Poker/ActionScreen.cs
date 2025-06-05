@@ -29,7 +29,7 @@ public class ActionScreen : MonoBehaviour
     private PokerChipManager pokerChipManager;
     private PokerTableCards pokerTableCards;
     public List<RectTransform> chipsTargets = new List<RectTransform>();
-    private List<bool> IsDead = new List<bool>() { false, false, false, false };
+    public List<bool> IsDead = new List<bool>() { false, false, false, false };
     private int totalSum;
     public List<GameObject> AllInPocket0 = new List<GameObject>();
     public List<GameObject> AllInPocket1 = new List<GameObject>();
@@ -696,13 +696,13 @@ public class ActionScreen : MonoBehaviour
                 Actors[j].GetComponent<SpriteSpawner>().SpawnChipDamage(ChipsLost[j], target);
                 yield return new WaitForSeconds(0.7f);
             }
-            if (ChipsLost[0] > 0)
+        }
+        if (ChipsLost[0] > 0)
+        {
+            for (int m = 0; m < ChipsLost[0]; m++)
             {
-                for (int m = 0; m < ChipsLost[0]; m++)
-                {
-                    UpdateChipCounter(0);
-                    yield return new WaitForSeconds(0.1f);
-                }
+                UpdateChipCounter(0);
+                yield return new WaitForSeconds(0.1f);
             }
         }
         yield return new WaitForSeconds(2f);
@@ -752,7 +752,7 @@ public class ActionScreen : MonoBehaviour
         List<int> chipsLost = new List<int>();
         for (int i = 0; i < 4; i++)
         {
-            chipsLost.Add(pokerChipManager.InThePot[0]);
+            chipsLost.Add(pokerChipManager.InThePot[i]);
             if (pokerChipManager.playerChips[i] == 0 && pokerTurnManager.IsOut[i] && !pokerTurnManager.isAllIn[i]) { IsDead[i] = true; }
         }
         if (pokerTurnManager.DidMonstersFold())
@@ -821,29 +821,32 @@ public class ActionScreen : MonoBehaviour
             yield return new WaitForSeconds(2f);
             battleManager.CleanUpShowdown();
         }
-        if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 2.5f))
+        else if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 2.5f))
         {
             TextEffect(gameManager.monster.confident, showdownText);
             gameManager.monster.willRun = true;
             yield return new WaitForSeconds(2f);
             battleManager.CleanUpShowdown();
         }
-        if (pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.2f) ||
+        else if(pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.2f) ||
                 (gameManager.monster.willRun && pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.5f)))
         {
             TextEffect(gameManager.monster.escape, showdownText);
             yield return new WaitForSeconds(2f);
             RewardScreen();
         }
-        if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 4f) || (gameManager.monster.willRun && pokerChipManager.playerChips[0] > gameManager.monster.monsterChips*2))
+        else if(pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 4f) || (gameManager.monster.willRun && pokerChipManager.playerChips[0] > gameManager.monster.monsterChips*2))
         {
             TextEffect(gameManager.monster.steal, showdownText);
             yield return new WaitForSeconds(2f);
             BattleOver();
         }
-        TextEffect(gameManager.monster.keepfighting, showdownText);
-        yield return new WaitForSeconds(2f);
-        battleManager.CleanUpShowdown();
+        else
+        {
+            TextEffect(gameManager.monster.keepfighting, showdownText);
+            yield return new WaitForSeconds(2f);
+            battleManager.CleanUpShowdown();
+        }
     }
 
     private void RewardScreen()
@@ -854,5 +857,32 @@ public class ActionScreen : MonoBehaviour
     private void BattleOver()
     {
         TextEffect("Battle Over!\n More to come!", showdownText);
+    }
+
+    public void ClearShowdownUI()
+    {
+        showdownText.gameObject.SetActive(false);
+        miniHand.gameObject.SetActive(false);
+        foreach (TextMeshProUGUI label in folded)
+            if (label != null) label.gameObject.SetActive(false);
+        foreach (KeyValuePair<int, Coroutine> entry in spinningCoroutines)
+            if (entry.Value != null) StopCoroutine(entry.Value);
+        spinningCoroutines.Clear();
+        foreach (GameObject holder in FinalCards)
+        {
+            if (holder == null) continue;
+
+            CardShowdown cardTray = holder.GetComponent<CardShowdown>();
+            if (cardTray != null) cardTray.ThrowCardsOffscreen();
+
+            holder.SetActive(false);
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            Actors[i].SetActive(false);
+            chipDisplay[i].gameObject.SetActive(false);
+        }
+        StopAllCoroutines();
+
     }
 }
