@@ -28,6 +28,7 @@ public class PokerTableCards : MonoBehaviour
     public List<GameObject> burnDeck = new List<GameObject>();
     private BattleManager battleManager;
     public  Dictionary<int, (List<GameObject> pocket, Transform transform)> playerMap;
+    public bool showdownLayoutActive = false;
     [SerializeField] private float spawnZDepth = 10f;
     // import this from PokerDrawPile public List<GameObject> cardsInHand = new List<GameObject>(); // hold the list of card objects in our hand
 
@@ -66,6 +67,8 @@ public class PokerTableCards : MonoBehaviour
     public void AddCardToPosition(Card cardData, int whichPlayer)
     {
         Transform targetTransform = GetTargetTransform(whichPlayer);
+        if (whichPlayer >= 20) showdownLayoutActive = true;
+        else showdownLayoutActive = false;
 
         if (targetTransform != null)
         {
@@ -171,7 +174,8 @@ public class PokerTableCards : MonoBehaviour
         UpdateCardLayout(playerOnePocket, cardSpacing, 3f, 2f);
         UpdateCardLayout(playerTwoPocket, cardSpacing, 3f, 2f);
         UpdateCardLayout(playerThreePocket, cardSpacing, 3f, 2f);
-        UpdateCardLayout(tableHand, cardSpacing * 3, 3f, 0.25f);
+        if (!showdownLayoutActive) UpdateCardLayout(tableHand, cardSpacing * 3, 3f, 0.25f);
+        else UpdateCardLayout(tableHand, cardSpacing/2, 2f, 0.25f);
     }
 
     private void UpdateCardLayout(List<GameObject> cards, float spacing, float fanMultiplier, float duration = 0.5f)
