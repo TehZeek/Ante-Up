@@ -347,16 +347,15 @@ public void buildHands(int player)
             for (int i = 0; i<cardsToDraw; i++)
             {
                 PlaceTableCardDramatically(i);
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.75f);
                 for (int j = 0; j < 4; j++)
                 {
                     if (!pokerTurnManager.IsOut[j] || pokerTurnManager.isAllIn[j])
                     {
                         AllInCardDrama(j);
-                        yield return new WaitForSeconds(0.75f);
+                        yield return new WaitForSeconds(0.5f);
                     }
                 }
-                yield return new WaitForSeconds(1f);
             }
             //compare cards and destroy losers
             // winners attack
@@ -376,8 +375,12 @@ public void buildHands(int player)
         }
         else
         {
-            //instantiate pokerTableCards.tableHand[whichCard] onto the space AllInTable[whichCard]
-            //add that game object to the table game object list
+            var cardToDup = pokerTableCards.tableHand[whichCard].GetComponent<CardDisplay>().cardData;
+            int noDup = pokerTableCards.tableHand.Count;
+            pokerTableCards.AddCardToPosition(cardToDup, 20 + whichCard);
+            table.Add(pokerTableCards.tableHand[whichCard]);
+            pokerTableCards.tableHand[whichCard] = pokerTableCards.tableHand[noDup];
+            pokerTableCards.tableHand.RemoveAt(noDup);
         }        
     }
 
