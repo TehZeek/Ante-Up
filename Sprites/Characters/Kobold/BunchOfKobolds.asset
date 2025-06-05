@@ -30,3 +30,9 @@ MonoBehaviour:
   turnRound: 9
   allIn: 0
   passivePower: 0
+  scared: The Kobold looks nervous.\n It might flee!
+  confident: The Kobold begins humming Kenny Rogers, for unknown reasons.
+  escape: The Kobold flees with their life!
+  steal: The Kobold knows when to run!
+  challenge: You are ambushed by a lone Kobold!\n  A Boot on he head and a dagger
+    at your heart!

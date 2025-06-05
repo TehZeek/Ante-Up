@@ -25,6 +25,14 @@ namespace ZeekSpace
         public TurnRound turnRound;
         public AllIn allIn;
         public PassivePower passivePower;
+        public string scared;
+        public string confident;
+        public string escape;
+        public string steal;
+        public string challenge;
+        public bool willRun = false;
+
+
 
         public enum MonsterAI
         {

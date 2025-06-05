@@ -8,7 +8,7 @@ public class PokerHandCompare : MonoBehaviour
 {
     private PokerTableCards pokerTableCards;
     public List<HandTypes> allHandTypes = new List<HandTypes>();
-    public HandTypes P1Hand, P2Hand, P3Hand, MonHand, bestHandType;
+    public HandTypes P1Hand, P2Hand, P3Hand, MonHand, bestHandType, MinHand;
     public List<Card> bestHand = new();
     public List<Card> p1Hand = new(), p2Hand = new(), p3Hand = new(), monHand = new();
     public List<int> p1Rank = new(), p2Rank = new(), p3Rank = new(), monRank = new(), handRank = new();
@@ -25,6 +25,8 @@ public class PokerHandCompare : MonoBehaviour
     {
         allHandTypes = Resources.LoadAll<HandTypes>("HandRanks").OrderBy(h => h.handRank).ToList();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        MinHand = gameManager.monster.minimumHand;
     }
 
     public void UpdateHandType(List<GameObject> pocket, List<GameObject> table, int player)
