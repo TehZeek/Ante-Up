@@ -165,6 +165,7 @@ public class ShowdownCastManager : MonoBehaviour
 
     public void ReplacePocketCards(int player)
     {
+        Debug.Log("Replacing Pocket Cards " + player);
         PokerTableCards tableCards = FindFirstObjectByType<PokerTableCards>();
         if (player == 0) ReplacePocket(AllInPocket0, tableCards.monsterPocket);
         if (player == 1) ReplacePocket(AllInPocket1, tableCards.playerOnePocket);

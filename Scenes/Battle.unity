@@ -268,6 +268,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &515569341 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3536717878189670253, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+  m_PrefabInstance: {fileID: 494387184335367808}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &546988606 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4565826114053164511, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
@@ -304,6 +309,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5139665756396824749, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
   m_PrefabInstance: {fileID: 494387184335367808}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &992506768 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5895387134750136150, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+  m_PrefabInstance: {fileID: 494387184335367808}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &998729323 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3551691963654466061, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
@@ -312,6 +322,11 @@ GameObject:
 --- !u!1 &1014699559 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1470733995680127963, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+  m_PrefabInstance: {fileID: 494387184335367808}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1024970746 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9071500793649482789, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
   m_PrefabInstance: {fileID: 494387184335367808}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1029219922
@@ -691,6 +706,11 @@ MonoBehaviour:
   playerTwoPocketSize: 2
   playerThreePocketSize: 2
   monsterPocketSize: 2
+--- !u!1 &1545664031 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4933735633369912796, guid: b0ca722ba9464bd47bf47ea424ad0e89, type: 3}
+  m_PrefabInstance: {fileID: 494387184335367808}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1546489292
 GameObject:
   m_ObjectHideFlags: 0
@@ -1266,12 +1286,10 @@ MonoBehaviour:
   - {fileID: 1295893047}
   - {fileID: 998729323}
   FinalCards:
-  - {fileID: 1733184258}
-  - {fileID: 1607979701}
-  - {fileID: 2125501961}
-  - {fileID: 394234289}
-  - {fileID: 1857733502}
-  - {fileID: 1223505255}
+  - {fileID: 992506768}
+  - {fileID: 515569341}
+  - {fileID: 1545664031}
+  - {fileID: 1024970746}
   AllInTable:
   - {fileID: 1733184259}
   - {fileID: 1607979702}

@@ -46,12 +46,12 @@ public class ShowdownManager : MonoBehaviour
 
     public void ShowdownSetup()
     {
+
+        if (pokerHandCompare == null || gameManager == null || battleManager == null || pokerTurnManager == null || pokerChipManager == null)
+            GetManagers();
         CastManager.buildActors();
         chipsLost = pokerChipManager.InThePot;
         potSize = pokerChipManager.potChips;
-        if (pokerHandCompare == null || gameManager == null || battleManager == null || pokerTurnManager == null || pokerChipManager == null)
-            GetManagers();
-
         //check for the 4 showdown states
         if (pokerTurnManager.DidMonstersFold())
         {
@@ -325,7 +325,7 @@ private IEnumerator MonstersWinShowdown()
         CastManager.StartSpinning(r);
         yield return new WaitForSeconds(0.5f);
     }
-    PlayersWin();
+    StartCoroutine(PlayersWin());
 }
 
 
@@ -422,10 +422,13 @@ private IEnumerator PlayersWin()
 
     private void FoldCheck()
     {
+        pokerTurnManager.playersStillIn.Clear();
         for (int i = 0; i < 4; i++)
         {
             if (gameManager.characters[i].isFolding)
                 PlayerFold(i);
+            else
+                pokerTurnManager.playersStillIn.Add(i);
         }
     }
 

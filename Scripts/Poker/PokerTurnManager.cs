@@ -350,7 +350,7 @@ public class PokerTurnManager : MonoBehaviour
         //If the Monster Folded players still in split the pot
         if (IsOut[0] && !isAllIn[0])
         {
-            for (int i = 1; i < PlayerCount; i++)
+            for (int i = 0; i < PlayerCount; i++)
             {
                 if (!IsOut[i] || isAllIn[i])
                 {

@@ -30,6 +30,7 @@ MonoBehaviour:
   isAllIn: 0
   isBetting: 0
   isRanged: 0
+  isDead: 0
   wonHand: 0
   lostShowdown: 0
   weapon: 0
