@@ -66,6 +66,10 @@ public class HUD : MonoBehaviour
 
     private void MakeHUDStatus(int pocketCardCount, int player)
     {
+        for (int i = 0; i < StatusEffect.Count; i++)
+        {
+            StatusEffect[i].SetActive(false);
+        }
         int statusIndex = (pocketCardCount == 0) ? 4 : pocketCardCount - 1;
 
         Sprite statusSprite = null;

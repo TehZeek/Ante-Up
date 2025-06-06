@@ -185,7 +185,7 @@ public class PokerTurnManager : MonoBehaviour
         Debug.Log("[TurnAssign] Assigning blinds.");
 
         stillThisTurn = false;
-        int bigBlind = turnOrder[0] + 1; 
+        int bigBlind = turnOrder[0] + 3; 
         if (bigBlind > 3) { bigBlind -= 4; }
         int smallBlind = turnOrder[0] + 2; 
         if (smallBlind > 3) { smallBlind -= 4; }
@@ -372,6 +372,17 @@ public class PokerTurnManager : MonoBehaviour
             Debug.Log("Players folded, Monsters get the pot");
             return true;
         }
+        return false;
+    }
+
+    public bool IsItAllInShowdown()
+    {
+        int cardsLeftToDeal = 4;
+        bool cardsleft = false;
+        if (HasARiver) cardsLeftToDeal++;
+        if (HasABonusRound) cardsLeftToDeal++;
+        if (pokerTableCards.tableHand.Count < cardsLeftToDeal) cardsleft = true;
+        if ((isAllIn[0] || isAllIn[1] || isAllIn[2] || isAllIn[3]) && cardsleft) return true;
         return false;
     }
 

@@ -22,7 +22,7 @@ public class SpriteSpawner : MonoBehaviour
     [Header("Projectiles")]
     public GameObject[] spritePrefabs;
     public GameObject projectilePrefab;
-    public float speed = 1800f;
+    public float speed = 100f;
     public float rotationSpeed = 360f;
     public Transform parentTransform;
     public float spawnDelay = 0.05f;
@@ -38,13 +38,13 @@ public class SpriteSpawner : MonoBehaviour
     public float flashDuration = 0.2f;
     private Vector2 startPosition;
     public Image canvasImage;
-    private ActionScreen actionScreen;
+    private ShowdownManager actionScreen;
 
     public void BuildActor()
     {
         if (character != null)
         {
-            actionScreen = FindFirstObjectByType<ActionScreen>();
+            actionScreen = FindFirstObjectByType<ShowdownManager>();
             canvasImage.sprite = character.RoomSprite;
             projectilePrefab = character.RangedPrefab;
             BattleSprite = character.BattleSprite;
@@ -53,7 +53,7 @@ public class SpriteSpawner : MonoBehaviour
             DeadSprite = character.DeadSprite;
             isRanged = character.isRanged;
             originalSprite = character.RoomSprite;
-            chipTargets = actionScreen.chipsTargets;
+            chipTargets = actionScreen.CastManager.chipsTargets;
             DefendSprite = character.DefendSprite;
         }
 
@@ -71,41 +71,20 @@ public class SpriteSpawner : MonoBehaviour
         SpriteSizing(newSprite);
     }
 
-    public void SpawnChipDamageTemp()
-    {
-        int count = 15;
-        List<int> target = new List<int>() {0, 2};
-        SpawnChipDamage(count, target);
-    }
-
-    public void SpawnChipDamage(int count, List<int> target)
+    public void SpawnChipDamage(int count, int target)
     {
         StartCoroutine(SpawnChipsWithDelay(count, target));
     }
 
-    private IEnumerator SpawnChipsWithDelay(int count, List<int> target)
+    private IEnumerator SpawnChipsWithDelay(int count, int target)
     {
-        List<int> chipsPerTarget = new List<int>() { 0, 0, 0, 0 };
-        int targets = target.Count;
-        int initialChips = count / targets;
-        int extraChips = count - (initialChips * targets);
-        for (int i = 0; i < target.Count; i++)
-        {
-            chipsPerTarget[target[i]] += initialChips;
-        }
-        int randomIndex = UnityEngine.Random.Range(0, target.Count);
-        chipsPerTarget[target[randomIndex]] += extraChips;
 
         SetSprite(HurtSprite);
-        for (int i = 0; i < target.Count; i++)
+        for (int i = 0; i < count; i++)
         {
-            int targetIndex = target[i];
-            for (int j = 0; j < chipsPerTarget[targetIndex]; j++)
-            {
-                GameObject newSprite = SpawnChip(targetIndex);
-                spawnedSprites.Add(newSprite);
-                yield return new WaitForSeconds(spawnDelay);
-            }
+            GameObject newSprite = SpawnChip(target);
+            spawnedSprites.Add(newSprite);
+            yield return new WaitForSeconds(spawnDelay);
         }
         SetSprite(originalSprite);
 
@@ -140,15 +119,9 @@ public class SpriteSpawner : MonoBehaviour
 
         Rotator rotator = chip.GetComponent<Rotator>() ?? chip.AddComponent<Rotator>();
         rotator.rotationSpeed = rotationSpeed;
-        StartCoroutine(chipDisplayDelay(target));
-
         return chip;
     }
-    private IEnumerator chipDisplayDelay(int player)
-    {
-        yield return new WaitForSeconds(2f);
-        actionScreen.UpdateChipCounter(player);
-    }
+
 
     private void ReturnChip(GameObject chip)
     {
@@ -346,7 +319,7 @@ public class SpriteMover : MonoBehaviour
     {
         yield return new WaitForSeconds(freeMovementTime); // Move freely for 1 second
         isMovingToTarget = true;
-        speed *= 1.5f;
+        speed *= 0.25f;
         Vector3 worldTargetPos = chipTarget.position;  // world position of the target
         Vector3 worldCurrentPos = GetComponent<RectTransform>().position;
         direction = (worldTargetPos - worldCurrentPos).normalized;

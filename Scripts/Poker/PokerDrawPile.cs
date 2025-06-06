@@ -114,7 +114,7 @@ public class PokerDrawPile : MonoBehaviour
             DealCard(nextcard);
             currentIndex = (currentIndex + 1) % drawPile.Count;
 
-            yield return new WaitForSeconds(0.5f); // Wait 0.5 seconds before dealing the next card
+            yield return new WaitForSeconds(0.25f); // Wait 0.5 seconds before dealing the next card
         }
     }
 

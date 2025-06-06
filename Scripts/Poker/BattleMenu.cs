@@ -40,6 +40,7 @@ public class BattleMenu : MonoBehaviour
     public Image betWords;
     public TextMeshProUGUI bettingWords;
     public bool StillLoadingTurn = false;
+    private GameManager gameManager;
 
     void Start()
     {
@@ -47,6 +48,7 @@ public class BattleMenu : MonoBehaviour
         pokerChipManager = FindFirstObjectByType<PokerChipManager>();
         battleManager = FindFirstObjectByType<BattleManager>();
         pokerTableCards = FindFirstObjectByType<PokerTableCards>();
+        gameManager = FindFirstObjectByType<GameManager>();
     }
 
     public void NextPlayer()
@@ -173,6 +175,7 @@ public class BattleMenu : MonoBehaviour
         Debug.Log("FOLD BUTTON CALLED " + player);
         pokerTurnManager.IsOut[player] = true;
         pokerTableCards.Fold(player);
+        gameManager.characters[player].isFolding = true;
         //fold powers
         NextPlayer();
     }
