@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      queenspades2_0: 8846851429750024632
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

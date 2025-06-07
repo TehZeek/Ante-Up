@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      bluedanglebat_0: 383622574460715139
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

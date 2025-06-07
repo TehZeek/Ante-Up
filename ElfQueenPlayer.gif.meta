@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ElfQueenPlayer_0: 6159994143588015157
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
