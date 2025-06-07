@@ -43,11 +43,11 @@ public class PokerActorManager : MonoBehaviour
 
             if (actorIndex == currentTurn)
             {
-                actor.Pause(); // Actor is hidden behind UI
+             //   actor.Pause(); // Actor is hidden behind UI
             }
             else
             {
-                actor.Unpause();
+              //  actor.Unpause();
 
                 // Handle folding / idle state clearly
                 if (isFolded)
@@ -62,7 +62,7 @@ public class PokerActorManager : MonoBehaviour
                     // Only reset to Idle if not already performing something else
                     if (actor.CurrentState == BGCharacterActions.ActorState.Folding)
                     {
-                        actor.SetState(BGCharacterActions.ActorState.Idle);
+                     //   actor.SetState(BGCharacterActions.ActorState.Idle);
                     }
                 }
             }
@@ -74,7 +74,7 @@ public class PokerActorManager : MonoBehaviour
         {
             if (enemy != null && !enemy.isOut)
             {
-                enemy.Unpause();
+               // enemy.Unpause();
             }
         }
     }
@@ -127,7 +127,7 @@ public class PokerActorManager : MonoBehaviour
             if (actor == null || actor.isOut) continue;
 
             actor.StopAllCoroutines();
-            actor.StartCoroutine(actor.SlowIdleLoop());
+          //  actor.StartCoroutine(actor.SlowIdleLoop());
         }
     }
 
@@ -166,9 +166,9 @@ public class PokerActorManager : MonoBehaviour
             yield break;
 
         SetFacing(actor.transform, target.transform);
-        actor.SetState(BGCharacterActions.ActorState.Attacking);
+       // actor.SetState(BGCharacterActions.ActorState.Attacking);
 
-        yield return actor.PerformAttack();
+      //  yield return actor.PerformAttack();
 
         if (target.CurrentState == BGCharacterActions.ActorState.Idle && !target.isOut)
         {
@@ -177,8 +177,8 @@ public class PokerActorManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        if (!actor.isOut)
-            actor.SetState(BGCharacterActions.ActorState.Idle);
+      //  if (!actor.isOut)
+        //    actor.SetState(BGCharacterActions.ActorState.Idle);
     }
 
     public void KnockOut(BGCharacterActions actor)

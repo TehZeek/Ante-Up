@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5665e1c3dcd6d2049bb17f1a73148bde, type: 3}
+  m_Name: Ogre
+  m_EditorClassIdentifier: 
+  monsterName: 
+  monsterChips: 0
+  character: {fileID: 0}
+  minimumHand: {fileID: 0}
+  minimumRank: 0
+  pocketSize: 0
+  monsterTier: 0
+  betPower: 4
+  monsterAI: 1
+  youFoldPower: 0
+  iFoldPower: 0
+  pocketPower: 0
+  flopPower: 0
+  turnPower: 0
+  riverPower: 0
+  turnRound: 0
+  allIn: 0
+  passivePower: 0
+  scared: Ogre might run oh noes
+  confident: 
+  escape: 
+  steal: 
+  challenge: 
+  keepfighting: 
+  willRun: 0
