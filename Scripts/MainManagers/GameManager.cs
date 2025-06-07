@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverScreen;
     public bool startDungeonRun = false;
     public bool startBattle = false;
-
+    public bool[] isDead = new bool[] { false, false, false, false };
+    public bool[] isFolding = new bool[] { false, false, false, false };
     public bool PlayingCard = false;
     public int whichTurn = 1;
     public List<Character> characters = new List<Character>();

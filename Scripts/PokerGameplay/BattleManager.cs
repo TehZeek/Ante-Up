@@ -130,6 +130,28 @@ public class BattleManager : MonoBehaviour
         ActionScreen.GetComponent<ShowdownManager>().ShowdownSetup();
     }
 
+    public void ResetHand()
+    {
+        ActionScreen.GetComponent<ShowdownManager>().ResetShowdown();
+        pokerTurnManager.ClearTurnVariables();
+        pokerTableCards.ClearTable();
+        BattleMenu battleMenu = FindFirstObjectByType<BattleMenu>();
+        battleMenu.UpdateButtonDisplay(0);
+        PokerDrawPile pokerDrawPile = FindFirstObjectByType<PokerDrawPile>();
+        PokerHandCompare pokerHandCompare = FindFirstObjectByType<PokerHandCompare>();
+        PokerChipManager pokerChipManager = FindFirstObjectByType<PokerChipManager>();
+        for (int i=0; i<4; i++)
+        {
+            List<GameObject> temp = new List<GameObject>();
+            HUDs[i].GetComponent<HUD>().RefreshHUD(temp,i);
+            pokerHandCompare.ClearHandData(i);
+        }
+        pokerChipManager.UpdateChipDisplay();
+        LoadWaitThenShift();
+    }
+
+
+
 }
 
 

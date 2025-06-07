@@ -32,6 +32,7 @@ public class ShowdownManager : MonoBehaviour
     public TextMeshProUGUI miniHand;
     public TextMeshProUGUI showdownText;
     public List<TextMeshProUGUI> AllInResults = new List<TextMeshProUGUI>();
+    public bool gonnaRun = false;
 
 
     public void GetManagers()
@@ -104,7 +105,7 @@ public class ShowdownManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         TextEffect("Party Folds!", showdownText);
-        StartCoroutine (MonstersWin());
+        StartCoroutine(MonstersWin());
     }
 
     //------------------------
@@ -161,7 +162,7 @@ public class ShowdownManager : MonoBehaviour
     {
         switch (player)
         {
-            case 0: 
+            case 0:
                 pokerHandCompare.UpdateHandType(pokerTableCards.monsterPocket, table, 0); break;
             case 1:
                 pokerHandCompare.UpdateHandType(pokerTableCards.playerOnePocket, table, 1); break;
@@ -174,7 +175,7 @@ public class ShowdownManager : MonoBehaviour
         TextEffect(hand, AllInResults[player]);
         //make this bigger or smaller if ahead of or behind monster
 
-        
+
         int comparison = 0;
         if (player == 0 && pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.MonHand) > pokerHandCompare.allHandTypes.IndexOf(pokerHandCompare.MinHand))
         {
@@ -257,7 +258,7 @@ public class ShowdownManager : MonoBehaviour
         HandTypes minimHand = gameManager.monster.minimumHand;
         int minimumHandRank = pokerHandCompare.allHandTypes.IndexOf(minimHand);
         int winners = pokerTurnManager.EvaluatePlayers(minimumHandRank);
-        
+
         if (winners > 0)
         {
             for (int w = 1; w < 4; w++)
@@ -296,44 +297,44 @@ public class ShowdownManager : MonoBehaviour
     }
 
 
-private IEnumerator MonstersWinShowdown()
-{
-    CastManager.StartSpinning(0);
-    yield return new WaitForSeconds(0.5f);
-    TextEffect("Monsters Win!", showdownText);
-    for (int g = 0; g < 4; g++)
+    private IEnumerator MonstersWinShowdown()
     {
-        CastManager.FinalCards[g].GetComponent<CardShowdown>().ThrowCardsOffscreen();
-        yield return new WaitForSeconds(0.25f);
-    }
-    yield return new WaitForSeconds(0.5f);
-        StartCoroutine (MonstersWin());
+        CastManager.StartSpinning(0);
+        yield return new WaitForSeconds(0.5f);
+        TextEffect("Monsters Win!", showdownText);
+        for (int g = 0; g < 4; g++)
+        {
+            CastManager.FinalCards[g].GetComponent<CardShowdown>().ThrowCardsOffscreen();
+            yield return new WaitForSeconds(0.25f);
+        }
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(MonstersWin());
     }
 
     public IEnumerator PlayersWinShowdown()
-{
-    TextEffect("Players Win!", showdownText);
-    yield return new WaitForSeconds(0.5f);
-    for (int g = 0; g < 4; g++)
     {
-        CastManager.FinalCards[g].GetComponent<CardShowdown>().ThrowCardsOffscreen();
-        yield return new WaitForSeconds(0.25f);
-    }
-
-    for (int r = 0; r < pokerTurnManager.playersStillIn.Count; r++)
-    {
-        CastManager.StartSpinning(r);
+        TextEffect("Players Win!", showdownText);
         yield return new WaitForSeconds(0.5f);
+        for (int g = 0; g < 4; g++)
+        {
+            CastManager.FinalCards[g].GetComponent<CardShowdown>().ThrowCardsOffscreen();
+            yield return new WaitForSeconds(0.25f);
+        }
+
+        for (int r = 0; r < pokerTurnManager.playersStillIn.Count; r++)
+        {
+            CastManager.StartSpinning(r);
+            yield return new WaitForSeconds(0.5f);
+        }
+        StartCoroutine(PlayersWin());
     }
-    StartCoroutine(PlayersWin());
-}
 
 
-//------------------------------
-//Support Functions
-//------------------------------
+    //------------------------------
+    //Support Functions
+    //------------------------------
 
-private IEnumerator PlayersWin()
+    private IEnumerator PlayersWin()
     {
         int[] tempChips = SplitThePot(pokerTurnManager.playersStillIn);
 
@@ -342,7 +343,7 @@ private IEnumerator PlayersWin()
         for (int i = 0; i < pokerTurnManager.playersStillIn.Count; i++)
         {
             StartCoroutine(CastManager.AttackTarget(pokerTurnManager.playersStillIn[i], 0, tempChips[i]));
-        yield return new WaitForSeconds(0.7f);
+            yield return new WaitForSeconds(0.7f);
         }
         yield return new WaitForSeconds(0.7f);
         for (int i = 0; i < pokerTurnManager.playersStillIn.Count; i++)
@@ -425,7 +426,7 @@ private IEnumerator PlayersWin()
         pokerTurnManager.playersStillIn.Clear();
         for (int i = 0; i < 4; i++)
         {
-            if (gameManager.characters[i].isFolding)
+            if (gameManager.isFolding[i])
                 PlayerFold(i);
             else
                 pokerTurnManager.playersStillIn.Add(i);
@@ -434,7 +435,7 @@ private IEnumerator PlayersWin()
 
     public void PlayerFold(int player)
     {
-        if (!gameManager.characters[player].isDead)
+        if (!gameManager.isDead[player])
             CastManager.ActorFold(player);
         else
             CastManager.ActorDead(player);
@@ -464,96 +465,109 @@ private IEnumerator PlayersWin()
     }
 
 
-//-----------------------------------
-//End Showdown
-//-----------------------------------
+    //-----------------------------------
+    //End Showdown
+    //-----------------------------------
 
-public void WrapUpShowdown()
-{
-    for (int i = 0; i < 4; i++)
+    public void WrapUpShowdown()
     {
-        if (pokerChipManager.playerChips[i] == 0)
+        for (int i = 0; i < 4; i++)
         {
-            gameManager.characters[i].isDead = true;
-            CastManager.Actors[i].GetComponent<SpriteSpawner>().SetSprite(CastManager.Actors[i].GetComponent<SpriteSpawner>().DeadSprite);
-            CastManager.Actors[i].GetComponent<SpriteSpawner>().originalSprite = CastManager.Actors[i].GetComponent<SpriteSpawner>().DeadSprite;
-            CastManager.ActorTextEffect("Out!", CastManager.ActorText[i]);
+            if (pokerChipManager.playerChips[i] == 0)
+            {
+                gameManager.isDead[i] = true;
+                CastManager.Actors[i].GetComponent<SpriteSpawner>().SetSprite(CastManager.Actors[i].GetComponent<SpriteSpawner>().DeadSprite);
+                CastManager.Actors[i].GetComponent<SpriteSpawner>().originalSprite = CastManager.Actors[i].GetComponent<SpriteSpawner>().DeadSprite;
+                CastManager.ActorTextEffect("Out!", CastManager.ActorText[i]);
+            }
+        }
+        if (gameManager.isDead[0])
+        {
+            MonsterOut();
+            return;
+        }
+        if (gameManager.isDead[1] && gameManager.isDead[2] && gameManager.isDead[3])
+        {
+            GameOver();
+            return;
+        }
+        TextEffect("showdown over", showdownText);
+        StartCoroutine(MonsterDecision());
+    }
+
+    public void MonsterOut()
+    {
+        TextEffect("Monster Out!", showdownText);
+        RewardScreen();
+        //end poker battle, transition to reward screen
+    }
+    public void GameOver()
+    {
+        TextEffect("Game Over!", showdownText);
+        //end poker battle, transition to reward screen
+    }
+
+    private IEnumerator MonsterDecision()
+    {
+        yield return new WaitForSeconds(2f);
+
+        if (pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.2f) ||
+            (gameManager.monster.willRun && pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.5f)))
+        {
+            TextEffect(gameManager.monster.escape, showdownText);
+            yield return new WaitForSeconds(3f);
+            RewardScreen();
+        }
+        else if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 4f) || (gameManager.monster.willRun && pokerChipManager.playerChips[0] > gameManager.monster.monsterChips * 2))
+        {
+            TextEffect(gameManager.monster.steal, showdownText);
+            yield return new WaitForSeconds(3f);
+            BattleOver();
+        }
+        else if (pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * .6f))
+        {
+            TextEffect(gameManager.monster.scared, showdownText);
+            gonnaRun = true;
+            yield return new WaitForSeconds(3f);
+            battleManager.ResetHand();
+        }
+        else if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 2.5f))
+        {
+            TextEffect(gameManager.monster.confident, showdownText);
+            gonnaRun = true;
+            yield return new WaitForSeconds(3f);
+            battleManager.ResetHand();
+        }
+        else
+        {
+            TextEffect(gameManager.monster.keepfighting, showdownText);
+            yield return new WaitForSeconds(3f);
+            battleManager.ResetHand();
         }
     }
-    if (gameManager.characters[0].isDead)
-    {
-        MonsterOut();
-        return;
-    }
-    if (gameManager.characters[1].isDead && gameManager.characters[2].isDead && gameManager.characters[3].isDead)
-    {
-        GameOver();
-        return;
-    }
-    TextEffect("showdown over", showdownText);
-    StartCoroutine(MonsterDecision());
-}
 
-public void MonsterOut()
-{
-    TextEffect("Monster Out!", showdownText);
-    RewardScreen();
-    //end poker battle, transition to reward screen
-}
-public void GameOver()
-{
-    TextEffect("Game Over!", showdownText);
-    //end poker battle, transition to reward screen
-}
-
-private IEnumerator MonsterDecision()
-{
-    yield return new WaitForSeconds(2f);
-
-    if (pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.2f) ||
-        (gameManager.monster.willRun && pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * 0.5f)))
+    private void RewardScreen()
     {
-        TextEffect(gameManager.monster.escape, showdownText);
-        yield return new WaitForSeconds(3f);
-        RewardScreen();
-    }
-    else if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 4f) || (gameManager.monster.willRun && pokerChipManager.playerChips[0] > gameManager.monster.monsterChips * 2))
-    {
-        TextEffect(gameManager.monster.steal, showdownText);
-        yield return new WaitForSeconds(3f);
+        TextEffect("You'll get a reward here", miniHand);
         BattleOver();
     }
-    else if (pokerChipManager.playerChips[0] <= Mathf.FloorToInt(gameManager.monster.monsterChips * .6f))
+    private void BattleOver()
     {
-        TextEffect(gameManager.monster.scared, showdownText);
-        gameManager.monster.willRun = true;
-        yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        TextEffect("Battle Over!\n More to come!", showdownText);
     }
-    else if (pokerChipManager.playerChips[0] >= Mathf.FloorToInt(gameManager.monster.monsterChips * 2.5f))
-    {
-        TextEffect(gameManager.monster.confident, showdownText);
-        gameManager.monster.willRun = true;
-        yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-    else
-    {
-        TextEffect(gameManager.monster.keepfighting, showdownText);
-        yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-    StopAllCoroutines();
-}
 
-private void RewardScreen()
-{
-    TextEffect("You'll get a reward here", miniHand);
-    BattleOver();
-}
-private void BattleOver()
-{
-    TextEffect("Battle Over!\n More to come!", showdownText);
-}
+    public void ResetShowdown()
+    {
+        Array.Clear(chipsLost, 0, chipsLost.Length);
+        potSize = 0;
+        miniHand.gameObject.SetActive(false);
+        showdownText.gameObject.SetActive(false);
+        for (int i=0; i<4;i++)
+        {
+        AllInResults[i].gameObject.SetActive(false);
+        }
+        CastManager.ResetCastManager();
+        StopAllCoroutines();
+    }
 
 }

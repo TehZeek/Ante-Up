@@ -208,7 +208,7 @@ public class PokerHandCompare : MonoBehaviour
         return true;
     }
 
-    private void ClearHandData(int player)
+    public void ClearHandData(int player)
     {
         currentHand.Clear();
         bestHand.Clear();

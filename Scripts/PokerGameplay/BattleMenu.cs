@@ -175,7 +175,7 @@ public class BattleMenu : MonoBehaviour
         Debug.Log("FOLD BUTTON CALLED " + player);
         pokerTurnManager.IsOut[player] = true;
         pokerTableCards.Fold(player);
-        gameManager.characters[player].isFolding = true;
+        gameManager.isFolding[player] = true;
         //fold powers
         NextPlayer();
     }

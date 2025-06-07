@@ -322,7 +322,7 @@ public class ShowdownCastManager : MonoBehaviour
                 Debug.LogWarning($"[buildHands] Player {player}'s hand has fewer than {j + 1} cards.");
             }
         }
-        FinalCards[player].GetComponent<CardShowdown>().handText.GetComponent<TextMeshProUGUI>().text = pokerHandCompare.HandToString(player);
+        if (player !=0) FinalCards[player].GetComponent<CardShowdown>().handText.GetComponent<TextMeshProUGUI>().text = pokerHandCompare.HandToString(player);
         FinalCards[player].GetComponent<CardShowdown>().EnterScreen();
     }
 
@@ -336,6 +336,18 @@ public class ShowdownCastManager : MonoBehaviour
             3 => pokerHandCompare.p3Hand,
             _ => new List<Card>()
         };
+    }
+
+    public void ResetCastManager()
+    {
+        for (int i=0; i<4; i++)
+        {
+            chipDisplay[i].gameObject.SetActive(false);
+            Actors[i].SetActive(false);
+            ActorText[i].gameObject.SetActive(false);
+            chipIcon[i].SetActive(false);
+            //maybe blow up cards if they stick here
+        }
     }
 
 }

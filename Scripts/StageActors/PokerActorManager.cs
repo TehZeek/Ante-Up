@@ -143,7 +143,7 @@ public class PokerActorManager : MonoBehaviour
                 if (actor == null || actor.isOut || actor.CurrentState != BGCharacterActions.ActorState.Idle)
                     continue;
 
-                switch (Random.Range(0, 0))
+                switch (Random.Range(0, 2))
                 {
                     case 0:
                         StartCoroutine(AttackRandomEnemy(actor));
