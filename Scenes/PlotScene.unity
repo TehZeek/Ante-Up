@@ -237,14 +237,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 21781214}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 595357a80f2d7b248860cb63a7584d60, type: 3}
+  m_Script: {fileID: 11500000, guid: a47715b853ce25a45b468b0ac422c87d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dialoguePrefab: {fileID: 8674244768723885200, guid: add74b89520de9c4eaee33d4af244663, type: 3}
   parentCanvas: {fileID: 21781218}
-  dialogueText: This is a test message!
+  dialogueText: This is the biggest text message ever and it's still going and going
+    and going and going and going and going
   positionIndex: 2
   faceRight: 0
+  Actor:
+  - {fileID: 1268177398}
+  - {fileID: 1411522950}
+  - {fileID: 1021496444}
+  - {fileID: 935375908}
 --- !u!1 &92837892
 GameObject:
   m_ObjectHideFlags: 0
@@ -3793,7 +3799,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 21781219}
-        m_TargetAssemblyTypeName: DialogueButtonSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: PlayManager, Assembly-CSharp
         m_MethodName: HideDialogue
         m_Mode: 1
         m_Arguments:
@@ -4766,7 +4772,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 21781219}
-        m_TargetAssemblyTypeName: DialogueButtonSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: PlayManager, Assembly-CSharp
         m_MethodName: SpawnDialogue
         m_Mode: 1
         m_Arguments:
