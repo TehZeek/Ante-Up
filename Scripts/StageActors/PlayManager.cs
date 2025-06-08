@@ -100,7 +100,7 @@ public class PlayManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
     }
 
-    public void SpawnDialogue()
+    public void SpawnDialogue(string message, int positionIndex, bool faceRight, int actorIndex)
     {
         if (dialoguePrefab == null || parentCanvas == null)
         {
@@ -113,13 +113,13 @@ public class PlayManager : MonoBehaviour
 
         if (dialogue != null)
         {
-            dialogue.ShowDialogue(dialogueText, positionIndex, faceRight);
+            dialogue.ShowDialogue(message, positionIndex, faceRight);
 
             // ✨ Trigger the corresponding actor's talking animation
             float duration = dialogue.GetTypingDuration(dialogueText);
-            if (positionIndex >= 0 && positionIndex < Actor.Count)
+            if (actorIndex >= 0 && actorIndex < Actor.Count)
             {
-                var actorScript = Actor[positionIndex].GetComponent<PlotCharacter>();
+                var actorScript = Actor[actorIndex].GetComponent<PlotCharacter>();
                 if (actorScript != null)
                 {
                     Debug.Log("Talking for " + duration + " seconds (message length: " + dialogueText.Length + ")");
