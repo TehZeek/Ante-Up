@@ -11,9 +11,9 @@ public class CharacterDialogueWindow : MonoBehaviour
     public RectTransform dialogueWindow;              // Background panel (resizable)
 
     [Header("Settings")]
-    public float characterDelay = 0.05f;
+    public float characterDelay = 0.07f;
     public float initialDelay = 0.2f;
-    private Vector2 padding = new Vector2(40f, 20f);
+    private Vector2 padding = new Vector2(20f, 20f);
     private Vector2 offsetFromCorner = new Vector2(200f, 200f); // Offset from each corner
     public Image tailImage; // Assign in the inspector
     private Vector3 tailOriginalLocalPos;
@@ -66,6 +66,12 @@ public class CharacterDialogueWindow : MonoBehaviour
             dialogueText.text += message[i];
             yield return new WaitForSeconds(characterDelay);
         }
+    }
+
+    public float GetTypingDuration(string message)
+    {
+        Debug.Log("sending a delay of " + (initialDelay + (characterDelay * message.Length + .25f)));
+        return initialDelay + (characterDelay * message.Length +.25f);
     }
 
     public enum DialogueAnchorPosition

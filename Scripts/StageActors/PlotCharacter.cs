@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class CharacterTalk : MonoBehaviour
+public class PlotCharacter : MonoBehaviour
 {
     [Header("Wiggle Settings")]
     public float wiggleAmplitude = 10f;
@@ -93,19 +93,23 @@ public class CharacterTalk : MonoBehaviour
         }
     }
 
-    public void IsTalking()
+    public void IsTalking(float duration)
     {
+        Debug.Log("Talking for " + duration + " seconds )");
+
         if (wiggleRoutine != null)
             StopCoroutine(wiggleRoutine);
 
-        wiggleRoutine = StartCoroutine(Wiggle());
+        wiggleRoutine = StartCoroutine(Wiggle(duration));
     }
 
-    private IEnumerator Wiggle()
+    private IEnumerator Wiggle(float duration)
     {
+        Debug.Log("Wiggling for duration: " + duration);
+
         float timer = 0f;
 
-        while (timer < wiggleDuration)
+        while (timer < duration)
         {
             float offset = Mathf.Sin(Time.time * wiggleSpeed) * wiggleAmplitude;
             rectTransform.anchoredPosition = onScreenPosition + new Vector2(0f, offset);

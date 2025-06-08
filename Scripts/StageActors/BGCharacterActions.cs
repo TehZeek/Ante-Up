@@ -147,6 +147,8 @@ public class BGCharacterActions : MonoBehaviour
     /// </summary>
     public IEnumerator HopTowardThenAway()
     {
+        if (isHopping) yield break;
+
         isHopping = true;
 
         // STEP 1: Hop TOWARD chosen target
@@ -210,7 +212,7 @@ public class BGCharacterActions : MonoBehaviour
     /// </summary>
     public IEnumerator PerformAttack(Transform target)
     {
-        if (isOut || target == null) yield break;
+        if (isTakingAction || isHopping || isOut || target == null) yield break;
 
         // 1) Switch to Attacking sprite
         currentState = ActorState.Attacking;
