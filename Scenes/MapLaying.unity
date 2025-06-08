@@ -127,46 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 305409421278404911, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-      propertyPath: mainCamera
-      value: 
-      objectReference: {fileID: 519420031}
-    - target: {fileID: 3277215682190110326, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3641724517803359379, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-      propertyPath: gameOverScreen
-      value: 
-      objectReference: {fileID: 1753512736}
-    - target: {fileID: 3641724517803359379, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-      propertyPath: characters.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3641724517803359379, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-      propertyPath: 'characters.Array.data[0]'
-      value: 
-      objectReference: {fileID: 11400000, guid: c4c6a184a43ebbc45b2e8e3f9aca1cc4, type: 2}
-    - target: {fileID: 3641724517803359379, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-      propertyPath: 'characters.Array.data[1]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 9d47637e5493162408fc0c87414033fa, type: 2}
-    - target: {fileID: 3641724517803359379, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-      propertyPath: 'characters.Array.data[2]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 2970d7a54358e7a409aec8d0157e343b, type: 2}
-    - target: {fileID: 3641724517803359379, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-      propertyPath: 'characters.Array.data[3]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 5f77d980853ca2843a0ce60b8f8e91c1, type: 2}
     - target: {fileID: 4386334998386925988, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
-    - target: {fileID: 6384922325741626780, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-      propertyPath: doorCounter
-      value: 
-      objectReference: {fileID: 1253941067}
     - target: {fileID: 8591853119358437125, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -499,11 +463,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1753512736 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1168042179442153117, guid: 10598882664eacc4a8b20c589d0dcec8, type: 3}
-  m_PrefabInstance: {fileID: 173898438}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1843184146 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5298161999780660088, guid: 7d9240a5d475ed04ca563b2886790f20, type: 3}

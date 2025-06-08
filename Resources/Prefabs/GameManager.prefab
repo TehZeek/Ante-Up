@@ -161,14 +161,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a952eab0c64fd184499f766f6d926a91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  partyChips: 50
+  enemyChips: 0
   playerChips: 00000000000000000000000000000000
   gameOver: 0
   gameOverScreen: {fileID: 1168042179442153117}
   startDungeonRun: 0
   startBattle: 0
+  isDead: 00000000
+  isFolding: 00000000
   PlayingCard: 0
   whichTurn: 1
-  characters: []
+  characters:
+  - {fileID: 11400000, guid: c4c6a184a43ebbc45b2e8e3f9aca1cc4, type: 2}
+  - {fileID: 11400000, guid: 9d47637e5493162408fc0c87414033fa, type: 2}
+  - {fileID: 11400000, guid: 2970d7a54358e7a409aec8d0157e343b, type: 2}
+  - {fileID: 11400000, guid: 5f77d980853ca2843a0ce60b8f8e91c1, type: 2}
   monster: {fileID: 11400000, guid: a1c58cdadacb7d147ad95dc0476e952b, type: 2}
 --- !u!1 &4908397115593362795
 GameObject:
